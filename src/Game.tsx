@@ -1,7 +1,11 @@
 import { Application } from "pixi.js";
 import { useEffect, useRef } from "react";
 
-const Game = () => {
+interface Props {
+  url: string;
+}
+
+const Game = ({ url }: Props) => {
   const div = useRef(null);
 
   useEffect(() => {
