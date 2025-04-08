@@ -1,5 +1,6 @@
 import { Application } from "pixi.js";
 import { useEffect, useRef } from "react";
+import game from "./game/game";
 
 interface Props {
   url: string;
@@ -11,8 +12,11 @@ const Game = ({ url }: Props) => {
   useEffect(() => {
     const app = new Application();
     app
-      .init({ resizeTo: window, antialias: false, background: "red" })
-      .then(() => (div.current as any as HTMLElement).appendChild(app.canvas));
+      .init({ resizeTo: window, antialias: false, background: "black" })
+      .then(() => {
+        (div.current as any as HTMLElement).appendChild(app.canvas);
+        game(app);
+      });
   });
 
   return <div ref={div}></div>;
