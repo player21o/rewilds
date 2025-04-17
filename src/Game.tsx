@@ -12,7 +12,7 @@ const Game = ({ url }: Props) => {
   useEffect(() => {
     const app = new Application();
     app
-      .init({ resizeTo: window, antialias: false, background: "black" })
+      .init({ resizeTo: window, antialias: false, background: "white" })
       .then(() => {
         (div.current as any as HTMLElement).appendChild(app.canvas);
         game(app);
