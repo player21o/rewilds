@@ -10,6 +10,7 @@ const Game = ({ url }: Props) => {
   const div = useRef(null);
 
   useEffect(() => {
+    console.log(url);
     const app = new Application();
     app
       .init({
