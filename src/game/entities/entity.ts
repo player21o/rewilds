@@ -1,5 +1,6 @@
 import { Container } from "pixi.js";
 import { ObjectManifest } from "../../assets/manifest";
+import { InputsManager } from "../input";
 
 export class Entity<T extends object = any> {
   public sid: number;
@@ -20,6 +21,7 @@ export class Entity<T extends object = any> {
     return;
   }
 
-  // @ts-ignore
-  public step(dt: number) {}
+  public step(_: number, __: InputsManager) {}
+
+  public render(_: number, __: InputsManager) {}
 }

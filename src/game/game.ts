@@ -10,6 +10,7 @@ import { Viewport } from "pixi-viewport";
 import { ObjectManifest, manifest } from "../assets/manifest";
 import { EntitiesManager } from "./entities";
 import { Citizen } from "./entities/citizen";
+import { InputsManager } from "./input";
 
 export default (app: Application) => {
   const viewport = new Viewport({
@@ -28,6 +29,8 @@ export default (app: Application) => {
 
   TextureStyle.defaultOptions.scaleMode = "nearest";
 
+  const inputs = new InputsManager(viewport);
+
   Assets.loadBundle("game").then(
     (assets: ObjectManifest["bundles"]["game"]) => {
       const entities = new EntitiesManager(viewport, assets);
@@ -40,40 +43,14 @@ export default (app: Application) => {
 
       app.stage.addChild(new Text({ text: "Hello world!" }));
 
-      entities.add(new Citizen(1, 0, 0));
+      entities.add(new Citizen(1, 0, 20));
 
       app.ticker.add(({ deltaTime }) =>
-        entities.entities.forEach((e) => e.step(deltaTime))
+        entities.entities.forEach((e) => {
+          e.step(deltaTime, inputs);
+          e.render(deltaTime, inputs);
+        })
       );
-
-      /*
-      const sprite = new AnimatedSprite(
-        assets.legs_run.animations.frame_row_3 as any
-      );
-      sprite.animationSpeed = 0.3;
-      sprite.play();
-      sprite.scale = 2;
-      apply_palette(sprite);
-      viewport.addChild(sprite);
-
-      const body = new AnimatedSprite(assets.run.animations.frame_row_3 as any);
-      body.animationSpeed = 0.3;
-      body.play();
-      body.scale = 2;
-
-      apply_palette(body);
-      viewport.addChild(body);
-
-      const shield = new AnimatedSprite(
-        assets.shield_wooden_run.animations.frame_row_3 as any
-      );
-      shield.animationSpeed = 0.3;
-      shield.play();
-      shield.scale = 2;
-
-      apply_palette(shield);
-      viewport.addChild(shield);
-      */
     }
   );
 };

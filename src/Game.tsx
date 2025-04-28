@@ -17,10 +17,12 @@ const Game = ({ url }: Props) => {
         resizeTo: window,
         antialias: false,
         background: "white",
+        roundPixels: true,
       })
       .then(() => {
         (div.current as any as HTMLElement).innerHTML = "";
         (div.current as any as HTMLElement).appendChild(app.canvas);
+
         game(app);
       });
   });
