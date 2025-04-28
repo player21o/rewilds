@@ -19,6 +19,7 @@ const Game = ({ url }: Props) => {
         background: "white",
       })
       .then(() => {
+        (div.current as any as HTMLElement).innerHTML = "";
         (div.current as any as HTMLElement).appendChild(app.canvas);
         game(app);
       });
