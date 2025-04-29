@@ -23,5 +23,9 @@ export class Entity<T extends object = any> {
 
   public step(_: number, __: InputsManager) {}
 
-  public render(_: number, __: InputsManager) {}
+  public render(
+    _: number,
+    __: InputsManager,
+    ___: ObjectManifest["bundles"]["game"]
+  ) {}
 }

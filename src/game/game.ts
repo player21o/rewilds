@@ -48,7 +48,7 @@ export default (app: Application) => {
       app.ticker.add(({ deltaTime }) =>
         entities.entities.forEach((e) => {
           e.step(deltaTime, inputs);
-          e.render(deltaTime, inputs);
+          e.render(deltaTime, inputs, assets);
         })
       );
     }

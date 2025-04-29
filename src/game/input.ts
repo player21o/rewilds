@@ -1,13 +1,15 @@
-import { IFederatedContainer } from "pixi.js";
+import { Viewport } from "pixi-viewport";
 
 export class InputsManager {
   public mouseX: number = 0;
   public mouseY: number = 0;
 
-  public constructor(stage: IFederatedContainer) {
-    stage.addEventListener("pointermove", (e) => {
-      this.mouseX = e.globalX;
-      this.mouseY = e.globalY;
+  public constructor(viewport: Viewport) {
+    viewport.addEventListener("pointermove", (e) => {
+      const world = viewport.toWorld(e.globalX, e.globalY);
+
+      this.mouseX = world.x;
+      this.mouseY = world.y;
     });
   }
 }

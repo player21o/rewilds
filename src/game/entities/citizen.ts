@@ -15,6 +15,10 @@ export class Citizen extends Entity<CitizenType> {
   private container!: Container;
   private last_turn_row = 0;
 
+  private anim_frame = 0;
+  private anim_speed = 2;
+  private anim_timer = 0;
+
   public constructor(sid: number, x: number, y: number) {
     super(sid, x, y);
   }
@@ -30,8 +34,6 @@ export class Citizen extends Entity<CitizenType> {
       assets.legs_run.animations.frame_row_3 as any
     ) as any;
     legs.rows = Object.keys(assets.legs_run.animations).length;
-    legs.animationSpeed = 0.3;
-    legs.play();
     legs.scale = 2;
     apply_palette(legs);
     container.addChild(legs);
@@ -40,8 +42,6 @@ export class Citizen extends Entity<CitizenType> {
       assets.run.animations.frame_row_3 as any
     ) as any;
     body.rows = Object.keys(assets.run.animations).length;
-    body.animationSpeed = 0.3;
-    body.play();
     body.scale = 2;
     apply_palette(body);
     container.addChild(body);
@@ -51,7 +51,34 @@ export class Citizen extends Entity<CitizenType> {
     return container;
   }
 
-  public render(_: number, inputs: InputsManager) {
+  private render_animation(
+    dt: number,
+    assets: ObjectManifest["bundles"]["game"]
+  ) {
+    this.anim_timer += dt;
+
+    if (this.anim_timer >= this.anim_speed) {
+      this.anim_timer = 0;
+      this.anim_frame =
+        this.anim_frame != this.sprites.legs.totalFrames - 1
+          ? this.anim_frame + 1
+          : 0;
+      this.sprites.body.currentFrame = this.anim_frame;
+      this.sprites.legs.currentFrame = this.anim_frame;
+    }
+  }
+
+  public render(
+    dt: number,
+    inputs: InputsManager,
+    assets: ObjectManifest["bundles"]["game"]
+  ) {
+    this.render_animation(dt, assets);
+
+    this.container.pivot.set(
+      this.container.width / 2,
+      this.container.height / 2
+    );
     this.container.position.set(this.x, this.y);
 
     const legsZ = [
@@ -93,6 +120,20 @@ export class Citizen extends Entity<CitizenType> {
     */
     const lookat = lookAt(this.x, this.y, inputs.mouseX, inputs.mouseY);
 
-    console.log(lookat);
+    const row = ((lookat / (Math.PI * 2)) * this.sprites.body.rows) | 0;
+    //console.log(row);
+
+    if (this.last_turn_row != row) {
+      this.last_turn_row = row;
+      this.sprites.body.textures = assets.run.animations[
+        `frame_row_${row.toString()}` as keyof typeof assets.run.animations
+      ] as any;
+      this.sprites.legs.textures = assets.legs_run.animations[
+        `frame_row_${row.toString()}` as keyof typeof assets.run.animations
+      ] as any;
+
+      this.sprites.body.currentFrame = this.anim_frame;
+      this.sprites.legs.currentFrame = this.anim_frame;
+    }
   }
 }
