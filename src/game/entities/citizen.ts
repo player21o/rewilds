@@ -1,11 +1,12 @@
-import { AnimatedSprite, Container } from "pixi.js";
+import { Container } from "pixi.js";
 import { CitizenType } from "../../common/interfaces";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
 import { apply_palette, lookAt } from "../utils";
 import { InputsManager } from "../input";
+import { AdvancedAnimatedSprite } from "../anim";
 
-type AnimatedSpriteWithRows = AnimatedSprite & { rows: number };
+type AnimatedSpriteWithRows = AdvancedAnimatedSprite & { rows: number };
 
 export class Citizen extends Entity<CitizenType> {
   private sprites!: {
@@ -14,10 +15,7 @@ export class Citizen extends Entity<CitizenType> {
   };
   private container!: Container;
   private last_turn_row = 0;
-
-  private anim_frame = 0;
-  private anim_speed = 2;
-  private anim_timer = 0;
+  private c = 0;
 
   public constructor(sid: number, x: number, y: number) {
     super(sid, x, y);
@@ -30,19 +28,23 @@ export class Citizen extends Entity<CitizenType> {
     container.x = this.x;
     container.y = this.y;
 
-    const legs: AnimatedSpriteWithRows = new AnimatedSprite(
-      assets.legs_run.animations.frame_row_3 as any
+    const legs: AnimatedSpriteWithRows = new AdvancedAnimatedSprite(
+      assets.legs_run.animations as any,
+      "frame_row_0"
     ) as any;
     legs.rows = Object.keys(assets.legs_run.animations).length;
     legs.scale = 2;
+    legs.animationSpeed = 0.3;
     apply_palette(legs);
     container.addChild(legs);
 
-    const body: AnimatedSpriteWithRows = new AnimatedSprite(
-      assets.run.animations.frame_row_3 as any
+    const body: AnimatedSpriteWithRows = new AdvancedAnimatedSprite(
+      assets.run.animations as any,
+      "frame_row_0"
     ) as any;
     body.rows = Object.keys(assets.run.animations).length;
     body.scale = 2;
+    body.animationSpeed = 0.3;
     apply_palette(body);
     container.addChild(body);
 
@@ -51,30 +53,13 @@ export class Citizen extends Entity<CitizenType> {
     return container;
   }
 
-  private render_animation(
-    dt: number,
-    assets: ObjectManifest["bundles"]["game"]
-  ) {
-    this.anim_timer += dt;
-
-    if (this.anim_timer >= this.anim_speed) {
-      this.anim_timer = 0;
-      this.anim_frame =
-        this.anim_frame != this.sprites.legs.totalFrames - 1
-          ? this.anim_frame + 1
-          : 0;
-      this.sprites.body.currentFrame = this.anim_frame;
-      this.sprites.legs.currentFrame = this.anim_frame;
-    }
-  }
-
   public render(
     dt: number,
     inputs: InputsManager,
     assets: ObjectManifest["bundles"]["game"]
   ) {
-    this.render_animation(dt, assets);
-
+    this.c += dt / 100;
+    console.log(this.c);
     this.container.pivot.set(
       this.container.width / 2,
       this.container.height / 2
@@ -125,15 +110,24 @@ export class Citizen extends Entity<CitizenType> {
 
     if (this.last_turn_row != row) {
       this.last_turn_row = row;
+      /*
       this.sprites.body.textures = assets.run.animations[
         `frame_row_${row.toString()}` as keyof typeof assets.run.animations
       ] as any;
       this.sprites.legs.textures = assets.legs_run.animations[
         `frame_row_${row.toString()}` as keyof typeof assets.run.animations
       ] as any;
+       */
 
-      this.sprites.body.currentFrame = this.anim_frame;
-      this.sprites.legs.currentFrame = this.anim_frame;
+      this.sprites.body.set_animation(
+        `frame_row_${row.toString()}` as keyof typeof assets.run.animations
+      );
+      this.sprites.legs.set_animation(
+        `frame_row_${row.toString()}` as keyof typeof assets.legs_run.animations
+      );
+
+      //this.sprites.body.currentFrame = this.anim_frame;
+      //this.sprites.legs.currentFrame = this.anim_frame;
     }
   }
 }
