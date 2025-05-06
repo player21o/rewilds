@@ -2,6 +2,40 @@ import { ColorReplaceFilter } from "pixi-filters";
 import { Sprite } from "pixi.js";
 import palette from "../assets/palette";
 
+class PaletteManager {
+  private palette = [];
+
+  private load(url: string): Promise<void> {
+    return new Promise(() => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+
+      const image = new Image();
+      image.src = url;
+      image.onload = function () {
+        ctx.drawImage(image, 0, 0);
+
+        for (let x = 0; x < image.width; x++) {
+          for (let y = 0; y < image.width; y++) {
+            const imageData: Uint8ClampedArray = ctx.getImageData(
+              x,
+              y,
+              1,
+              1
+            ).data;
+            const rgbColor: Array<number> = [
+              imageData[0],
+              imageData[1],
+              imageData[2],
+            ];
+            return rgbColor;
+          }
+        }
+      };
+    });
+  }
+}
+
 export function apply_palette(sprite: Sprite) {
   sprite.filters = [
     new ColorReplaceFilter({

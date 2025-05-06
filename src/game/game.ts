@@ -5,6 +5,7 @@ import {
   Text,
   TilingSprite,
   TextureStyle,
+  Texture,
 } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import { ObjectManifest, manifest } from "../assets/manifest";
@@ -33,6 +34,10 @@ export default (app: Application) => {
 
   Assets.loadBundle("game").then(
     (assets: ObjectManifest["bundles"]["game"]) => {
+      (assets.palette as any as Texture).source.style.magFilter = "nearest";
+      (assets.palette as any as Texture).source.style.minFilter = "nearest";
+      (assets.palette as any as Texture).source.style.mipmapFilter = "nearest";
+      (assets.palette as any as Texture).source.update();
       const entities = new EntitiesManager(viewport, assets);
       viewport.addChild(
         TilingSprite.from(assets.bg, {
@@ -43,7 +48,7 @@ export default (app: Application) => {
 
       app.stage.addChild(new Text({ text: "Hello world!" }));
 
-      entities.add(new Citizen(1, 0, 20));
+      entities.add(new Citizen(1, 250, 250));
 
       app.ticker.add(({ deltaTime }) =>
         entities.entities.forEach((e) => {

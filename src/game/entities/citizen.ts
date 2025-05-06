@@ -1,10 +1,11 @@
-import { Container } from "pixi.js";
+import { Container, Texture } from "pixi.js";
 import { CitizenType } from "../../common/interfaces";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
-import { apply_palette, lookAt } from "../utils";
+import { lookAt } from "../utils";
 import { InputsManager } from "../input";
-import { AdvancedAnimatedSprite } from "../anim";
+import { AdvancedAnimatedSprite } from "../render/anim";
+import { PaletteSwapFilter } from "../render/filters/palette_swap";
 
 type AnimatedSpriteWithRows = AdvancedAnimatedSprite & { rows: number };
 
@@ -35,7 +36,6 @@ export class Citizen extends Entity<CitizenType> {
     legs.rows = Object.keys(assets.legs_run.animations).length;
     legs.scale = 2;
     legs.animationSpeed = 0.3;
-    apply_palette(legs);
     container.addChild(legs);
 
     const body: AnimatedSpriteWithRows = new AdvancedAnimatedSprite(
@@ -45,8 +45,12 @@ export class Citizen extends Entity<CitizenType> {
     body.rows = Object.keys(assets.run.animations).length;
     body.scale = 2;
     body.animationSpeed = 0.3;
-    apply_palette(body);
+
     container.addChild(body);
+
+    body.filters = [new PaletteSwapFilter({ palette: assets.palette as any })];
+
+    console.log(assets.palette);
 
     this.sprites = { body, legs };
 
@@ -59,7 +63,7 @@ export class Citizen extends Entity<CitizenType> {
     assets: ObjectManifest["bundles"]["game"]
   ) {
     this.c += dt / 100;
-    console.log(this.c);
+    //console.log(this.c);
     this.container.pivot.set(
       this.container.width / 2,
       this.container.height / 2
