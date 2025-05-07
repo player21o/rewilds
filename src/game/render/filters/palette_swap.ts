@@ -4,6 +4,7 @@ import fragment from "./palette_swap.frag?raw";
 
 interface PaletteSwapFilterOptions {
   palette: Texture;
+  row: number;
 }
 
 export class PaletteSwapFilter extends Filter {
@@ -17,11 +18,11 @@ export class PaletteSwapFilter extends Filter {
       }),
       blendMode: "normal-npm",
       resources: {
-        uRed: { value: 0.9, type: "f32" },
-        //uPalette: options.palette,
+        uniforms: {
+          uRow: { value: options.row, type: "f32" },
+        },
+        uPalette: options.palette.source,
       },
     });
-
-    console.log(this.resources);
   }
 }

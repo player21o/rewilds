@@ -1,3 +1,4 @@
+import type { Texture } from "pixi.js";
 import type key_atlas_type from "../../public/assets/key.json";
 import type legs_run_atlas_type from "../../public/assets/legs_run.json";
 import type run_atlas_type from "../../public/assets/run.json";
@@ -10,6 +11,12 @@ export type ObjectManifest = {
     };
   };
 };
+
+type Atlas<T extends { animations: any }> = {
+  animations: {
+    [A in T["animations"] as keyof T["animations"]]: Texture<any>[];
+  };
+} & T;
 
 export const manifest = {
   bundles: [
@@ -25,11 +32,13 @@ export const manifest = {
         { alias: "key", src: "/assets/key.png" },
         {
           alias: "legs_run",
-          src: "/assets/legs_run.json" as any as typeof legs_run_atlas_type,
+          src: "/assets/legs_run.json" as any as Atlas<
+            typeof legs_run_atlas_type
+          >,
         },
         {
           alias: "run",
-          src: "/assets/run.json" as any as typeof run_atlas_type,
+          src: "/assets/run.json" as any as Atlas<typeof run_atlas_type>,
         },
         {
           alias: "shield_wooden_run",

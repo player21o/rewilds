@@ -1,18 +1,20 @@
-import { Container, Texture } from "pixi.js";
+import { Container } from "pixi.js";
 import { CitizenType } from "../../common/interfaces";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
 import { lookAt } from "../utils";
 import { InputsManager } from "../input";
-import { AdvancedAnimatedSprite } from "../render/anim";
 import { PaletteSwapFilter } from "../render/filters/palette_swap";
+import { GameSprite } from "../render/anim";
 
-type AnimatedSpriteWithRows = AdvancedAnimatedSprite & { rows: number };
+//type AnimatedSpriteWithRows = AdvancedAnimatedSprite & { rows: number };
 
 export class Citizen extends Entity<CitizenType> {
   private sprites!: {
-    legs: AnimatedSpriteWithRows;
-    body: AnimatedSpriteWithRows;
+    legs: GameSprite<
+      ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
+    >;
+    body: GameSprite<ObjectManifest["bundles"]["game"]["run"]["animations"]>;
   };
   private container!: Container;
   private last_turn_row = 0;
@@ -29,26 +31,26 @@ export class Citizen extends Entity<CitizenType> {
     container.x = this.x;
     container.y = this.y;
 
-    const legs: AnimatedSpriteWithRows = new AdvancedAnimatedSprite(
-      assets.legs_run.animations as any,
-      "frame_row_0"
-    ) as any;
+    const legs = new GameSprite({
+      animations: assets.legs_run.animations,
+    });
     legs.rows = Object.keys(assets.legs_run.animations).length;
     legs.scale = 2;
     legs.animationSpeed = 0.3;
     container.addChild(legs);
 
-    const body: AnimatedSpriteWithRows = new AdvancedAnimatedSprite(
-      assets.run.animations as any,
-      "frame_row_0"
-    ) as any;
+    const body = new GameSprite({
+      animations: assets.run.animations,
+    });
     body.rows = Object.keys(assets.run.animations).length;
     body.scale = 2;
     body.animationSpeed = 0.3;
 
     container.addChild(body);
 
-    body.filters = [new PaletteSwapFilter({ palette: assets.palette as any })];
+    container.filters = [
+      new PaletteSwapFilter({ palette: assets.palette as any, row: 0 }),
+    ];
 
     console.log(assets.palette);
 
