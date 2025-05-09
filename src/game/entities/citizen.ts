@@ -35,7 +35,7 @@ export class Citizen extends Entity<CitizenType> {
       ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
     >({
       animations: assets.legs_run.animations,
-      speed: 0.3,
+      speed: 150 / 1000,
     });
     //legs.rows = Object.keys(assets.legs_run.animations).length;
     legs.scale = 2;
@@ -47,7 +47,7 @@ export class Citizen extends Entity<CitizenType> {
       ObjectManifest["bundles"]["game"]["run"]["animations"]
     >({
       animations: assets.run.animations,
-      speed: 0.3,
+      speed: 150 / 1000,
     });
     //body.rows = Object.keys(assets.run.animations).length;
     body.scale = 2;

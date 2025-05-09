@@ -26,10 +26,10 @@ export class GameSprite<
   }
 
   private callback(ticker: Ticker) {
-    this._timer += ticker.deltaTime / 10;
+    this._timer += ticker.elapsedMS / 1000;
 
     if (this._timer >= this._speed) {
-      this._timer -= this._speed;
+      this._timer = 0;
 
       this._frame =
         this._frame == this._animations[this._anim].length - 1
