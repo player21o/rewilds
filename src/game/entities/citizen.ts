@@ -31,20 +31,27 @@ export class Citizen extends Entity<CitizenType> {
     container.x = this.x;
     container.y = this.y;
 
-    const legs = new GameSprite({
+    const legs = new GameSprite<
+      ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
+    >({
       animations: assets.legs_run.animations,
+      speed: 0.3,
     });
-    legs.rows = Object.keys(assets.legs_run.animations).length;
+    //legs.rows = Object.keys(assets.legs_run.animations).length;
     legs.scale = 2;
-    legs.animationSpeed = 0.3;
+    legs.play();
+
     container.addChild(legs);
 
-    const body = new GameSprite({
+    const body = new GameSprite<
+      ObjectManifest["bundles"]["game"]["run"]["animations"]
+    >({
       animations: assets.run.animations,
+      speed: 0.3,
     });
-    body.rows = Object.keys(assets.run.animations).length;
+    //body.rows = Object.keys(assets.run.animations).length;
     body.scale = 2;
-    body.animationSpeed = 0.3;
+    body.play();
 
     container.addChild(body);
 
@@ -89,8 +96,7 @@ export class Citizen extends Entity<CitizenType> {
 
     //if (this.isMoving) { // <--- IMPORTANT: Add a check like this!
     if (true) {
-      const bobbingFactor =
-        legsZ[this.sprites.legs.currentFrame % legsZ.length] || 0;
+      const bobbingFactor = legsZ[this.sprites.legs.frame % legsZ.length] || 0;
       oy = Math.floor(bobbingFactor * bobbingAmplitude + 0.5);
     }
 
@@ -111,7 +117,8 @@ export class Citizen extends Entity<CitizenType> {
     */
     const lookat = lookAt(this.x, this.y, inputs.mouseX, inputs.mouseY);
 
-    const row = ((lookat / (Math.PI * 2)) * this.sprites.body.rows) | 0;
+    const row =
+      ((lookat / (Math.PI * 2)) * this.sprites.body.total_animations) | 0;
     //console.log(row);
 
     if (this.last_turn_row != row) {
@@ -123,7 +130,7 @@ export class Citizen extends Entity<CitizenType> {
       this.sprites.legs.textures = assets.legs_run.animations[
         `frame_row_${row.toString()}` as keyof typeof assets.run.animations
       ] as any;
-       */
+       
 
       this.sprites.body.set_animation(
         `frame_row_${row.toString()}` as keyof typeof assets.run.animations
@@ -131,6 +138,13 @@ export class Citizen extends Entity<CitizenType> {
       this.sprites.legs.set_animation(
         `frame_row_${row.toString()}` as keyof typeof assets.legs_run.animations
       );
+      */
+
+      this.sprites.body.animation =
+        `frame_row_${row.toString()}` as keyof typeof assets.run.animations;
+
+      this.sprites.legs.animation =
+        `frame_row_${row.toString()}` as keyof typeof assets.legs_run.animations;
 
       //this.sprites.body.currentFrame = this.anim_frame;
       //this.sprites.legs.currentFrame = this.anim_frame;
