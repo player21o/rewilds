@@ -23,7 +23,7 @@ export default (app: Application) => {
   });
 
   app.stage.addChild(viewport);
-  viewport.drag().pinch().wheel().decelerate();
+  //viewport.drag().pinch().wheel().decelerate();
 
   Assets.init({ manifest: manifest as any as AssetsManifest });
   Assets.backgroundLoadBundle(["game"]);
@@ -48,7 +48,14 @@ export default (app: Application) => {
 
       app.stage.addChild(new Text({ text: "Hello world!" }));
 
-      entities.add(new Citizen(1, 250, 250));
+      const citizen = new Citizen(1, 250, 250);
+      entities.add(citizen);
+      //viewport.moveCenter(citizen.x + 300, citizen.y);
+      setInterval(
+        () =>
+          viewport.follow(citizen.container, { acceleration: 0.2, speed: 1 }),
+        1000
+      );
 
       app.ticker.add(({ deltaTime }) =>
         entities.entities.forEach((e) => {

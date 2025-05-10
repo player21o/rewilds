@@ -19,5 +19,6 @@ export class EntitiesManager {
 
     const rendered_entity = entity.init(this.assets);
     if (rendered_entity != undefined) this.stage.addChild(rendered_entity);
+    return entity;
   }
 }

@@ -16,7 +16,7 @@ export class Citizen extends Entity<CitizenType> {
     >;
     body: GameSprite<ObjectManifest["bundles"]["game"]["run"]["animations"]>;
   };
-  private container!: Container;
+  public container!: Container;
   private last_turn_row = 0;
   private c = 0;
 
@@ -35,7 +35,7 @@ export class Citizen extends Entity<CitizenType> {
       ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
     >({
       animations: assets.legs_run.animations,
-      speed: 150 / 1000,
+      speed: 150 / 2500,
     });
     //legs.rows = Object.keys(assets.legs_run.animations).length;
     legs.scale = 1;
@@ -47,7 +47,7 @@ export class Citizen extends Entity<CitizenType> {
       ObjectManifest["bundles"]["game"]["run"]["animations"]
     >({
       animations: assets.run.animations,
-      speed: 150 / 1000,
+      speed: 150 / 2500,
     });
     //body.rows = Object.keys(assets.run.animations).length;
     body.scale = 1;
@@ -67,8 +67,22 @@ export class Citizen extends Entity<CitizenType> {
   }
 
   public step(dt: number, inputs: InputsManager): void {
-    if (inputs.is_key_pressed("ArrowDown")) {
-      this.y += 10 * dt;
+    const speed = 3;
+
+    if (inputs.is_key_pressed("s")) {
+      this.y += speed * dt;
+    }
+
+    if (inputs.is_key_pressed("w")) {
+      this.y -= speed * dt;
+    }
+
+    if (inputs.is_key_pressed("a")) {
+      this.x -= speed * dt;
+    }
+
+    if (inputs.is_key_pressed("d")) {
+      this.x += speed * dt;
     }
   }
 
@@ -78,7 +92,7 @@ export class Citizen extends Entity<CitizenType> {
     assets: ObjectManifest["bundles"]["game"]
   ) {
     this.c += dt / 100;
-    //console.log(this.c);
+    console.log(this.c);
     this.container.pivot.set(
       this.container.width / 2,
       this.container.height / 2

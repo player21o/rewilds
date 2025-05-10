@@ -1,16 +1,19 @@
 import { Viewport } from "pixi-viewport";
 
 export class InputsManager {
-  public mouseX: number = 0;
-  public mouseY: number = 0;
+  private _canvasMouseX: number = 0;
+  private _canvasMouseY: number = 0;
+  private _viewport: Viewport;
+
   private pressedKeysMap: { [key: string]: boolean } = {};
 
   public constructor(viewport: Viewport) {
+    this._viewport = viewport;
     viewport.onpointermove = (e) => {
       const world = viewport.toWorld(e.globalX, e.globalY);
 
-      this.mouseX = world.x;
-      this.mouseY = world.y;
+      this._canvasMouseX = e.globalX;
+      this._canvasMouseY = e.globalY;
     };
 
     window.onkeydown = (e) => {
@@ -24,5 +27,17 @@ export class InputsManager {
 
   public is_key_pressed(key: string) {
     return key in this.pressedKeysMap ? this.pressedKeysMap[key] : false;
+  }
+
+  get mouseX() {
+    return this._viewport.toWorld(this._canvasMouseX, this._canvasMouseY).x;
+  }
+
+  get mouseY() {
+    return this._viewport.toWorld(this._canvasMouseX, this._canvasMouseY).y;
+  }
+
+  get mousePos() {
+    return this._viewport.toWorld(this._canvasMouseX, this._canvasMouseY);
   }
 }
