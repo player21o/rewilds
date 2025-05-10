@@ -66,6 +66,12 @@ export class Citizen extends Entity<CitizenType> {
     return container;
   }
 
+  public step(dt: number, inputs: InputsManager): void {
+    if (inputs.is_key_pressed("ArrowDown")) {
+      this.y += 10 * dt;
+    }
+  }
+
   public render(
     dt: number,
     inputs: InputsManager,
