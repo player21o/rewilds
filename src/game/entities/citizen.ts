@@ -38,7 +38,7 @@ export class Citizen extends Entity<CitizenType> {
       speed: 150 / 1000,
     });
     //legs.rows = Object.keys(assets.legs_run.animations).length;
-    legs.scale = 2;
+    legs.scale = 1;
     legs.play();
 
     container.addChild(legs);
@@ -50,7 +50,7 @@ export class Citizen extends Entity<CitizenType> {
       speed: 150 / 1000,
     });
     //body.rows = Object.keys(assets.run.animations).length;
-    body.scale = 2;
+    body.scale = 1;
     body.play();
 
     container.addChild(body);
@@ -94,7 +94,7 @@ export class Citizen extends Entity<CitizenType> {
     ];
 
     const baseLegRelativeY = 0;
-    const bodyOffsetYFromLegBase = -10;
+    const bodyOffsetYFromLegBase = -5;
     const bobbingAmplitude = 6;
     const zOffset = 0;
 

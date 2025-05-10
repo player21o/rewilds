@@ -19,16 +19,21 @@ const Game = ({ url }: Props) => {
         antialias: false,
         background: "white",
         roundPixels: false,
-        resolution: 0.5,
+        //resolution: 0.5,
         canvas: canvas.current as any,
-        resizeTo: canvas.current as any,
+        //resizeTo: canvas.current as any,
+        width: window.innerWidth / 2,
+        height: window.innerHeight / 2,
       })
       .then(() => {
-        //(div.current as any as HTMLElement).innerHTML = "";
-        ////(div.current as any as HTMLElement).appendChild(canvas.current as any);
+        ///(div.current as any as HTMLElement).innerHTML = "";
+        /////////sd//d/(div.current as any as HTMLElement).appendChild(canvas.current as any);
 
         game(app);
       });
+    return () => {
+      app.stop();
+    };
   }, []);
 
   return (
