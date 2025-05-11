@@ -59,7 +59,7 @@ export class Citizen extends Entity<CitizenType> {
       new PaletteSwapFilter({ palette: assets.palette as any, row: 2 }),
     ];
 
-    console.log(assets.palette);
+    //console.log(assets.palette);
 
     this.sprites = { body, legs };
 
@@ -92,7 +92,7 @@ export class Citizen extends Entity<CitizenType> {
     assets: ObjectManifest["bundles"]["game"]
   ) {
     this.c += dt / 100;
-    console.log(this.c);
+    //console.log(this.c);
     this.container.pivot.set(
       this.container.width / 2,
       this.container.height / 2

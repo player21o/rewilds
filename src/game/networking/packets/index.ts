@@ -10,4 +10,7 @@ type Packets = {
 
 export default {
   pointer(_, __, ___) {},
+  hello(_) {
+    console.log("received hello packet");
+  },
 } as Packets;

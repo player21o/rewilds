@@ -13,30 +13,30 @@ export class WS {
 
   constructor(ws: WebSocket) {
     this.ws = ws;
+    console.log(ws);
 
     ws.onmessage = ({ data }) => {
-      const packet: [
-        packet: number,
-        ...args: Parameters<(typeof packets)[keyof typeof packets]>
-      ] = decode(data) as any;
+      (data as Blob).arrayBuffer().then((buffer) => {
+        const packet: [packet: number, ...args: any[]] = decode(buffer) as any;
 
-      const formatted: any[] = [];
-      const sliced = packet.slice(1);
-      const constructor_name = constructors_keys[packet[0]];
-      const constructor = constructors_object[constructor_name];
-      const props = constructors_inner_keys[constructor_name];
+        const formatted: any[] = [];
+        const sliced = packet[1].slice(1);
+        const constructor_name = constructors_keys[packet[0]];
+        const constructor = constructors_object[constructor_name];
+        const props = constructors_inner_keys[constructor_name];
 
-      for (let i = 0, n = sliced.length; i < n; ++i) {
-        const propName = props[i] as keyof typeof constructor;
-        const converterPair = constructor[propName] as readonly [
-          (val: any) => any,
-          (val: any) => any
-        ];
+        for (let i = 0, n = sliced.length; i < n; ++i) {
+          const propName = props[i] as keyof typeof constructor;
+          const converterPair = constructor[propName] as readonly [
+            (val: any) => any,
+            (val: any) => any
+          ];
 
-        formatted.push(converterPair[1](sliced[i]));
-      }
+          formatted.push(converterPair[1](sliced[i]));
+        }
 
-      packets[constructor_name](this, formatted as any);
+        packets[constructor_name](this, formatted as any);
+      });
     };
   }
 
