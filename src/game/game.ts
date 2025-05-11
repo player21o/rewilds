@@ -13,7 +13,7 @@ import { EntitiesManager } from "./entities";
 import { Citizen } from "./entities/citizen";
 import { InputsManager } from "./input";
 
-export default (app: Application) => {
+export default (app: Application, ws: WebSocket) => {
   const viewport = new Viewport({
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
@@ -53,8 +53,8 @@ export default (app: Application) => {
       //viewport.moveCenter(citizen.x + 300, citizen.y);
       setInterval(
         () =>
-          viewport.follow(citizen.container, { acceleration: 0.2, speed: 1 }),
-        1000
+          //viewport.follow(citizen.container, { acceleration: 0.2, speed: 1 }),
+          1000
       );
 
       app.ticker.add(({ deltaTime }) =>

@@ -11,28 +11,28 @@ const Game = ({ url }: Props) => {
   const canvas = useRef(null);
 
   useEffect(() => {
-    console.log(url);
+    const socket = new WebSocket(url);
     const app = new Application();
-    //const canvas = document.createElement("canvas") as any as HTMLElement;
-    app
-      .init({
-        antialias: false,
-        background: "white",
-        roundPixels: false,
-        //resolution: 0.5,
-        canvas: canvas.current as any,
-        //resizeTo: canvas.current as any,
-        width: window.innerWidth / 2,
-        height: window.innerHeight / 2,
-      })
-      .then(() => {
-        ///(div.current as any as HTMLElement).innerHTML = "";
-        /////////sd//d/(div.current as any as HTMLElement).appendChild(canvas.current as any);
+    socket.onopen = () => {
+      app
+        .init({
+          antialias: false,
+          background: "white",
+          roundPixels: false,
+          //resolution: 0.5,
+          canvas: canvas.current as any,
+          //resizeTo: canvas.current as any,
+          width: window.innerWidth / 2,
+          height: window.innerHeight / 2,
+        })
+        .then(() => {
+          game(app, socket);
+        });
+    };
 
-        game(app);
-      });
     return () => {
       app.stop();
+      socket.close();
     };
   }, []);
 

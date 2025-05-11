@@ -35,7 +35,7 @@ export class Citizen extends Entity<CitizenType> {
       ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
     >({
       animations: assets.legs_run.animations,
-      speed: 150 / 2500,
+      speed: 150 / 3000,
     });
     //legs.rows = Object.keys(assets.legs_run.animations).length;
     legs.scale = 1;
@@ -47,7 +47,7 @@ export class Citizen extends Entity<CitizenType> {
       ObjectManifest["bundles"]["game"]["run"]["animations"]
     >({
       animations: assets.run.animations,
-      speed: 150 / 2500,
+      speed: 150 / 3000,
     });
     //body.rows = Object.keys(assets.run.animations).length;
     body.scale = 1;
@@ -56,7 +56,7 @@ export class Citizen extends Entity<CitizenType> {
     container.addChild(body);
 
     container.filters = [
-      new PaletteSwapFilter({ palette: assets.palette as any, row: 0 }),
+      new PaletteSwapFilter({ palette: assets.palette as any, row: 2 }),
     ];
 
     console.log(assets.palette);
