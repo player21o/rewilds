@@ -12,8 +12,10 @@ import { ObjectManifest, manifest } from "../assets/manifest";
 import { EntitiesManager } from "./entities";
 import { Citizen } from "./entities/citizen";
 import { InputsManager } from "./input";
+import { WS } from "./networking";
 
-export default (app: Application, ws: WebSocket) => {
+export default (app: Application, socket: WebSocket) => {
+  const ws = new WS(socket);
   const viewport = new Viewport({
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
