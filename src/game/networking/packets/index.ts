@@ -4,9 +4,7 @@ export default {
   hello(ws, _) {
     ws.send("hello");
   },
-  update(__, game, updates) {
-    updates.forEach((update) => {
-      //game.entities.forEach
-    });
+  update(__, _, updates) {
+    console.log(updates);
   },
 } as Packets;

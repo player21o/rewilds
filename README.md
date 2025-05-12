@@ -1,5 +1,7 @@
 # rewilds
 
+[![wakatime](https://wakatime.com/badge/user/d268221e-c09b-4227-a1be-7ad8bf00b4a4/project/876f5bac-7d2e-4cae-b4cb-c140d2f47be2.svg)](https://wakatime.com/badge/user/d268221e-c09b-4227-a1be-7ad8bf00b4a4/project/876f5bac-7d2e-4cae-b4cb-c140d2f47be2)
+
 A remake of [Rezoner's Wilds.io](https://wilds.io)
 
 # Installation
