@@ -7,13 +7,15 @@ import {
   ConstructorsObject,
 } from "../../common/constructors";
 import packets from "./packets";
+import { GameManager } from "../game";
 
 export class WS {
   private ws: WebSocket;
+  private game: GameManager;
 
-  constructor(ws: WebSocket) {
+  constructor(game: GameManager, ws: WebSocket) {
     this.ws = ws;
-    console.log(ws);
+    this.game = game;
 
     ws.onmessage = ({ data }) => {
       (data as Blob).arrayBuffer().then((buffer) => {
@@ -35,7 +37,7 @@ export class WS {
           formatted.push(converterPair[1](sliced[i]));
         }
 
-        packets[constructor_name](this, formatted as any);
+        packets[constructor_name](this, this.game, formatted as any);
       });
     };
   }

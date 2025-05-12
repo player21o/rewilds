@@ -24,7 +24,7 @@ export const manifest = {
       name: "game",
       assets: [
         { alias: "bg", src: "/assets/tile_desert.png" },
-        { alias: "palette", src: "/assets/palette.png" },
+        { alias: "palette", src: "/assets/palette.png" as any as Texture },
         {
           alias: "key_atlas",
           src: "/assets/key.json" as any as typeof key_atlas_type,

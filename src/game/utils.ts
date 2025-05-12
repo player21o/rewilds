@@ -1,6 +1,8 @@
+/*
 import { ColorReplaceFilter } from "pixi-filters";
 import { Sprite } from "pixi.js";
 import palette from "../assets/palette";
+
 
 class PaletteManager {
   private palette = [];
@@ -70,6 +72,25 @@ export function apply_palette(sprite: Sprite) {
     }),
   ];
 }
+  */
+
+import { Container, Sprite, Texture } from "pixi.js";
+import { PaletteSwapFilter } from "./render/filters/palette_swap";
+
+class PaletteManager {
+  public texture: Texture | undefined = undefined;
+
+  constructor(t?: Texture) {
+    this.texture = t;
+  }
+
+  public apply_palette(container: Container | Sprite, row: number) {
+    if (this.texture != undefined)
+      container.filters = [
+        new PaletteSwapFilter({ palette: this.texture, row }),
+      ];
+  }
+}
 
 export function lookAt(a: number, b: number, c: number, d: number) {
   var angle = Math.atan2(d - b, c - a);
@@ -77,3 +98,5 @@ export function lookAt(a: number, b: number, c: number, d: number) {
 
   return angle;
 }
+
+export const palette = new PaletteManager();

@@ -1,6 +1,6 @@
 import { Application } from "pixi.js";
 import { useEffect, useRef } from "react";
-import game from "./game/game";
+import { GameManager } from "./game/game";
 
 interface Props {
   url: string;
@@ -26,7 +26,7 @@ const Game = ({ url }: Props) => {
           height: window.innerHeight / 2,
         })
         .then(() => {
-          game(app, socket);
+          new GameManager(app, socket);
         });
     };
 

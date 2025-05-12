@@ -1,16 +1,12 @@
-import type { WS } from "..";
-import { ConstructorsInnerTypes } from "../../../common/constructors";
-
-type Packets = {
-  [Packet in keyof ConstructorsInnerTypes]: (
-    arg0: WS,
-    ...args: ConstructorsInnerTypes[Packet]
-  ) => {};
-};
+import { Packets } from "../types";
 
 export default {
-  pointer(_, __, ___) {},
-  hello(_) {
-    console.log("received hello packet");
+  hello(ws, _) {
+    ws.send("hello");
+  },
+  update(__, game, updates) {
+    updates.forEach((update) => {
+      //game.entities.forEach
+    });
   },
 } as Packets;

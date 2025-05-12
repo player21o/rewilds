@@ -5,7 +5,6 @@ import {
   Text,
   TilingSprite,
   TextureStyle,
-  Texture,
 } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import { ObjectManifest, manifest } from "../assets/manifest";
@@ -13,59 +12,63 @@ import { EntitiesManager } from "./entities";
 import { Citizen } from "./entities/citizen";
 import { InputsManager } from "./input";
 import { WS } from "./networking";
+import { palette } from "./utils";
 
-export default (app: Application, socket: WebSocket) => {
-  const ws = new WS(socket);
-  const viewport = new Viewport({
-    screenWidth: window.innerWidth,
-    screenHeight: window.innerHeight,
-    worldWidth: 1000,
-    worldHeight: 1000,
-    events: app.renderer.events,
-  });
+export class GameManager {
+  public entities: EntitiesManager;
+  public ws: WS;
+  public inputs: InputsManager;
 
-  app.stage.addChild(viewport);
-  //viewport.drag().pinch().wheel().decelerate();
+  constructor(app: Application, socket: WebSocket) {
+    const viewport = new Viewport({
+      screenWidth: window.innerWidth,
+      screenHeight: window.innerHeight,
+      worldWidth: 1000,
+      worldHeight: 1000,
+      events: app.renderer.events,
+    });
 
-  Assets.init({ manifest: manifest as any as AssetsManifest });
-  Assets.backgroundLoadBundle(["game"]);
+    app.stage.addChild(viewport);
 
-  TextureStyle.defaultOptions.scaleMode = "nearest";
+    Assets.init({ manifest: manifest as any as AssetsManifest });
+    Assets.backgroundLoadBundle(["game"]);
 
-  const inputs = new InputsManager(viewport);
+    TextureStyle.defaultOptions.scaleMode = "nearest";
 
-  Assets.loadBundle("game").then(
-    (assets: ObjectManifest["bundles"]["game"]) => {
-      (assets.palette as any as Texture).source.style.magFilter = "nearest";
-      (assets.palette as any as Texture).source.style.minFilter = "nearest";
-      (assets.palette as any as Texture).source.style.mipmapFilter = "nearest";
-      (assets.palette as any as Texture).source.update();
-      const entities = new EntitiesManager(viewport, assets);
-      viewport.addChild(
-        TilingSprite.from(assets.bg, {
-          width: viewport.worldWidth,
-          height: viewport.worldHeight,
-        })
-      );
+    this.ws = new WS(this, socket);
+    this.entities = new EntitiesManager(viewport);
+    this.inputs = new InputsManager(viewport);
 
-      app.stage.addChild(new Text({ text: "Hello world!" }));
+    Assets.loadBundle("game").then(
+      (assets: ObjectManifest["bundles"]["game"]) => {
+        palette.texture = assets.palette;
 
-      const citizen = new Citizen(1, 250, 250);
-      entities.add(citizen);
-      //viewport.moveCenter(citizen.x + 300, citizen.y);
-      setInterval(
-        () =>
-          //viewport.follow(citizen.container, { acceleration: 0.2, speed: 1 }),
-          1000
-      );
+        assets.palette.source.style.magFilter = "nearest";
+        assets.palette.source.style.minFilter = "nearest";
+        assets.palette.source.style.mipmapFilter = "nearest";
+        assets.palette.source.update();
 
-      app.ticker.add(({ deltaTime }) =>
-        entities.entities.forEach((e) => {
-          //console.log(deltaTime);
-          e.step(deltaTime, inputs);
-          e.render(deltaTime, inputs, assets);
-        })
-      );
-    }
-  );
-};
+        this.entities = new EntitiesManager(viewport, assets);
+        viewport.addChild(
+          TilingSprite.from(assets.bg, {
+            width: viewport.worldWidth,
+            height: viewport.worldHeight,
+          })
+        );
+
+        app.stage.addChild(new Text({ text: "Hello world!" }));
+
+        const citizen = new Citizen(1, 250, 250);
+        this.entities.add(citizen);
+
+        app.ticker.add(({ deltaTime }) =>
+          this.entities.entities.forEach((e) => {
+            //console.log(deltaTime);
+            e.step(deltaTime, this.inputs);
+            e.render(deltaTime, this.inputs, assets);
+          })
+        );
+      }
+    );
+  }
+}

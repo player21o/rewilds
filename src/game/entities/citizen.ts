@@ -2,9 +2,8 @@ import { Container } from "pixi.js";
 import { CitizenType } from "../../common/interfaces";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
-import { lookAt } from "../utils";
+import { lookAt, palette } from "../utils";
 import { InputsManager } from "../input";
-import { PaletteSwapFilter } from "../render/filters/palette_swap";
 import { GameSprite } from "../render/anim";
 
 //type AnimatedSpriteWithRows = AdvancedAnimatedSprite & { rows: number };
@@ -37,7 +36,6 @@ export class Citizen extends Entity<CitizenType> {
       animations: assets.legs_run.animations,
       speed: 150 / 3000,
     });
-    //legs.rows = Object.keys(assets.legs_run.animations).length;
     legs.scale = 1;
     legs.play();
 
@@ -49,17 +47,12 @@ export class Citizen extends Entity<CitizenType> {
       animations: assets.run.animations,
       speed: 150 / 3000,
     });
-    //body.rows = Object.keys(assets.run.animations).length;
     body.scale = 1;
     body.play();
 
     container.addChild(body);
 
-    container.filters = [
-      new PaletteSwapFilter({ palette: assets.palette as any, row: 2 }),
-    ];
-
-    //console.log(assets.palette);
+    palette.apply_palette(container, 2);
 
     this.sprites = { body, legs };
 

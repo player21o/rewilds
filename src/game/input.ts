@@ -10,8 +10,6 @@ export class InputsManager {
   public constructor(viewport: Viewport) {
     this._viewport = viewport;
     viewport.onpointermove = (e) => {
-      const world = viewport.toWorld(e.globalX, e.globalY);
-
       this._canvasMouseX = e.globalX;
       this._canvasMouseY = e.globalY;
     };
