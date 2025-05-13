@@ -37,7 +37,9 @@ export class WS {
           formatted.push(converterPair[1](sliced[i]));
         }
 
-        packets[constructor_name](this, this.game, formatted as any);
+        console.log(formatted[0]);
+
+        packets[constructor_name](this, this.game, formatted[0] as any);
       });
     };
   }

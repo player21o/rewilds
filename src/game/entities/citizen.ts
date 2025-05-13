@@ -19,11 +19,10 @@ export class Citizen extends Entity<CitizenType> {
   private last_turn_row = 0;
   private c = 0;
 
-  public constructor(sid: number, x: number, y: number) {
-    super(sid, x, y);
-  }
-
   public init(assets: ObjectManifest["bundles"]["game"]) {
+    this.x = this.shared.x;
+    this.y = this.shared.y;
+
     const container = new Container();
     this.container = container;
 

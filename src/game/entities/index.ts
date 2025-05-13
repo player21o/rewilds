@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
+import { Citizen } from "./citizen";
 
 export class EntitiesManager {
   public entities: Entity[] = [];
@@ -25,3 +26,7 @@ export class EntitiesManager {
     return entity;
   }
 }
+
+export const entityClasses = {
+  Citizen,
+};

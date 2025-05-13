@@ -4,14 +4,13 @@ import { InputsManager } from "../input";
 
 export class Entity<T extends object = any> {
   public sid: number;
-  public shared!: T;
-  public x: number;
-  public y: number;
+  public shared: T;
+  public x: number = 0;
+  public y: number = 0;
 
-  public constructor(sid: number, x: number, y: number) {
-    this.sid = sid;
-    this.x = x;
-    this.y = y;
+  public constructor(shared: T & { sid: number }) {
+    this.sid = shared.sid;
+    this.shared = shared;
   }
 
   public init(
