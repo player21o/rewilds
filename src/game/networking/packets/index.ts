@@ -5,6 +5,9 @@ export default {
     ws.send("hello");
   },
   update(__, _, updates) {
-    console.log(updates);
+    //console.log(updates);
+  },
+  snapshot(_, __, snapshot) {
+    snapshot.forEach((entity) => {});
   },
 } as Packets;

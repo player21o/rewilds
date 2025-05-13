@@ -22,7 +22,7 @@ export class WS {
         const packet: [packet: number, ...args: any[]] = decode(buffer) as any;
 
         const formatted: any[] = [];
-        const sliced = packet[1].slice(1);
+        const sliced = packet[1];
         const constructor_name = constructors_keys[packet[0]];
         const constructor = constructors_object[constructor_name];
         const props = constructors_inner_keys[constructor_name];

@@ -58,8 +58,8 @@ export class GameManager {
 
         app.stage.addChild(new Text({ text: "Hello world!" }));
 
-        const citizen = new Citizen(1, 250, 250);
-        this.entities.add(citizen);
+        //const citizen = new Citizen(1, 250, 250);
+        //this.entities.add(citizen);
 
         app.ticker.add(({ deltaTime }) =>
           this.entities.entities.forEach((e) => {
