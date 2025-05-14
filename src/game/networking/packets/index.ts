@@ -6,8 +6,8 @@ import { entityClasses } from "../../entities";
 import { Packets } from "../types";
 
 export default {
-  hello(ws, _) {
-    ws.send("hello");
+  hello(send, _) {
+    send("hello");
   },
   update(__, _, ___) {
     //console.log(updates);

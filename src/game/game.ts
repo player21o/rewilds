@@ -9,15 +9,12 @@ import {
 import { Viewport } from "pixi-viewport";
 import { ObjectManifest, manifest } from "../assets/manifest";
 import { EntitiesManager } from "./entities";
-import { Citizen } from "./entities/citizen";
-import { InputsManager } from "./input";
-import { WS } from "./networking";
 import { palette } from "./utils";
+import { GameDependencies } from "./game_deps";
+import { WS } from "./networking";
 
 export class GameManager {
-  public entities: EntitiesManager;
-  public ws: WS;
-  public inputs: InputsManager;
+  public deps: GameDependencies;
 
   constructor(app: Application, socket: WebSocket) {
     const viewport = new Viewport({
@@ -35,9 +32,8 @@ export class GameManager {
 
     TextureStyle.defaultOptions.scaleMode = "nearest";
 
-    this.ws = new WS(this, socket);
-    this.entities = new EntitiesManager(viewport);
-    this.inputs = new InputsManager(viewport);
+    this.deps = new GameDependencies(viewport);
+    new WS(this.deps, socket);
 
     Assets.loadBundle("game").then(
       (assets: ObjectManifest["bundles"]["game"]) => {
@@ -48,7 +44,7 @@ export class GameManager {
         assets.palette.source.style.mipmapFilter = "nearest";
         assets.palette.source.update();
 
-        this.entities = new EntitiesManager(viewport, assets);
+        this.deps.entities = new EntitiesManager(viewport, assets);
         viewport.addChild(
           TilingSprite.from(assets.bg, {
             width: viewport.worldWidth,
@@ -62,10 +58,10 @@ export class GameManager {
         //this.entities.add(citizen);
 
         app.ticker.add(({ deltaTime }) =>
-          this.entities.entities.forEach((e) => {
+          this.deps.entities.entities.forEach((e) => {
             //console.log(deltaTime);
-            e.step(deltaTime, this.inputs);
-            e.render(deltaTime, this.inputs, assets);
+            e.step(deltaTime, this.deps.inputs);
+            e.render(deltaTime, this.deps.inputs, assets);
           })
         );
       }

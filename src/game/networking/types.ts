@@ -1,13 +1,18 @@
-import { WS } from ".";
-import { ConstructorsInnerTypes } from "../../common/constructors";
-import { GameManager } from "../game";
+import {
+  ConstructorsInnerTypes,
+  ConstructorsObject,
+} from "../../common/constructors";
+import { GameDependencies } from "../game_deps";
 
 export type Packets = {
   [T in keyof ConstructorsInnerTypes]: Packet<T>;
 };
 
 export type Packet<T extends keyof ConstructorsInnerTypes> = (
-  arg0: WS,
-  arg1: GameManager,
+  arg0: <T extends keyof ConstructorsObject>(
+    msg: T,
+    ...args: ConstructorsInnerTypes[T]
+  ) => void,
+  arg1: GameDependencies,
   ...args: ConstructorsInnerTypes[T]
 ) => {};

@@ -7,13 +7,13 @@ import {
   ConstructorsObject,
 } from "../../common/constructors";
 import packets from "./packets";
-import { GameManager } from "../game";
+import { GameDependencies } from "../game_deps";
 
 export class WS {
   private ws: WebSocket;
-  private game: GameManager;
+  private game: GameDependencies;
 
-  constructor(game: GameManager, ws: WebSocket) {
+  constructor(game: GameDependencies, ws: WebSocket) {
     this.ws = ws;
     this.game = game;
 
@@ -39,7 +39,7 @@ export class WS {
 
         console.log(formatted[0]);
 
-        packets[constructor_name](this, this.game, formatted[0] as any);
+        packets[constructor_name](this.send, this.game, formatted[0] as any);
       });
     };
   }

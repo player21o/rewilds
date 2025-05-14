@@ -6,6 +6,8 @@ export class InputsManager {
   private _viewport: Viewport;
 
   private pressedKeysMap: { [key: string]: boolean } = {};
+  //private keysCallbacks: () => void) = [];
+  private keysCallbacks: { [key: string]: (() => void)[] } = {};
 
   public constructor(viewport: Viewport) {
     this._viewport = viewport;
@@ -16,6 +18,9 @@ export class InputsManager {
 
     window.onkeydown = (e) => {
       this.pressedKeysMap[e.key] = true;
+
+      if (e.key in this.keysCallbacks)
+        this.keysCallbacks[e.key].forEach((callback) => callback());
     };
 
     window.onkeyup = (e) => {
@@ -25,6 +30,11 @@ export class InputsManager {
 
   public is_key_pressed(key: string) {
     return key in this.pressedKeysMap ? this.pressedKeysMap[key] : false;
+  }
+
+  public on_key_pressed(key: string, callback: () => void) {
+    this.keysCallbacks[key] = [];
+    this.keysCallbacks[key].push(callback);
   }
 
   get mouseX() {

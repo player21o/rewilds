@@ -1,0 +1,13 @@
+{
+  "entryFilePath": "/game/game.ts",
+  "alias": false,
+  "resolveExtensions": [
+    ".js",
+    ".jsx",
+    ".ts",
+    ".tsx",
+    ".vue",
+    ".scss",
+    ".less"
+  ]
+}
