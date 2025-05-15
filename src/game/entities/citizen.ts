@@ -2,7 +2,7 @@ import { Container } from "pixi.js";
 import { CitizenType } from "../../common/interfaces";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
-import { lookAt, palette } from "../utils";
+import { palette } from "../utils";
 import { InputsManager } from "../input";
 import { GameSprite } from "../render/anim";
 
@@ -58,6 +58,7 @@ export class Citizen extends Entity<CitizenType> {
     return container;
   }
 
+  /*
   public step(dt: number, inputs: InputsManager): void {
     const speed = 3;
 
@@ -77,10 +78,16 @@ export class Citizen extends Entity<CitizenType> {
       this.x += speed * dt;
     }
   }
+    */
+
+  public step(_: number) {
+    this.x = this.shared.x;
+    this.y = this.shared.y;
+  }
 
   public render(
     dt: number,
-    inputs: InputsManager,
+    _: InputsManager,
     assets: ObjectManifest["bundles"]["game"]
   ) {
     this.c += dt / 100;
@@ -120,46 +127,19 @@ export class Citizen extends Entity<CitizenType> {
     );
     this.sprites.body.y = finalBodyRelativeY;
 
-    /*
-    const computed_row =
-      (Math.PI * 2) /
-      Math.atan2(inputs.mouseY - this.y, inputs.mouseX - this.x);
-
-    const c = (Math.PI * 2) / 16;
-    */
-    const lookat = lookAt(this.x, this.y, inputs.mouseX, inputs.mouseY);
+    const lookat = this.shared.direction;
 
     const row =
       ((lookat / (Math.PI * 2)) * this.sprites.body.total_animations) | 0;
-    //console.log(row);
 
     if (this.last_turn_row != row) {
       this.last_turn_row = row;
-      /*
-      this.sprites.body.textures = assets.run.animations[
-        `frame_row_${row.toString()}` as keyof typeof assets.run.animations
-      ] as any;
-      this.sprites.legs.textures = assets.legs_run.animations[
-        `frame_row_${row.toString()}` as keyof typeof assets.run.animations
-      ] as any;
-       
-
-      this.sprites.body.set_animation(
-        `frame_row_${row.toString()}` as keyof typeof assets.run.animations
-      );
-      this.sprites.legs.set_animation(
-        `frame_row_${row.toString()}` as keyof typeof assets.legs_run.animations
-      );
-      */
 
       this.sprites.body.animation =
         `frame_row_${row.toString()}` as keyof typeof assets.run.animations;
 
       this.sprites.legs.animation =
         `frame_row_${row.toString()}` as keyof typeof assets.legs_run.animations;
-
-      //this.sprites.body.currentFrame = this.anim_frame;
-      //this.sprites.legs.currentFrame = this.anim_frame;
     }
   }
 }

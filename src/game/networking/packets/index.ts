@@ -10,11 +10,24 @@ export default {
   hello(send, _) {
     send("hello");
   },
-  update(__, _, ___) {
-    //console.log(updates);
+  update(__, { entities }, updates) {
+    updates.forEach(([sid, bits, ...props]) => {
+      const entity = entities.sid_map[sid];
+      let prop_pointer = 0;
+      //console.log(props);
+      constructors_inner_keys[
+        entity.constructor.name as keyof typeof constructors_inner_keys
+      ].forEach((prop, i) => {
+        //console.log((bits >> i) % 2 != 0);
+        if ((bits >> i) % 2 != 0) {
+          entity.shared[prop] = props[prop_pointer];
+
+          prop_pointer += 1;
+        }
+      });
+    });
   },
   snapshot(_, game, snapshot) {
-    console.log(JSON.stringify(snapshot));
     snapshot.forEach(([constructor, ...props]) => {
       const constructorName = constructors_keys[constructor];
       const entity = new entityClasses[
