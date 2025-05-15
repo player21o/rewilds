@@ -12,7 +12,6 @@ import { EntitiesManager } from "./entities";
 import { palette } from "./utils";
 import { GameDependencies } from "./game_deps";
 import { WS } from "./networking";
-import { MyPlayer } from "./myplayer";
 
 export class GameManager {
   public deps: GameDependencies;

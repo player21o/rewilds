@@ -8,7 +8,7 @@ export class GameDependencies {
   public entities: EntitiesManager;
   //public ws: WS;
   public inputs: InputsManager;
-  public me: MyPlayer | undefined = undefined;
+  public me!: MyPlayer;
 
   constructor(viewport: Viewport, send?: SendFunction) {
     //this.ws = new WS(this, socket);

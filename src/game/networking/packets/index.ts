@@ -3,6 +3,7 @@ import {
   constructors_keys,
 } from "../../../common/constructors";
 import { entityClasses } from "../../entities";
+import { Citizen } from "../../entities/citizen";
 import { Packets } from "./types";
 
 export default {
@@ -30,5 +31,8 @@ export default {
 
       game.entities.add(entity);
     });
+  },
+  your_sid(_, { me, entities }, sid) {
+    me.citizen = entities.sid_map[sid] as Citizen;
   },
 } as Packets;
