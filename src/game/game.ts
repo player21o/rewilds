@@ -12,6 +12,7 @@ import { EntitiesManager } from "./entities";
 import { palette } from "./utils";
 import { GameDependencies } from "./game_deps";
 import { WS } from "./networking";
+import { MyPlayer } from "./myplayer";
 
 export class GameManager {
   public deps: GameDependencies;
@@ -33,7 +34,8 @@ export class GameManager {
     TextureStyle.defaultOptions.scaleMode = "nearest";
 
     this.deps = new GameDependencies(viewport);
-    new WS(this.deps, socket);
+    const ws = new WS(this.deps, socket);
+    this.deps.setMeSendFunction(ws.send);
 
     Assets.loadBundle("game").then(
       (assets: ObjectManifest["bundles"]["game"]) => {

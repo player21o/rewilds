@@ -8,6 +8,7 @@ import {
 } from "../../common/constructors";
 import packets from "./packets";
 import { GameDependencies } from "../game_deps";
+import { SendFunction } from "./types";
 
 export class WS {
   private ws: WebSocket;
@@ -44,10 +45,10 @@ export class WS {
     };
   }
 
-  public send<T extends keyof ConstructorsObject>(
+  public send: SendFunction = <T extends keyof ConstructorsObject>(
     msg: T,
     ...args: ConstructorsInnerTypes[T]
-  ) {
+  ) => {
     const constructor = constructors_object[msg];
 
     const data = constructors_inner_keys[msg].map((prop, i) => {
@@ -61,5 +62,5 @@ export class WS {
     });
 
     this.ws.send(encode([constructors_keys.indexOf(msg), data]));
-  }
+  };
 }

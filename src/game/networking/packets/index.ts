@@ -3,7 +3,7 @@ import {
   constructors_keys,
 } from "../../../common/constructors";
 import { entityClasses } from "../../entities";
-import { Packets } from "../types";
+import { Packets } from "./types";
 
 export default {
   hello(send, _) {

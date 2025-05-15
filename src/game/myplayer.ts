@@ -1,8 +1,19 @@
 import { Citizen } from "./entities/citizen";
-import { WS } from "./networking";
+import { SendFunction } from "./networking/types";
 
 export class MyPlayer {
-  public citizen: Citizen | null = null;
+  private _citizen: Citizen | null = null;
+  private send: SendFunction;
 
-  constructor(ws: WS) {}
+  constructor(send: SendFunction) {
+    this.send = send;
+  }
+
+  get citizen() {
+    return this._citizen;
+  }
+
+  set citizen(value: Citizen | null) {
+    this._citizen = value;
+  }
 }
