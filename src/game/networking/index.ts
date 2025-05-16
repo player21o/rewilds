@@ -35,12 +35,14 @@ export class WS {
             (val: any) => any
           ];
 
+          if (constructor_name == "snapshot") console.log(converterPair);
+
           formatted.push(converterPair[1](sliced[i]));
         }
 
-        console.log(formatted[0]);
+        //console.log(formatted);
 
-        packets[constructor_name](this.send, this.game, formatted[0] as any);
+        packets[constructor_name](this.send, this.game, ...(formatted as any));
       });
     };
   }

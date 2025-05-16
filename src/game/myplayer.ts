@@ -15,11 +15,15 @@ export class MyPlayer {
       inputs.on_key_released(key, this.key_callback(inputs));
     });
 
-    inputs.on_mouse_move(this.mouse_callback);
+    inputs.on_mouse_move(this.mouse_callback());
   }
 
-  private mouse_callback({ canvasMouseX, canvasMouseY }: InputsManager) {
-    return () => this.send("pointer", canvasMouseX, canvasMouseY);
+  private mouse_callback(): (arg0: InputsManager) => void {
+    return ({ mouseX, mouseY }: InputsManager) => {
+      console.log("what");
+      if (this.citizen != null)
+        this.send("pointer", mouseX - this.citizen.x, mouseY - this.citizen.y);
+    };
   }
 
   private key_callback(inputs: InputsManager) {

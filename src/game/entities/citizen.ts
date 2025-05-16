@@ -80,9 +80,9 @@ export class Citizen extends Entity<CitizenType> {
   }
     */
 
-  public step(_: number) {
-    this.x = this.shared.x;
-    this.y = this.shared.y;
+  public step(dt: number) {
+    this.x += (this.shared.x - this.x) * 0.5 * dt;
+    this.y += (this.shared.y - this.y) * 0.5 * dt;
   }
 
   public render(

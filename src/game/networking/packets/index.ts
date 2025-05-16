@@ -1,6 +1,7 @@
 import {
   constructors_inner_keys,
   constructors_keys,
+  constructors_object,
 } from "../../../common/constructors";
 import { entityClasses } from "../../entities";
 import { Citizen } from "../../entities/citizen";
@@ -20,7 +21,15 @@ export default {
       ].forEach((prop, i) => {
         //console.log((bits >> i) % 2 != 0);
         if ((bits >> i) % 2 != 0) {
-          entity.shared[prop] = props[prop_pointer];
+          console.log(props[prop_pointer]);
+          const networked_prop = props[prop_pointer];
+          const formatted_prop =
+            //@ts-ignore
+            constructors_object[
+              entity.constructor.name as keyof typeof constructors_object
+            ][prop][1](networked_prop);
+
+          entity.shared[prop] = formatted_prop;
 
           prop_pointer += 1;
         }
@@ -34,6 +43,18 @@ export default {
         constructorName as keyof typeof entityClasses
       ](
         //@ts-ignore
+        Object.fromEntries(
+          constructors_inner_keys[constructorName].map((prop, i) => [
+            prop,
+            //@ts-ignore
+            constructors_object[
+              constructorName as keyof typeof constructors_object
+            ][prop][1](props[i]),
+          ])
+        )
+      );
+
+      console.log(
         Object.fromEntries(
           constructors_inner_keys[constructorName].map((prop, i) => [
             prop,
