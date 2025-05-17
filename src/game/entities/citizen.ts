@@ -16,8 +16,10 @@ export class Citizen extends Entity<CitizenType> {
     body: GameSprite<ObjectManifest["bundles"]["game"]["run"]["animations"]>;
   };
   public container!: Container;
+
   private last_turn_row = 0;
-  private c = 0;
+  private isMoving = false;
+  private lastPos = [0, 0];
 
   public init(assets: ObjectManifest["bundles"]["game"]) {
     this.x = this.shared.x;
@@ -83,15 +85,18 @@ export class Citizen extends Entity<CitizenType> {
   public step(dt: number) {
     this.x += (this.shared.x - this.x) * 0.5 * dt;
     this.y += (this.shared.y - this.y) * 0.5 * dt;
+
+    this.isMoving =
+      this.shared.x != this.lastPos[0] || this.shared.y != this.lastPos[1];
+
+    this.lastPos = [this.shared.x, this.shared.y];
   }
 
   public render(
-    dt: number,
+    __: number,
     _: InputsManager,
     assets: ObjectManifest["bundles"]["game"]
   ) {
-    this.c += dt / 100;
-    //console.log(this.c);
     this.container.pivot.set(
       this.container.width / 2,
       this.container.height / 2

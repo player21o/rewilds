@@ -13,7 +13,7 @@ const Game = ({ url }: Props) => {
   useEffect(() => {
     const socket = new WebSocket(url);
     const app = new Application();
-    app.resize();
+    //app.resize();
     socket.onopen = () => {
       app
         .init({

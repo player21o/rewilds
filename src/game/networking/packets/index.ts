@@ -15,13 +15,10 @@ export default {
     updates.forEach(([sid, bits, ...props]) => {
       const entity = entities.sid_map[sid];
       let prop_pointer = 0;
-      //console.log(props);
       constructors_inner_keys[
         entity.constructor.name as keyof typeof constructors_inner_keys
       ].forEach((prop, i) => {
-        //console.log((bits >> i) % 2 != 0);
         if ((bits >> i) % 2 != 0) {
-          console.log(props[prop_pointer]);
           const networked_prop = props[prop_pointer];
           const formatted_prop =
             //@ts-ignore

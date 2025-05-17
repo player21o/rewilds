@@ -1,4 +1,4 @@
-import { Viewport } from "pixi-viewport";
+import { Viewport } from "./render/viewport";
 
 export class InputsManager {
   private _canvasMouseX: number = 0;

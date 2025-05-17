@@ -6,24 +6,18 @@ import {
   TilingSprite,
   TextureStyle,
 } from "pixi.js";
-import { Viewport } from "pixi-viewport";
 import { ObjectManifest, manifest } from "../assets/manifest";
 import { EntitiesManager } from "./entities";
 import { palette } from "./utils";
 import { GameDependencies } from "./game_deps";
 import { WS } from "./networking";
+import { Viewport } from "./render/viewport";
 
 export class GameManager {
   public deps: GameDependencies;
 
   constructor(app: Application, socket: WebSocket) {
-    const viewport = new Viewport({
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight,
-      worldWidth: 1000,
-      worldHeight: 1000,
-      events: app.renderer.events,
-    });
+    const viewport = new Viewport({ width: 1000, height: 1000 });
 
     app.stage.addChild(viewport);
 

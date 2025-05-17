@@ -1,4 +1,4 @@
-import { vertex } from "pixi-filters";
+import { vertex } from "./default_shaders";
 import { Filter, GlProgram, Texture } from "pixi.js";
 import fragment from "./palette_swap.frag?raw";
 
