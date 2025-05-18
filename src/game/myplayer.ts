@@ -1,17 +1,14 @@
 import { Citizen } from "./entities/citizen";
 import { InputsManager } from "./input";
 import { SendFunction } from "./networking/types";
-import { Viewport } from "./render/viewport";
 
 export class MyPlayer {
   private _citizen: Citizen | null = null;
   private send: SendFunction;
-  private viewport: Viewport;
   private keys = 0;
 
-  constructor(send: SendFunction, inputs: InputsManager, v: Viewport) {
+  constructor(send: SendFunction, inputs: InputsManager) {
     this.send = send;
-    this.viewport = v;
 
     ["w", "a", "s", "d"].forEach((key) => {
       inputs.on_key_pressed(key, this.key_callback(inputs));
@@ -52,6 +49,5 @@ export class MyPlayer {
 
   set citizen(value: Citizen | null) {
     this._citizen = value;
-    if (value != null) this.viewport.follow(value.container);
   }
 }

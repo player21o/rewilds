@@ -99,4 +99,6 @@ export function lookAt(a: number, b: number, c: number, d: number) {
   return angle;
 }
 
+export const lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
+
 export const palette = new PaletteManager();

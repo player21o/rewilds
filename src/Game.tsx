@@ -41,7 +41,12 @@ const Game = ({ url }: Props) => {
     <div ref={div}>
       <canvas
         ref={canvas}
-        style={{ width: "100vw", height: "100vh", imageRendering: "pixelated" }}
+        style={{
+          width: "100vw",
+          height: "100vh",
+          imageRendering: "pixelated",
+          //scale: 2,
+        }}
       />
     </div>
   );

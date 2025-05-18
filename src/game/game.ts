@@ -8,16 +8,20 @@ import {
 } from "pixi.js";
 import { ObjectManifest, manifest } from "../assets/manifest";
 import { EntitiesManager } from "./entities";
-import { palette } from "./utils";
+import { lerp, palette } from "./utils";
 import { GameDependencies } from "./game_deps";
 import { WS } from "./networking";
-import { Viewport } from "./render/viewport";
+import { Viewport } from "pixi-viewport";
 
 export class GameManager {
   public deps: GameDependencies;
 
   constructor(app: Application, socket: WebSocket) {
-    const viewport = new Viewport({ width: 1000, height: 1000 });
+    const viewport = new Viewport({
+      worldWidth: 1000,
+      worldHeight: 1000,
+      events: app.renderer.events,
+    });
 
     app.stage.addChild(viewport);
 
@@ -49,16 +53,32 @@ export class GameManager {
 
         app.stage.addChild(new Text({ text: "Hello world!" }));
 
-        //const citizen = new Citizen(1, 250, 250);
-        //this.entities.add(citizen);
+        let [lastX, lastY] = [0, 0];
 
-        app.ticker.add(({ deltaTime }) =>
+        app.ticker.add(({ deltaTime }) => {
           this.deps.entities.entities.forEach((e) => {
             //console.log(deltaTime);
             e.step(deltaTime, this.deps.inputs);
             e.render(deltaTime, this.deps.inputs, assets);
-          })
-        );
+          });
+
+          if (this.deps.me.citizen != null) {
+            const t = 1.0 - Math.pow(1.0 - 0.15, deltaTime);
+            lastX = lerp(
+              lastX,
+              this.deps.me.citizen.x + app.renderer.width / 2,
+              t
+            );
+
+            lastY = lerp(
+              lastY,
+              this.deps.me.citizen.y + app.renderer.height / 2,
+              t
+            );
+
+            this.deps.viewport.moveCenter(lastX, lastY);
+          }
+        });
       }
     );
   }

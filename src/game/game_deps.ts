@@ -1,8 +1,8 @@
+import { Viewport } from "pixi-viewport";
 import { EntitiesManager } from "./entities";
 import { InputsManager } from "./input";
 import { MyPlayer } from "./myplayer";
 import { SendFunction } from "./networking/types";
-import { Viewport } from "./render/viewport";
 
 export class GameDependencies {
   public entities: EntitiesManager;
@@ -17,10 +17,10 @@ export class GameDependencies {
     this.inputs = new InputsManager(viewport);
     this.viewport = viewport;
 
-    if (send != undefined) this.me = new MyPlayer(send, this.inputs, viewport);
+    if (send != undefined) this.me = new MyPlayer(send, this.inputs);
   }
 
   public setMeSendFunction(send: SendFunction) {
-    this.me = new MyPlayer(send, this.inputs, this.viewport);
+    this.me = new MyPlayer(send, this.inputs);
   }
 }
