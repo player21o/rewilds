@@ -65,7 +65,7 @@ export class GameManager {
           });
 
           if (this.deps.me.citizen != null) {
-            const t = 1.0 - Math.pow(1.0 - 0.15, deltaTime);
+            const t = 1 - Math.pow(1.0 - 0.15, deltaTime);
             lastX = lerp(
               lastX,
               this.deps.me.citizen.x + app.renderer.width / 2,

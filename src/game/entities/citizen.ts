@@ -1,4 +1,4 @@
-import { Container, Ticker } from "pixi.js";
+import { Container, Graphics, Ticker } from "pixi.js";
 import { CitizenType } from "../../common/interfaces";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
@@ -32,6 +32,13 @@ export class Citizen extends Entity<CitizenType> {
     container.x = this.x;
     container.y = this.y;
 
+    const shadow = new Graphics({
+      blendMode: "normal-npm",
+      scale: { x: 1, y: 0.7 },
+    })
+      .circle(250 / 4 - 3, 250 / 4 + 40, 12)
+      .fill({ alpha: 0.25, color: 0x000000 });
+
     const legs = new GameSprite<
       ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
     >({
@@ -41,8 +48,6 @@ export class Citizen extends Entity<CitizenType> {
     });
     legs.scale = 1;
     legs.play();
-
-    container.addChild(legs);
 
     const body = new GameSprite<
       ObjectManifest["bundles"]["game"]["run"]["animations"]
@@ -54,7 +59,7 @@ export class Citizen extends Entity<CitizenType> {
     body.scale = 1;
     body.play();
 
-    container.addChild(body);
+    container.addChild(shadow, legs, body);
 
     palette.apply_palette(container, 2);
 
@@ -64,6 +69,8 @@ export class Citizen extends Entity<CitizenType> {
   }
 
   public step(dt: number) {
+    const lastIsMoving = this.isMoving;
+
     this.x += (this.shared.x - this.x) * 0.5 * dt;
     this.y += (this.shared.y - this.y) * 0.5 * dt;
 
@@ -73,6 +80,8 @@ export class Citizen extends Entity<CitizenType> {
 
       this.lastMoveDate = Date.now();
       this.lastPos = [this.shared.x, this.shared.y];
+
+      if (lastIsMoving != this.isMoving) this.sprites.body.frame = 0;
     }
   }
 
@@ -148,6 +157,5 @@ export class Citizen extends Entity<CitizenType> {
   private update_anims(elapsed: number) {
     this.sprites.body.update(elapsed);
     this.sprites.legs.update(elapsed);
-    console.log(this.sprites.legs.frame);
   }
 }
