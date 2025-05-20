@@ -55,11 +55,13 @@ export class GameManager {
 
         let [lastX, lastY] = [0, 0];
 
-        app.ticker.add(({ deltaTime }) => {
+        app.ticker.add((ticker) => {
+          const deltaTime = ticker.deltaTime;
+
           this.deps.entities.entities.forEach((e) => {
             //console.log(deltaTime);
             e.step(deltaTime, this.deps.inputs);
-            e.render(deltaTime, this.deps.inputs, assets);
+            e.render(deltaTime, this.deps.inputs, assets, ticker);
           });
 
           if (this.deps.me.citizen != null) {

@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import { Container, Ticker } from "pixi.js";
 import { ObjectManifest } from "../../assets/manifest";
 import { InputsManager } from "../input";
 
@@ -25,6 +25,7 @@ export class Entity<T extends object = any> {
   public render(
     _: number,
     __: InputsManager,
-    ___: ObjectManifest["bundles"]["game"]
+    ___: ObjectManifest["bundles"]["game"],
+    ____: Ticker
   ) {}
 }

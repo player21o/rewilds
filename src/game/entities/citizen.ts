@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import { Container, Ticker } from "pixi.js";
 import { CitizenType } from "../../common/interfaces";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
@@ -20,6 +20,7 @@ export class Citizen extends Entity<CitizenType> {
   private last_turn_row = 0;
   private isMoving = false;
   private lastPos = [0, 0];
+  private lastMoveDate = Date.now();
 
   public init(assets: ObjectManifest["bundles"]["game"]) {
     this.x = this.shared.x;
@@ -36,6 +37,7 @@ export class Citizen extends Entity<CitizenType> {
     >({
       animations: assets.legs_run.animations,
       speed: 150 / 3000,
+      autoUpdate: false,
     });
     legs.scale = 1;
     legs.play();
@@ -47,6 +49,7 @@ export class Citizen extends Entity<CitizenType> {
     >({
       animations: assets.run.animations,
       speed: 150 / 3000,
+      autoUpdate: false,
     });
     body.scale = 1;
     body.play();
@@ -60,42 +63,24 @@ export class Citizen extends Entity<CitizenType> {
     return container;
   }
 
-  /*
-  public step(dt: number, inputs: InputsManager): void {
-    const speed = 3;
-
-    if (inputs.is_key_pressed("s")) {
-      this.y += speed * dt;
-    }
-
-    if (inputs.is_key_pressed("w")) {
-      this.y -= speed * dt;
-    }
-
-    if (inputs.is_key_pressed("a")) {
-      this.x -= speed * dt;
-    }
-
-    if (inputs.is_key_pressed("d")) {
-      this.x += speed * dt;
-    }
-  }
-    */
-
   public step(dt: number) {
     this.x += (this.shared.x - this.x) * 0.5 * dt;
     this.y += (this.shared.y - this.y) * 0.5 * dt;
 
-    this.isMoving =
-      this.shared.x != this.lastPos[0] || this.shared.y != this.lastPos[1];
+    if (Date.now() - this.lastMoveDate > 50) {
+      this.isMoving =
+        this.shared.x != this.lastPos[0] || this.shared.y != this.lastPos[1];
 
-    this.lastPos = [this.shared.x, this.shared.y];
+      this.lastMoveDate = Date.now();
+      this.lastPos = [this.shared.x, this.shared.y];
+    }
   }
 
   public render(
     __: number,
     _: InputsManager,
-    assets: ObjectManifest["bundles"]["game"]
+    assets: ObjectManifest["bundles"]["game"],
+    { elapsedMS }: Ticker
   ) {
     this.container.pivot.set(
       this.container.width / 2,
@@ -146,5 +131,23 @@ export class Citizen extends Entity<CitizenType> {
       this.sprites.legs.animation =
         `frame_row_${row.toString()}` as keyof typeof assets.legs_run.animations;
     }
+
+    if (!this.isMoving) {
+      this.sprites.body.speed = (150 / 3000) * 2.5;
+      this.sprites.legs.stop();
+      this.sprites.legs.frame = 19;
+    } else {
+      this.sprites.legs.play();
+      this.sprites.body.speed = 150 / 3000;
+      //this.sprites.legs.speed = 150 / 3000;
+    }
+
+    this.update_anims(elapsedMS);
+  }
+
+  private update_anims(elapsed: number) {
+    this.sprites.body.update(elapsed);
+    this.sprites.legs.update(elapsed);
+    console.log(this.sprites.legs.frame);
   }
 }

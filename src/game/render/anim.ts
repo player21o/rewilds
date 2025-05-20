@@ -3,6 +3,7 @@ import { Sprite, Texture, Ticker } from "pixi.js";
 type GameSpriteOptions = {
   animations: { [anim: string]: Texture<any>[] };
   speed: number;
+  autoUpdate: boolean;
 };
 
 export class GameSprite<
@@ -14,6 +15,8 @@ export class GameSprite<
   private _speed: number = 0;
   private _timer: number = 0;
   private _total_animations: number;
+  private _auto_update: boolean;
+  private _playing: boolean = false;
 
   constructor(options: GameSpriteOptions) {
     super();
@@ -23,29 +26,38 @@ export class GameSprite<
     this.speed = options.speed;
     this.updateTexture();
     this._total_animations = Object.keys(this._animations).length;
+    this._auto_update = options.autoUpdate;
   }
 
   private callback(ticker: Ticker) {
-    this._timer += ticker.elapsedMS / 1000;
-
-    if (this._timer >= this._speed) {
-      this._timer = 0;
-
-      this._frame =
-        this._frame == this._animations[this._anim].length - 1
-          ? 0
-          : this._frame + 1;
-
-      this.updateTexture();
-    }
+    this.update(ticker.elapsedMS);
   }
 
   public play() {
-    Ticker.shared.add(this.callback, this);
+    this._playing = true;
+    if (this._auto_update) Ticker.shared.add(this.callback, this);
   }
 
   public stop() {
-    Ticker.shared.remove(this.callback);
+    this._playing = false;
+    if (this._auto_update) Ticker.shared.remove(this.callback);
+  }
+
+  public update(elapsedMS: number) {
+    if (this._playing) {
+      this._timer += elapsedMS / 1000;
+
+      if (this._timer >= this._speed) {
+        this._timer = 0;
+
+        this._frame =
+          this._frame == this._animations[this._anim].length - 1
+            ? 0
+            : this._frame + 1;
+
+        this.updateTexture();
+      }
+    }
   }
 
   private updateTexture() {
@@ -72,6 +84,11 @@ export class GameSprite<
 
   get frame() {
     return this._frame;
+  }
+
+  set frame(f: number) {
+    this._frame = f;
+    this.updateTexture();
   }
 
   get total_frames() {
