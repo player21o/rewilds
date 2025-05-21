@@ -47,6 +47,13 @@ export class InputsManager {
     };
   }
 
+  public stop() {
+    this.anyPressedKeysCallbacks = [];
+    this.anyReleasedKeysCallbacks = [];
+    this.mouseMovedCallbacks = [];
+    this.pressedKeysCallbacks = {};
+  }
+
   public is_key_pressed(key: string) {
     return key in this.pressedKeysMap ? this.pressedKeysMap[key] : false;
   }

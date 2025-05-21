@@ -34,10 +34,24 @@ export class Citizen extends Entity<CitizenType> {
 
     const shadow = new Graphics({
       blendMode: "normal-npm",
-      scale: { x: 1, y: 0.7 },
+      scale: { x: 1, y: 0.6 },
     })
-      .circle(250 / 4 - 3, 250 / 4 + 40, 12)
+      .circle(250 / 4 - 3, 250 / 4 + 60, 13)
       .fill({ alpha: 0.25, color: 0x000000 });
+
+    const health_bar = new Graphics({
+      blendMode: "normal-npm",
+      scale: { x: 1, y: 0.6 },
+    })
+      .arc(250 / 4 - 3, 250 / 4 + 62, 16, Math.PI * 2, Math.PI)
+      .stroke({ color: 0x37946e, width: 3 });
+
+    const stamina_bar = new Graphics({
+      blendMode: "normal-npm",
+      scale: { x: 1, y: 0.6 },
+    })
+      .arc(250 / 4 - 3, 250 / 4 + 62, 13 - 2, Math.PI * 2, Math.PI)
+      .stroke({ color: 0xffffff, width: 3 });
 
     const legs = new GameSprite<
       ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
@@ -59,9 +73,10 @@ export class Citizen extends Entity<CitizenType> {
     body.scale = 1;
     body.play();
 
-    container.addChild(shadow, legs, body);
+    container.addChild(shadow, health_bar, stamina_bar, legs, body);
 
-    palette.apply_palette(container, 2);
+    palette.apply_palette(legs, 2);
+    palette.apply_palette(body, 2);
 
     this.sprites = { body, legs };
 

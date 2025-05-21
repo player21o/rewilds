@@ -15,8 +15,16 @@ import { Viewport } from "pixi-viewport";
 
 export class GameManager {
   public deps: GameDependencies;
+  private app: Application;
+
+  public stop() {
+    this.app.stop();
+    this.deps.inputs.stop();
+  }
 
   constructor(app: Application, socket: WebSocket) {
+    this.app = app;
+
     const viewport = new Viewport({
       worldWidth: 1000,
       worldHeight: 1000,

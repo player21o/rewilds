@@ -51,15 +51,6 @@ export default {
         )
       );
 
-      console.log(
-        Object.fromEntries(
-          constructors_inner_keys[constructorName].map((prop, i) => [
-            prop,
-            props[i],
-          ])
-        )
-      );
-
       game.entities.add(entity);
     });
   },
