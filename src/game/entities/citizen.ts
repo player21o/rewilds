@@ -2,7 +2,7 @@ import { Container, Graphics, Ticker } from "pixi.js";
 import { CitizenType } from "../../common/interfaces";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
-import { palette } from "../utils";
+import { lerp, palette } from "../utils";
 import { InputsManager } from "../input";
 import { GameSprite } from "../render/anim";
 
@@ -14,6 +14,7 @@ export class Citizen extends Entity<CitizenType> {
       ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
     >;
     body: GameSprite<ObjectManifest["bundles"]["game"]["run"]["animations"]>;
+    bars: Graphics;
   };
   public container!: Container;
 
@@ -21,6 +22,11 @@ export class Citizen extends Entity<CitizenType> {
   private isMoving = false;
   private lastPos = [0, 0];
   private lastMoveDate = Date.now();
+
+  public bar_params: { enemy: boolean; stamina: number } = {
+    enemy: false,
+    stamina: 0.5,
+  };
 
   public init(assets: ObjectManifest["bundles"]["game"]) {
     this.x = this.shared.x;
@@ -32,14 +38,17 @@ export class Citizen extends Entity<CitizenType> {
     container.x = this.x;
     container.y = this.y;
 
+    /*
     const shadow = new Graphics({
       blendMode: "normal-npm",
       scale: { x: 1, y: 0.6 },
     })
-      .circle(250 / 4 - 3, 250 / 4 + 60, 13)
+      .circle(250 / 4 - 3, 250 / 4 + 60, 14)
       .fill({ alpha: 0.25, color: 0x000000 });
+    */
 
-    const health_bar = new Graphics({
+    /*
+      const health_bar = new Graphics({
       blendMode: "normal-npm",
       scale: { x: 1, y: 0.6 },
     })
@@ -52,6 +61,12 @@ export class Citizen extends Entity<CitizenType> {
     })
       .arc(250 / 4 - 3, 250 / 4 + 62, 13 - 2, Math.PI * 2, Math.PI)
       .stroke({ color: 0xffffff, width: 3 });
+      */
+
+    const bars = new Graphics({
+      blendMode: "normal-npm",
+      scale: { x: 1, y: 0.6 },
+    });
 
     const legs = new GameSprite<
       ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
@@ -73,12 +88,14 @@ export class Citizen extends Entity<CitizenType> {
     body.scale = 1;
     body.play();
 
-    container.addChild(shadow, health_bar, stamina_bar, legs, body);
+    const palette_container = new Container();
+    palette_container.addChild(legs, body);
 
-    palette.apply_palette(legs, 2);
-    palette.apply_palette(body, 2);
+    container.addChild(palette_container, bars);
 
-    this.sprites = { body, legs };
+    palette.apply_palette(palette_container, 2);
+
+    this.sprites = { body, legs, bars };
 
     return container;
   }
@@ -167,6 +184,80 @@ export class Citizen extends Entity<CitizenType> {
     }
 
     this.update_anims(elapsedMS);
+    this.update_bars();
+  }
+
+  private update_bars() {
+    const params = this.bar_params;
+    const bars = this.sprites.bars;
+
+    const stamina_bar_looks = { line_thickness: 3, radius: 12 };
+    const health_bar_looks = {
+      line_thickness: 3,
+      radius: 17,
+      color: !params.enemy ? 0x37946e : 0xaa0000,
+    };
+
+    bars.clear();
+
+    bars
+      .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 13)
+      .fill({ alpha: 0.25, color: 0x000000 })
+      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+      .closePath()
+      .arc(
+        250 / 4 - 3,
+        250 / 4 + 62 - 2,
+        stamina_bar_looks.radius,
+        0,
+        Math.PI,
+        false
+      )
+      .stroke({ color: 0x555555, width: stamina_bar_looks.line_thickness })
+      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+      .arc(
+        250 / 4 - 3,
+        250 / 4 + 62 - 2,
+        stamina_bar_looks.radius,
+        Math.PI / 2,
+        lerp(Math.PI / 2, 0, params.stamina),
+        true
+      )
+      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+      .arc(
+        250 / 4 - 3,
+        250 / 4 + 62 - 2,
+        stamina_bar_looks.radius,
+        Math.PI / 2,
+        lerp(Math.PI / 2, Math.PI, params.stamina),
+        false
+      )
+      .stroke({ color: 0xffffff, width: stamina_bar_looks.line_thickness })
+      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + health_bar_looks.radius)
+
+      .closePath()
+
+      .arc(
+        250 / 4 - 3,
+        250 / 4 + 62 - 2,
+        health_bar_looks.radius,
+        Math.PI / 2,
+        lerp(Math.PI / 2, 0, this.shared.health / 10),
+        true
+      )
+      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + health_bar_looks.radius)
+      .arc(
+        250 / 4 - 3,
+        250 / 4 + 62 - 2,
+        health_bar_looks.radius,
+        Math.PI / 2,
+        lerp(Math.PI / 2, Math.PI, this.shared.health / 10),
+        false
+      )
+      .stroke({
+        color: health_bar_looks.color,
+        width: health_bar_looks.line_thickness,
+      });
   }
 
   private update_anims(elapsed: number) {

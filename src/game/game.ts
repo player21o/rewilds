@@ -12,6 +12,7 @@ import { lerp, palette } from "./utils";
 import { GameDependencies } from "./game_deps";
 import { WS } from "./networking";
 import { Viewport } from "pixi-viewport";
+import { Stats } from "pixi-stats";
 
 export class GameManager {
   public deps: GameDependencies;
@@ -23,6 +24,7 @@ export class GameManager {
   }
 
   constructor(app: Application, socket: WebSocket) {
+    const stats = new Stats(app.renderer);
     this.app = app;
 
     const viewport = new Viewport({

@@ -13,7 +13,17 @@ export default {
   },
   update(__, { entities }, updates) {
     updates.forEach(([sid, bits, ...props]) => {
-      const entity = entities.sid_map[sid];
+      const entity_exists = sid in entities.sid_map;
+
+      const entity = entity_exists
+        ? entities.sid_map[sid]
+        : new entityClasses[
+            constructors_keys[props[0]] as keyof typeof entityClasses
+            //@ts-ignore
+          ]({ sid });
+
+      if (!entity_exists) props.shift();
+
       let prop_pointer = 0;
       constructors_inner_keys[
         entity.constructor.name as keyof typeof constructors_inner_keys
@@ -31,6 +41,8 @@ export default {
           prop_pointer += 1;
         }
       });
+
+      if (!entity_exists) entities.add(entity);
     });
   },
   snapshot(_, game, snapshot) {
