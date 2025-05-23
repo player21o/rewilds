@@ -1,15 +1,17 @@
 import { Container, Graphics, Ticker } from "pixi.js";
-import { CitizenType } from "../../common/interfaces";
-import { Entity } from "./entity";
-import { ObjectManifest } from "../../assets/manifest";
-import { lerp, palette } from "../utils";
-import { InputsManager } from "../input";
-import { GameSprite } from "../render/anim";
+import { CitizenType } from "../../../common/interfaces";
+import { Entity } from "../entity";
+import { ObjectManifest } from "../../../assets/manifest";
+import { lerp, palette } from "../../utils";
+import { InputsManager } from "../../input";
+import { GameSprite } from "../../render/anim";
+import { StateManager } from "../state";
+import states from "./states";
 
 //type AnimatedSpriteWithRows = AdvancedAnimatedSprite & { rows: number };
 
 export class Citizen extends Entity<CitizenType> {
-  private sprites!: {
+  public sprites!: {
     legs: GameSprite<
       ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
     >;
@@ -18,10 +20,16 @@ export class Citizen extends Entity<CitizenType> {
   };
   public container!: Container;
 
-  private last_turn_row = 0;
-  private isMoving = false;
-  private lastPos = [0, 0];
-  private lastMoveDate = Date.now();
+  public last_turn_row = 0;
+  public isMoving = false;
+  public lastPos = [0, 0];
+  public lastMoveDate = Date.now();
+
+  public state = new StateManager<typeof this.shared.state>(
+    states,
+    this,
+    "idle"
+  );
 
   public bar_params: { enemy: boolean; stamina: number } = {
     enemy: false,
@@ -37,31 +45,6 @@ export class Citizen extends Entity<CitizenType> {
 
     container.x = this.x;
     container.y = this.y;
-
-    /*
-    const shadow = new Graphics({
-      blendMode: "normal-npm",
-      scale: { x: 1, y: 0.6 },
-    })
-      .circle(250 / 4 - 3, 250 / 4 + 60, 14)
-      .fill({ alpha: 0.25, color: 0x000000 });
-    */
-
-    /*
-      const health_bar = new Graphics({
-      blendMode: "normal-npm",
-      scale: { x: 1, y: 0.6 },
-    })
-      .arc(250 / 4 - 3, 250 / 4 + 62, 16, Math.PI * 2, Math.PI)
-      .stroke({ color: 0x37946e, width: 3 });
-
-    const stamina_bar = new Graphics({
-      blendMode: "normal-npm",
-      scale: { x: 1, y: 0.6 },
-    })
-      .arc(250 / 4 - 3, 250 / 4 + 62, 13 - 2, Math.PI * 2, Math.PI)
-      .stroke({ color: 0xffffff, width: 3 });
-      */
 
     const bars = new Graphics({
       blendMode: "normal-npm",
@@ -101,27 +84,14 @@ export class Citizen extends Entity<CitizenType> {
   }
 
   public step(dt: number) {
-    const lastIsMoving = this.isMoving;
-
-    this.x += (this.shared.x - this.x) * 0.5 * dt;
-    this.y += (this.shared.y - this.y) * 0.5 * dt;
-
-    if (Date.now() - this.lastMoveDate > 50) {
-      this.isMoving =
-        this.shared.x != this.lastPos[0] || this.shared.y != this.lastPos[1];
-
-      this.lastMoveDate = Date.now();
-      this.lastPos = [this.shared.x, this.shared.y];
-
-      if (lastIsMoving != this.isMoving) this.sprites.body.frame = 0;
-    }
+    this.state.step(dt);
   }
 
   public render(
     __: number,
     _: InputsManager,
     assets: ObjectManifest["bundles"]["game"],
-    { elapsedMS }: Ticker
+    { elapsedMS, deltaTime }: Ticker
   ) {
     this.container.pivot.set(
       this.container.width / 2,
@@ -129,59 +99,7 @@ export class Citizen extends Entity<CitizenType> {
     );
     this.container.position.set(this.x, this.y);
 
-    const legsZ = [
-      0, 0, 0.12697569202151154, 0.5555609039391696, 0.9148130001424937,
-      0.9759662767057457, 0.9759662767057457, 0.8774320490518326,
-      0.6621635047624876, 0.3537538161691129, 0.04154450834523172, 0, 0,
-      0.29563636715257974, 0.8015852396513293, 1, 1, 0.839389527701953,
-      0.4204586086644027, 0, 0,
-    ];
-
-    const baseLegRelativeY = 0;
-    const bodyOffsetYFromLegBase = -5;
-    const bobbingAmplitude = 6;
-    const zOffset = 0;
-
-    let oy = 0;
-
-    //if (this.isMoving) { // <--- IMPORTANT: Add a check like this!
-    if (true) {
-      const bobbingFactor = legsZ[this.sprites.legs.frame % legsZ.length] || 0;
-      oy = Math.floor(bobbingFactor * bobbingAmplitude + 0.5);
-    }
-
-    const finalLegRelativeY = Math.floor(baseLegRelativeY - zOffset - oy);
-    this.sprites.legs.y = finalLegRelativeY;
-
-    const finalBodyRelativeY = Math.floor(
-      finalLegRelativeY + bodyOffsetYFromLegBase
-    );
-    this.sprites.body.y = finalBodyRelativeY;
-
-    const lookat = this.shared.direction;
-
-    const row =
-      ((lookat / (Math.PI * 2)) * this.sprites.body.total_animations) | 0;
-
-    if (this.last_turn_row != row) {
-      this.last_turn_row = row;
-
-      this.sprites.body.animation =
-        `frame_row_${row.toString()}` as keyof typeof assets.run.animations;
-
-      this.sprites.legs.animation =
-        `frame_row_${row.toString()}` as keyof typeof assets.legs_run.animations;
-    }
-
-    if (!this.isMoving) {
-      this.sprites.body.speed = (150 / 3000) * 2.5;
-      this.sprites.legs.stop();
-      this.sprites.legs.frame = 19;
-    } else {
-      this.sprites.legs.play();
-      this.sprites.body.speed = 150 / 3000;
-      //this.sprites.legs.speed = 150 / 3000;
-    }
+    this.state.render(deltaTime, assets);
 
     this.update_anims(elapsedMS);
     this.update_bars();
