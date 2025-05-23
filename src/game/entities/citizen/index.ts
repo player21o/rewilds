@@ -84,6 +84,7 @@ export class Citizen extends Entity<CitizenType> {
   }
 
   public step(dt: number) {
+    this.state.set(this.shared.state);
     this.state.step(dt);
   }
 

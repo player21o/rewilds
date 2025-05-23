@@ -79,4 +79,5 @@ export default {
       }
     },
   },
+  growl: { enter(entity, manager) {} },
 } as States<Citizen>;

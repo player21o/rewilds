@@ -15,45 +15,38 @@ export class StateManager<T = any> {
   }
 
   public set(state: T) {
+    if (state == this.state) return;
+
+    let s = this.states[this.state as keyof typeof this.states];
+
     if (this.state != null)
-      this.states[this.state as keyof typeof this.states].leave(
-        this.entity,
-        this
-      );
+      if (s.leave != undefined) s.leave(this.entity, this);
 
     this.state = state;
     this.duration = 0;
 
-    this.states[this.state as keyof typeof this.states].enter(
-      this.entity,
-      this
-    );
+    s = this.states[this.state as keyof typeof this.states];
+
+    if (s.enter != undefined) s.enter(this.entity, this);
   }
 
   public render(dt: number, assets: ObjectManifest["bundles"]["game"]) {
-    this.states[this.state as keyof typeof this.states].render(
-      dt,
-      this.entity,
-      this,
-      assets
-    );
+    const state = this.states[this.state as keyof typeof this.states];
+    if (state.render != undefined) state.render(dt, this.entity, this, assets);
   }
 
   public step(dt: number) {
-    this.states[this.state as keyof typeof this.states].step(
-      dt,
-      this.entity,
-      this
-    );
+    const state = this.states[this.state as keyof typeof this.states];
+    if (state.step != undefined) state.step(dt, this.entity, this);
   }
 }
 
 export type States<T extends Entity = any> = {
   [name: string]: {
-    enter: (entity: T, manager: StateManager) => void;
-    leave: (entity: T, manager: StateManager) => void;
-    step: (dt: number, entity: T, manager: StateManager) => void;
-    render: (
+    enter?: (entity: T, manager: StateManager) => void;
+    leave?: (entity: T, manager: StateManager) => void;
+    step?: (dt: number, entity: T, manager: StateManager) => void;
+    render?: (
       dt: number,
       entity: T,
       manager: StateManager,
