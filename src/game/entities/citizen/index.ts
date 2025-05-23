@@ -76,7 +76,7 @@ export class Citizen extends Entity<CitizenType> {
 
     container.addChild(palette_container, bars);
 
-    palette.apply_palette(palette_container, 2);
+    palette.apply_palette(palette_container, this.shared.team);
 
     this.sprites = { body, legs, bars };
 
