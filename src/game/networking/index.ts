@@ -1,4 +1,3 @@
-import { decode, encode } from "@msgpack/msgpack";
 import {
   constructors_inner_keys,
   constructors_keys,
@@ -9,6 +8,7 @@ import {
 import packets from "./packets";
 import { GameDependencies } from "../game_deps";
 import { SendFunction } from "./types";
+import { pack, unpack } from "msgpackr";
 
 export class WS {
   private ws: WebSocket;
@@ -20,7 +20,7 @@ export class WS {
 
     ws.onmessage = ({ data }) => {
       (data as Blob).arrayBuffer().then((buffer) => {
-        const packet: [packet: number, ...args: any[]] = decode(buffer) as any;
+        const packet: [packet: number, ...args: any[]] = unpack(buffer) as any;
 
         const formatted: any[] = [];
         const sliced = packet[1];
@@ -63,6 +63,6 @@ export class WS {
       return converterPair[0](args[i]);
     });
 
-    this.ws.send(encode([constructors_keys.indexOf(msg), data]));
+    this.ws.send(pack([constructors_keys.indexOf(msg), data]));
   };
 }
