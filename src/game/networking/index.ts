@@ -23,7 +23,7 @@ export class WS {
       (data as Blob).arrayBuffer().then((buffer) => {
         const packet: [packet: number, ...args: any[]] = unpack(buffer) as any;
         this.bytes += buffer.byteLength;
-        console.log(this.bytes / 1024 / 1024);
+        //console.log(this.bytes / 1024 / 1024);
 
         const formatted: any[] = [];
         const sliced = packet[1];

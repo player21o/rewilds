@@ -7,11 +7,18 @@ export class StateManager<T = any> {
 
   private states: States;
   private entity: Entity;
+  public assets?: ObjectManifest["bundles"]["game"];
 
-  constructor(states: States, entity: Entity, first_state: T) {
+  constructor(
+    states: States,
+    entity: Entity,
+    first_state: T,
+    assets?: ObjectManifest["bundles"]["game"]
+  ) {
     this.states = states;
     this.set(first_state);
     this.entity = entity;
+    this.assets = assets;
   }
 
   public set(state: T) {
@@ -20,14 +27,16 @@ export class StateManager<T = any> {
     let s = this.states[this.state as keyof typeof this.states];
 
     if (this.state != null)
-      if (s.leave != undefined) s.leave(this.entity, this);
+      if (s.leave != undefined && this.assets != undefined)
+        s.leave(this.entity, this, this.assets);
 
     this.state = state;
     this.duration = 0;
 
     s = this.states[state as keyof typeof this.states];
 
-    if (s.enter != undefined) s.enter(this.entity, this);
+    if (s.enter != undefined && this.assets != undefined)
+      s.enter(this.entity, this, this.assets);
   }
 
   public render(dt: number, assets: ObjectManifest["bundles"]["game"]) {
@@ -43,8 +52,16 @@ export class StateManager<T = any> {
 
 export type States<T extends Entity = any> = {
   [name: string]: {
-    enter?: (entity: T, manager: StateManager) => void;
-    leave?: (entity: T, manager: StateManager) => void;
+    enter?: (
+      entity: T,
+      manager: StateManager,
+      assets: ObjectManifest["bundles"]["game"]
+    ) => void;
+    leave?: (
+      entity: T,
+      manager: StateManager,
+      assets: ObjectManifest["bundles"]["game"]
+    ) => void;
     step?: (dt: number, entity: T, manager: StateManager) => void;
     render?: (
       dt: number,

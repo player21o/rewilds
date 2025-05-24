@@ -1,7 +1,8 @@
 import type { Texture } from "pixi.js";
 import type key_atlas_type from "../../public/assets/sprites/pickups/key.json";
 import type legs_run_atlas_type from "../../public/assets/sprites/grunt/legs_run.json";
-import type run_atlas_type from "../../public/assets/sprites/grunt/run.json";
+import type run_atlas_type from "../../public/assets/sprites/grunt/male/run.json";
+import type growl_atlas_type from "../../public/assets/sprites/grunt/male/growl.json";
 import type shield_wooden_run_atlas_type from "../../public/assets/sprites/grunt/shield_wooden_run.json";
 
 export type ObjectManifest = {
@@ -41,8 +42,14 @@ export const manifest = {
         },
         {
           alias: "run",
-          src: "/assets/sprites/grunt/run.json" as any as Atlas<
+          src: "/assets/sprites/grunt/male/run.json" as any as Atlas<
             typeof run_atlas_type
+          >,
+        },
+        {
+          alias: "growl",
+          src: "/assets/sprites/grunt/male/growl.json" as any as Atlas<
+            typeof growl_atlas_type
           >,
         },
         {

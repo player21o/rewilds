@@ -37,6 +37,7 @@ export class Citizen extends Entity<CitizenType> {
   };
 
   public init(assets: ObjectManifest["bundles"]["game"]) {
+    this.state.assets = assets;
     this.x = this.shared.x;
     this.y = this.shared.y;
 

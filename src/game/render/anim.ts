@@ -1,7 +1,9 @@
 import { Sprite, Texture, Ticker } from "pixi.js";
 
+type Anims = { [anim: string]: Texture<any>[] };
+
 type GameSpriteOptions = {
-  animations: { [anim: string]: Texture<any>[] };
+  animations: Anims;
   speed: number;
   autoUpdate: boolean;
 };
@@ -17,14 +19,18 @@ export class GameSprite<
   private _total_animations: number;
   private _auto_update: boolean;
   private _playing: boolean = false;
+  private _start_frame = 0;
+  private _last_frame = -1;
 
   constructor(options: GameSpriteOptions) {
     super();
 
     this._animations = options.animations as T;
+    this._last_frame =
+      this._animations[Object.keys(options.animations)[0]].length - 1;
+    this._start_frame = 0;
     this.animation = Object.keys(options.animations)[0];
     this.speed = options.speed;
-    this.updateTexture();
     this._total_animations = Object.keys(this._animations).length;
     this._auto_update = options.autoUpdate;
   }
@@ -35,11 +41,13 @@ export class GameSprite<
 
   public play() {
     this._playing = true;
+
     if (this._auto_update) Ticker.shared.add(this.callback, this);
   }
 
   public stop() {
     this._playing = false;
+    this._timer = 0;
     if (this._auto_update) Ticker.shared.remove(this.callback);
   }
 
@@ -51,9 +59,7 @@ export class GameSprite<
         this._timer = 0;
 
         this._frame =
-          this._frame == this._animations[this._anim].length - 1
-            ? 0
-            : this._frame + 1;
+          this._frame == this._last_frame ? this._start_frame : this._frame + 1;
 
         this.updateTexture();
       }
@@ -67,11 +73,32 @@ export class GameSprite<
   set animation(anim: keyof T) {
     this._anim = anim;
 
-    if (this._frame > this._animations[anim].length - 1) {
-      this._frame = 0;
+    if (this._frame > this._last_frame) {
+      this._frame = this._start_frame;
     }
 
     this.updateTexture();
+  }
+
+  set first_frame(f: number) {
+    this._start_frame = f;
+
+    this.frame = this.frame < f ? f : this.frame;
+  }
+
+  set last_frame(f: number) {
+    this._last_frame = f;
+
+    this.frame = this.frame > f ? f : this.frame;
+  }
+
+  set animations(v: T) {
+    this._animations = v;
+    //this.animation = Object.keys(v)[0];
+    this._frame = 0;
+    this._total_animations = Object.keys(this._animations).length;
+    this._last_frame = this._animations[Object.keys(v)[0]].length - 1;
+    this._start_frame = 0;
   }
 
   set speed(speed: number) {
