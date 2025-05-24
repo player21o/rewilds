@@ -14,6 +14,10 @@ export class InputsManager {
   private anyReleasedKeysCallbacks: ((arg0: string) => void)[] = [];
 
   private mouseMovedCallbacks: ((arg0: typeof this) => void)[] = [];
+  private onLeftButtonPressedCallbacks: ((arg0: typeof this) => void)[] = [];
+  private onRightButtonPressedCallbacks: ((arg0: typeof this) => void)[] = [];
+  private onLeftButtonReleasedCallbacks: ((arg0: typeof this) => void)[] = [];
+  private onRightButtonReleasedCallbacks: ((arg0: typeof this) => void)[] = [];
 
   public constructor(viewport: Viewport) {
     this._viewport = viewport;
@@ -22,6 +26,22 @@ export class InputsManager {
       this._canvasMouseY = e.globalY;
 
       this.mouseMovedCallbacks.forEach((cb) => cb(this));
+    };
+
+    viewport.onmousedown = () => {
+      this.onLeftButtonPressedCallbacks.forEach((cb) => cb(this));
+    };
+
+    viewport.onrightdown = () => {
+      this.onRightButtonPressedCallbacks.forEach((cb) => cb(this));
+    };
+
+    viewport.onmouseup = () => {
+      this.onLeftButtonReleasedCallbacks.forEach((cb) => cb(this));
+    };
+
+    viewport.onrightup = () => {
+      this.onRightButtonReleasedCallbacks.forEach((cb) => cb(this));
     };
 
     window.onkeydown = (e) => {
@@ -52,6 +72,10 @@ export class InputsManager {
     this.anyReleasedKeysCallbacks = [];
     this.mouseMovedCallbacks = [];
     this.pressedKeysCallbacks = {};
+    this.onLeftButtonPressedCallbacks = [];
+    this.onRightButtonPressedCallbacks = [];
+    this.onLeftButtonReleasedCallbacks = [];
+    this.onRightButtonReleasedCallbacks = [];
   }
 
   public is_key_pressed(key: string) {
@@ -78,6 +102,22 @@ export class InputsManager {
 
   public on_mouse_move(callback: (arg0: typeof this) => void) {
     this.mouseMovedCallbacks.push(callback);
+  }
+
+  public on_left_button_pressed(callback: (arg0: typeof this) => void) {
+    this.onLeftButtonPressedCallbacks.push(callback);
+  }
+
+  public on_right_button_pressed(callback: (arg0: typeof this) => void) {
+    this.onRightButtonPressedCallbacks.push(callback);
+  }
+
+  public on_left_button_released(callback: (arg0: typeof this) => void) {
+    this.onLeftButtonReleasedCallbacks.push(callback);
+  }
+
+  public on_right_button_released(callback: (arg0: typeof this) => void) {
+    this.onRightButtonReleasedCallbacks.push(callback);
   }
 
   get mouseX() {

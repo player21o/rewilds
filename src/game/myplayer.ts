@@ -19,6 +19,12 @@ export class MyPlayer {
     inputs.on_mouse_move(this.mouse_callback());
   }
 
+  private right_mouse_down_callback(): (arg0: InputsManager) => void {
+    return () => {
+      //this.send('')
+    };
+  }
+
   private mouse_callback(): (arg0: InputsManager) => void {
     return ({ mouseX, mouseY }: InputsManager) => {
       if (
