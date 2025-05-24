@@ -17,11 +17,19 @@ export class MyPlayer {
     });
 
     inputs.on_mouse_move(this.mouse_callback());
+    inputs.on_right_button_pressed(this.right_mouse_down_callback());
+    inputs.on_right_button_released(this.right_mouse_up_callback());
   }
 
   private right_mouse_down_callback(): (arg0: InputsManager) => void {
     return () => {
-      //this.send('')
+      this.send("action", "growl_start");
+    };
+  }
+
+  private right_mouse_up_callback(): (arg0: InputsManager) => void {
+    return () => {
+      this.send("action", "growl_stop");
     };
   }
 

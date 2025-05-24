@@ -28,19 +28,23 @@ export class InputsManager {
       this.mouseMovedCallbacks.forEach((cb) => cb(this));
     };
 
-    viewport.onmousedown = () => {
+    viewport.onmousedown = (e) => {
+      e.preventDefault();
       this.onLeftButtonPressedCallbacks.forEach((cb) => cb(this));
     };
 
-    viewport.onrightdown = () => {
+    viewport.onrightdown = (e) => {
+      e.preventDefault();
       this.onRightButtonPressedCallbacks.forEach((cb) => cb(this));
     };
 
-    viewport.onmouseup = () => {
+    viewport.onmouseup = (e) => {
+      e.preventDefault();
       this.onLeftButtonReleasedCallbacks.forEach((cb) => cb(this));
     };
 
-    viewport.onrightup = () => {
+    viewport.onrightup = (e) => {
+      e.preventDefault();
       this.onRightButtonReleasedCallbacks.forEach((cb) => cb(this));
     };
 

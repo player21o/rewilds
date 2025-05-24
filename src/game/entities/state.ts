@@ -25,7 +25,7 @@ export class StateManager<T = any> {
     this.state = state;
     this.duration = 0;
 
-    s = this.states[this.state as keyof typeof this.states];
+    s = this.states[state as keyof typeof this.states];
 
     if (s.enter != undefined) s.enter(this.entity, this);
   }
