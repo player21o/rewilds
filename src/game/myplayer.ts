@@ -6,6 +6,7 @@ export class MyPlayer {
   private _citizen: Citizen | null = null;
   private send: SendFunction;
   private keys = 0;
+  private last_mouse_packet = 0;
 
   constructor(send: SendFunction, inputs: InputsManager) {
     this.send = send;
@@ -20,8 +21,13 @@ export class MyPlayer {
 
   private mouse_callback(): (arg0: InputsManager) => void {
     return ({ mouseX, mouseY }: InputsManager) => {
-      if (this.citizen != null)
+      if (
+        this.citizen != null &&
+        Date.now() - this.last_mouse_packet > 1000 / 30
+      ) {
         this.send("pointer", mouseX - this.citizen.x, mouseY - this.citizen.y);
+        this.last_mouse_packet = Date.now();
+      }
     };
   }
 

@@ -13,6 +13,7 @@ import { pack, unpack } from "msgpackr";
 export class WS {
   private ws: WebSocket;
   private game: GameDependencies;
+  private bytes = 0;
 
   constructor(game: GameDependencies, ws: WebSocket) {
     this.ws = ws;
@@ -21,6 +22,8 @@ export class WS {
     ws.onmessage = ({ data }) => {
       (data as Blob).arrayBuffer().then((buffer) => {
         const packet: [packet: number, ...args: any[]] = unpack(buffer) as any;
+        this.bytes += buffer.byteLength;
+        console.log(this.bytes / 1024 / 1024);
 
         const formatted: any[] = [];
         const sliced = packet[1];
