@@ -25,6 +25,8 @@ export class Citizen extends Entity<CitizenType> {
   public lastPos = [0, 0];
   public lastMoveDate = Date.now();
 
+  public direction = this.shared.direction;
+
   public state = new StateManager<typeof this.shared.state>(
     states,
     this,

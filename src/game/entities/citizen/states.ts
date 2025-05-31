@@ -1,4 +1,5 @@
 import type { Citizen } from ".";
+import { circWrapTo, lookAt } from "../../utils";
 import { States } from "../state";
 
 function handle_movement(entity: Citizen, dt: number) {
@@ -19,13 +20,30 @@ function handle_movement(entity: Citizen, dt: number) {
   }
 }
 
-function handle_direction(entity: Citizen) {
-  const lookat = entity.shared.direction;
+function handle_direction(entity: Citizen, dt: number) {
+  entity.direction = circWrapTo(
+    entity.direction,
+    entity.shared.direction,
+    0.2 * dt
+  );
+  const fo = (-0.5 * Math.PI * 2) / entity.sprites.body.total_animations;
+  const direction_for_sprite = lookAt(
+    0,
+    0,
+    Math.cos(entity.direction) * 16,
+    1.4 * Math.sin(entity.direction) * 16
+  );
 
   const row =
-    ((lookat / (Math.PI * 2)) * entity.sprites.body.total_animations) | 0;
+    (((direction_for_sprite - fo) / (Math.PI * 2)) *
+      entity.sprites.body.total_animations) |
+    0;
 
-  if (entity.last_turn_row != row) {
+  if (
+    entity.last_turn_row != row &&
+    row > 0 &&
+    row < entity.sprites.body.total_animations
+  ) {
     entity.last_turn_row = row;
 
     entity.sprites.body.animation = `frame_row_${row.toString()}` as any;
@@ -83,12 +101,11 @@ export default {
       entity.sprites.legs.animations = assets.legs_run.animations;
       entity.sprites.body.speed = 150 / 3000;
       entity.sprites.legs.speed = 150 / 3000;
-      handle_direction(entity);
     },
     leave(_entity, _manager) {},
-    render(_dt, entity, _manager, _assets) {
+    render(dt, entity, _manager, _assets) {
       handle_body_bobbing(entity);
-      handle_direction(entity);
+      handle_direction(entity, dt);
       handle_run_moving_animation(entity, 150 / 3000);
     },
     step(dt, entity, _manager) {
@@ -103,14 +120,13 @@ export default {
       entity.sprites.body.last_frame = 9;
       //entity.sprites.body.speed = (150 / 3000) * 2.5;
       //entity.sprites.legs.speed = 150 / 3000;
-      handle_direction(entity);
     },
     step(dt, entity, _manager) {
       handle_movement(entity, dt);
     },
-    render(_dt, entity, _manager, _assets) {
+    render(dt, entity, _manager, _assets) {
       handle_body_bobbing(entity);
-      handle_direction(entity);
+      handle_direction(entity, dt);
       handle_run_moving_animation(entity, 400 / 3000);
     },
   },
