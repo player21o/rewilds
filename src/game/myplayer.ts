@@ -1,3 +1,4 @@
+import { EntitiesManager } from "./entities";
 import { Citizen } from "./entities/citizen";
 import { InputsManager } from "./input";
 import { SendFunction } from "./networking/types";
@@ -7,8 +8,13 @@ export class MyPlayer {
   private send: SendFunction;
   private keys = 0;
   private last_mouse_packet = 0;
+  private entities: EntitiesManager;
 
-  constructor(send: SendFunction, inputs: InputsManager) {
+  constructor(
+    send: SendFunction,
+    inputs: InputsManager,
+    entities: EntitiesManager
+  ) {
     this.send = send;
 
     ["w", "a", "s", "d"].forEach((key) => {
@@ -19,6 +25,19 @@ export class MyPlayer {
     inputs.on_mouse_move(this.mouse_callback());
     inputs.on_right_button_pressed(this.right_mouse_down_callback());
     inputs.on_right_button_released(this.right_mouse_up_callback());
+
+    entities.on_entity_created(this.on_entity_created_cb(this.test_if_enemy));
+    this.entities = entities;
+  }
+
+  private on_entity_created_cb(test: (e: Citizen) => boolean) {
+    return (e: any) => {
+      if (e instanceof Citizen) e.bar_params.enemy = test(e);
+    };
+  }
+
+  private test_if_enemy(e: Citizen) {
+    return true;
   }
 
   private right_mouse_down_callback(): (arg0: InputsManager) => void {
@@ -69,5 +88,12 @@ export class MyPlayer {
 
   set citizen(value: Citizen | null) {
     this._citizen = value;
+
+    this.citizen!.bar_params.enemy = false;
+
+    this.entities.entities.forEach((e) => {
+      if (e instanceof Citizen && e.sid != this.citizen!.sid)
+        e.bar_params.enemy = this.test_if_enemy(e);
+    });
   }
 }

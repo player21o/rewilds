@@ -28,7 +28,7 @@ const Game = ({ url }: Props) => {
           height: window.innerHeight / 2,
         })
         .then(() => {
-          game = new GameManager(app, socket);
+          game = new GameManager(app, url);
         });
     };
 

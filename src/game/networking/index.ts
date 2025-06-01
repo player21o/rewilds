@@ -23,7 +23,6 @@ export class WS {
       (data as Blob).arrayBuffer().then((buffer) => {
         const packet: [packet: number, ...args: any[]] = unpack(buffer) as any;
         this.bytes += buffer.byteLength;
-        //console.log(this.bytes / 1024 / 1024);
 
         const formatted: any[] = [];
         const sliced = packet[1];
@@ -42,8 +41,6 @@ export class WS {
 
           formatted.push(converterPair[1](sliced[i]));
         }
-
-        //console.log(formatted);
 
         packets[constructor_name](this.send, this.game, ...(formatted as any));
       });
@@ -68,4 +65,9 @@ export class WS {
 
     this.ws.send(pack([constructors_keys.indexOf(msg), data]));
   };
+
+  public stop() {
+    this.ws.onmessage = null;
+    this.ws.close();
+  }
 }

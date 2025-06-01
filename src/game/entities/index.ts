@@ -9,9 +9,16 @@ export class EntitiesManager {
   private stage: Container;
   public assets: ObjectManifest["bundles"]["game"] | undefined = undefined;
 
+  private on_entity_created_callbacks: ((entity: Entity) => void)[] = [];
+
   public constructor(stage: Container, assets?: typeof this.assets) {
     this.stage = stage;
     this.assets = assets;
+    console.log("constructed entities");
+  }
+
+  public on_entity_created(cb: (entity: Entity) => void) {
+    this.on_entity_created_callbacks.push(cb);
   }
 
   public add(entity: Entity) {
@@ -23,7 +30,13 @@ export class EntitiesManager {
       if (rendered_entity != undefined) this.stage.addChild(rendered_entity);
     }
 
+    this.on_entity_created_callbacks.forEach((cb) => cb(entity));
+
     return entity;
+  }
+
+  public stop() {
+    this.on_entity_created_callbacks = [];
   }
 }
 

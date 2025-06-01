@@ -17,10 +17,16 @@ export class GameDependencies {
     this.inputs = new InputsManager(viewport);
     this.viewport = viewport;
 
-    if (send != undefined) this.me = new MyPlayer(send, this.inputs);
+    if (send != undefined)
+      this.me = new MyPlayer(send, this.inputs, this.entities);
+  }
+
+  public stop() {
+    this.inputs.stop();
+    this.entities.stop();
   }
 
   public setMeSendFunction(send: SendFunction) {
-    this.me = new MyPlayer(send, this.inputs);
+    this.me = new MyPlayer(send, this.inputs, this.entities);
   }
 }

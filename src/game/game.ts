@@ -5,9 +5,9 @@ import {
   Text,
   TilingSprite,
   TextureStyle,
+  Ticker,
 } from "pixi.js";
 import { ObjectManifest, manifest } from "../assets/manifest";
-import { EntitiesManager } from "./entities";
 import { lerp, palette } from "./utils";
 import { GameDependencies } from "./game_deps";
 import { WS } from "./networking";
@@ -15,15 +15,22 @@ import { Viewport } from "pixi-viewport";
 import { Stats } from "pixi-stats";
 
 export class GameManager {
-  public deps: GameDependencies;
+  public deps!: GameDependencies;
   private app: Application;
+  private cb: any;
+  private ws!: WS;
+
+  private lastX = 0;
+  private lastY = 0;
 
   public stop() {
     this.app.stop();
-    this.deps.inputs.stop();
+    this.deps.stop();
+    this.ws.stop();
+    Ticker.shared.remove(this.cb);
   }
 
-  constructor(app: Application, socket: WebSocket) {
+  constructor(app: Application, url: string) {
     const stats = new Stats(app.renderer);
     this.app = app;
 
@@ -40,20 +47,19 @@ export class GameManager {
 
     TextureStyle.defaultOptions.scaleMode = "nearest";
 
-    this.deps = new GameDependencies(viewport);
-    const ws = new WS(this.deps, socket);
-    this.deps.setMeSendFunction(ws.send);
-
     Assets.loadBundle("game").then(
       (assets: ObjectManifest["bundles"]["game"]) => {
         palette.texture = assets.palette;
+        this.deps = new GameDependencies(viewport);
+        this.ws = new WS(this.deps, new WebSocket(url));
+        this.deps.setMeSendFunction(this.ws.send);
+        this.deps.entities.assets = assets;
 
         assets.palette.source.style.magFilter = "nearest";
         assets.palette.source.style.minFilter = "nearest";
         assets.palette.source.style.mipmapFilter = "nearest";
         assets.palette.source.update();
 
-        this.deps.entities = new EntitiesManager(viewport, assets);
         viewport.addChild(
           TilingSprite.from(assets.bg, {
             width: viewport.worldWidth,
@@ -63,35 +69,40 @@ export class GameManager {
 
         app.stage.addChild(new Text({ text: "Hello world!" }));
 
-        let [lastX, lastY] = [0, 0];
+        const cb = this.ticker_cb(assets);
+        this.cb = cb;
 
-        app.ticker.add((ticker) => {
-          const deltaTime = ticker.deltaTime;
-
-          this.deps.entities.entities.forEach((e) => {
-            //console.log(deltaTime);
-            e.step(deltaTime, this.deps.inputs);
-            e.render(deltaTime, this.deps.inputs, assets, ticker);
-          });
-
-          if (this.deps.me.citizen != null) {
-            const t = 1 - Math.pow(1.0 - 0.15, deltaTime);
-            lastX = lerp(
-              lastX,
-              this.deps.me.citizen.x + app.renderer.width / 2,
-              t
-            );
-
-            lastY = lerp(
-              lastY,
-              this.deps.me.citizen.y + app.renderer.height / 2,
-              t
-            );
-
-            this.deps.viewport.moveCenter(lastX, lastY);
-          }
-        });
+        app.ticker.add(cb);
       }
     );
+  }
+
+  private ticker_cb(assets: ObjectManifest["bundles"]["game"]) {
+    return (ticker: Ticker) => {
+      const deltaTime = ticker.deltaTime;
+
+      this.deps.entities.entities.forEach((e) => {
+        //console.log(deltaTime);
+        e.step(deltaTime, this.deps.inputs);
+        e.render(deltaTime, this.deps.inputs, assets, ticker);
+      });
+
+      if (this.deps.me.citizen != null) {
+        const t = 1 - Math.pow(1.0 - 0.15, deltaTime);
+        this.lastX = lerp(
+          this.lastX,
+          this.deps.me.citizen.x + this.app.renderer.width / 2,
+          t
+        );
+
+        this.lastY = lerp(
+          this.lastY,
+          this.deps.me.citizen.y + this.app.renderer.height / 2,
+          t
+        );
+
+        this.deps.viewport.moveCenter(this.lastX, this.lastY);
+      }
+    };
   }
 }
