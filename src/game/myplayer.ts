@@ -1,3 +1,4 @@
+import { ConstructorsObject } from "../common/constructors";
 import { EntitiesManager } from "./entities";
 import { Citizen } from "./entities/citizen";
 import { InputsManager } from "./input";
@@ -9,6 +10,10 @@ export class MyPlayer {
   private keys = 0;
   private last_mouse_packet = 0;
   private entities: EntitiesManager;
+
+  public private_data: ConstructorsObject["CitizenPrivateData"] = {
+    stamina: 0,
+  };
 
   constructor(
     send: SendFunction,
@@ -28,6 +33,10 @@ export class MyPlayer {
 
     entities.on_entity_created(this.on_entity_created_cb(this.test_if_enemy));
     this.entities = entities;
+  }
+
+  public update_private_data() {
+    this.citizen!.bar_params.stamina = this.private_data.stamina;
   }
 
   private on_entity_created_cb(test: (e: Citizen) => boolean) {

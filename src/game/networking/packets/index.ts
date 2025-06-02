@@ -69,4 +69,20 @@ export default {
   your_sid(_, { me, entities }, sid) {
     me.citizen = entities.sid_map[sid] as Citizen;
   },
+  private(_, { me }, bits, data) {
+    let prop_pointer = 0;
+    constructors_inner_keys["CitizenPrivateData"].forEach((prop, i) => {
+      if ((bits >> i) % 2 != 0) {
+        const networked_prop = data[prop_pointer];
+        const formatted_prop =
+          //@ts-ignore
+          constructors_object["CitizenPrivateData"][prop][1](networked_prop);
+
+        me.private_data[prop] = formatted_prop;
+
+        prop_pointer += 1;
+      }
+    });
+    me.update_private_data();
+  },
 } as Packets;
