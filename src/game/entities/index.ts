@@ -14,7 +14,6 @@ export class EntitiesManager {
   public constructor(stage: Container, assets?: typeof this.assets) {
     this.stage = stage;
     this.assets = assets;
-    console.log("constructed entities");
   }
 
   public on_entity_created(cb: (entity: Entity) => void) {

@@ -36,7 +36,9 @@ export class MyPlayer {
   }
 
   public update_private_data() {
-    this.citizen!.bar_params.stamina = this.private_data.stamina;
+    if (this.citizen == null) return;
+    console.log(this.private_data);
+    this.citizen.bar_params.stamina = this.private_data.stamina;
   }
 
   private on_entity_created_cb(test: (e: Citizen) => boolean) {
@@ -46,7 +48,7 @@ export class MyPlayer {
   }
 
   private test_if_enemy(e: Citizen) {
-    return true;
+    return e.shared.team == 2;
   }
 
   private right_mouse_down_callback(): (arg0: InputsManager) => void {

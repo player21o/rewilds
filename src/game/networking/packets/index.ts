@@ -83,6 +83,7 @@ export default {
         prop_pointer += 1;
       }
     });
+    //console.log(bits, data);
     me.update_private_data();
   },
 } as Packets;
