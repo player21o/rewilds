@@ -11,6 +11,8 @@ export class MyPlayer {
   private last_mouse_packet = 0;
   private entities: EntitiesManager;
 
+  public potential_sid: number | undefined = undefined;
+
   public private_data: ConstructorsObject["CitizenPrivateData"] = {
     stamina: 0,
   };
@@ -37,7 +39,7 @@ export class MyPlayer {
 
   public update_private_data() {
     if (this.citizen == null) return;
-    console.log(this.private_data);
+    //console.log(this.private_data);
     this.citizen.bar_params.stamina = this.private_data.stamina;
   }
 

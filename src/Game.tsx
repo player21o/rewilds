@@ -11,30 +11,26 @@ const Game = ({ url }: Props) => {
   const canvas = useRef(null);
 
   useEffect(() => {
-    const socket = new WebSocket(url);
     const app = new Application();
     let game!: GameManager;
     //app.resize();
-    socket.onopen = () => {
-      app
-        .init({
-          antialias: false,
-          background: "white",
-          roundPixels: false,
-          //resolution: 0.5,
-          canvas: canvas.current as any,
-          //resizeTo: canvas.current as any,
-          width: window.innerWidth / 2,
-          height: window.innerHeight / 2,
-        })
-        .then(() => {
-          game = new GameManager(app, url);
-        });
-    };
+    app
+      .init({
+        antialias: false,
+        background: "white",
+        roundPixels: false,
+        //resolution: 0.5,
+        canvas: canvas.current as any,
+        //resizeTo: canvas.current as any,
+        width: window.innerWidth / 2,
+        height: window.innerHeight / 2,
+      })
+      .then(() => {
+        game = new GameManager(app, url);
+      });
 
     return () => {
       game.stop();
-      socket.close();
     };
   }, []);
 

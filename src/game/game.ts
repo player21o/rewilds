@@ -102,6 +102,8 @@ export class GameManager {
         );
 
         this.deps.viewport.moveCenter(this.lastX, this.lastY);
+      } else {
+        this.deps.viewport.moveCenter(300, 300);
       }
     };
   }

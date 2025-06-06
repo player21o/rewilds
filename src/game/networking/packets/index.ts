@@ -11,7 +11,9 @@ export default {
   hello(send, _) {
     send("hello");
   },
-  update(__, { entities }, updates) {
+  update(__, { entities, snapshotted }, updates) {
+    if (!snapshotted) return;
+
     updates.forEach(([sid, bits, ...props]) => {
       const entity_exists = sid in entities.sid_map;
 
@@ -64,10 +66,22 @@ export default {
       );
 
       game.entities.add(entity);
+      if (game.me.potential_sid != undefined) {
+        game.me.citizen = game.entities.sid_map[
+          game.me.potential_sid
+        ] as Citizen;
+        game.me.potential_sid = undefined;
+      }
+      game.snapshotted = true;
     });
   },
   your_sid(_, { me, entities }, sid) {
-    me.citizen = entities.sid_map[sid] as Citizen;
+    if (sid in entities.sid_map) {
+      me.citizen = entities.sid_map[sid] as Citizen;
+      me.potential_sid = undefined;
+    } else {
+      me.potential_sid = sid;
+    }
   },
   private(_, { me }, bits, data) {
     let prop_pointer = 0;
@@ -83,7 +97,7 @@ export default {
         prop_pointer += 1;
       }
     });
-    //console.log(bits, data);
+
     me.update_private_data();
   },
 } as Packets;

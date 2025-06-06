@@ -10,6 +10,7 @@ export class GameDependencies {
   public inputs: InputsManager;
   public me!: MyPlayer;
   public viewport: Viewport;
+  public snapshotted = false;
 
   constructor(viewport: Viewport, send?: SendFunction) {
     //this.ws = new WS(this, socket);
