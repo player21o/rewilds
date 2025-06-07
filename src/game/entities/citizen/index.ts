@@ -52,6 +52,7 @@ export class Citizen extends Entity<CitizenType> {
     const bars = new Graphics({
       blendMode: "normal-npm",
       scale: { x: 1, y: 0.6 },
+      zIndex: 0,
     });
 
     const legs = new GameSprite<
@@ -74,7 +75,7 @@ export class Citizen extends Entity<CitizenType> {
     body.scale = 1;
     body.play();
 
-    const palette_container = new Container();
+    const palette_container = new Container({ zIndex: 1 });
     palette_container.addChild(legs, body);
 
     container.addChild(palette_container, bars);
