@@ -3,6 +3,8 @@ import type key_atlas_type from "../../public/assets/sprites/pickups/key.json";
 import type legs_run_atlas_type from "../../public/assets/sprites/grunt/legs_run.json";
 import type run_atlas_type from "../../public/assets/sprites/grunt/male/run.json";
 import type growl_atlas_type from "../../public/assets/sprites/grunt/male/growl.json";
+import type female_run_atlas_type from "../../public/assets/sprites/grunt/female/run.json";
+import type female_growl_atlas_type from "../../public/assets/sprites/grunt/female/growl.json";
 import type shield_wooden_run_atlas_type from "../../public/assets/sprites/grunt/shield_wooden_run.json";
 
 export type ObjectManifest = {
@@ -50,6 +52,18 @@ export const manifest = {
           alias: "growl",
           src: "/assets/sprites/grunt/male/growl.json" as any as Atlas<
             typeof growl_atlas_type
+          >,
+        },
+        {
+          alias: "female_run",
+          src: "/assets/sprites/grunt/female/run.json" as any as Atlas<
+            typeof female_run_atlas_type
+          >,
+        },
+        {
+          alias: "female_growl",
+          src: "/assets/sprites/grunt/female/growl.json" as any as Atlas<
+            typeof female_growl_atlas_type
           >,
         },
         {

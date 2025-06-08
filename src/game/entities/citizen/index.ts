@@ -27,11 +27,7 @@ export class Citizen extends Entity<CitizenType> {
 
   public direction = this.shared.direction;
 
-  public state = new StateManager<typeof this.shared.state>(
-    states,
-    this,
-    "idle"
-  );
+  public state = new StateManager<typeof this.shared.state>(states, this);
 
   public bar_params: { enemy: boolean; stamina: number } = {
     enemy: false,

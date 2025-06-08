@@ -12,11 +12,11 @@ export class StateManager<T = any> {
   constructor(
     states: States,
     entity: Entity,
-    first_state: T,
+    //first_state: T,
     assets?: ObjectManifest["bundles"]["game"]
   ) {
     this.states = states;
-    this.set(first_state);
+    //this.set(first_state);
     this.entity = entity;
     this.assets = assets;
   }
@@ -34,6 +34,8 @@ export class StateManager<T = any> {
     this.duration = 0;
 
     s = this.states[state as keyof typeof this.states];
+
+    console.log(s.enter != undefined && this.assets != undefined);
 
     if (s.enter != undefined && this.assets != undefined)
       s.enter(this.entity, this, this.assets);

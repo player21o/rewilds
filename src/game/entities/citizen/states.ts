@@ -97,7 +97,10 @@ function handle_run_moving_animation(entity: Citizen, duration: number) {
 export default {
   idle: {
     enter(entity, _manager, assets) {
-      entity.sprites.body.animations = assets.run.animations;
+      entity.sprites.body.animations =
+        entity.shared.gender == "male"
+          ? assets.run.animations
+          : assets.female_run.animations;
       entity.sprites.legs.animations = assets.legs_run.animations;
       entity.sprites.body.speed = 150 / 3000;
       entity.sprites.legs.speed = 150 / 3000;
@@ -114,7 +117,10 @@ export default {
   },
   growl: {
     enter(entity, _manager, assets) {
-      entity.sprites.body.animations = assets.growl.animations;
+      entity.sprites.body.animations =
+        entity.shared.gender == "male"
+          ? assets.growl.animations
+          : assets.female_growl.animations;
       entity.sprites.legs.animations = assets.legs_run.animations;
       entity.sprites.body.first_frame = 2;
       entity.sprites.body.last_frame = 9;
