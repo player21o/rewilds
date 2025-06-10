@@ -23,7 +23,7 @@ export class GameSprite<
   private _last_frame = -1;
 
   constructor(options: GameSpriteOptions) {
-    super();
+    super({ cullable: true });
 
     this._animations = options.animations as T;
     this._last_frame =

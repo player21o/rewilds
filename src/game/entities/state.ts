@@ -35,8 +35,6 @@ export class StateManager<T = any> {
 
     s = this.states[state as keyof typeof this.states];
 
-    console.log(s.enter != undefined && this.assets != undefined);
-
     if (s.enter != undefined && this.assets != undefined)
       s.enter(this.entity, this, this.assets);
   }

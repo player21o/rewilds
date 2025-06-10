@@ -44,7 +44,7 @@ export class Citizen extends Entity<CitizenType> {
     this.x = this.shared.x;
     this.y = this.shared.y;
 
-    const container = new Container();
+    const container = new Container({ cullable: true, cullableChildren: true });
     this.container = container;
 
     container.x = this.x;
