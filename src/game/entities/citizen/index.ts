@@ -36,6 +36,8 @@ export class Citizen extends Entity<CitizenType> {
     stamina: 0.5,
   };
 
+  private bar_needs_to_be_updated = true;
+
   public init(
     assets: ObjectManifest["bundles"]["game"],
     { entities, ground }: typeof layers
@@ -112,9 +114,17 @@ export class Citizen extends Entity<CitizenType> {
     this.state.render(deltaTime, assets);
 
     this.update_anims(elapsedMS);
-    this.update_bars();
+    if (this.bar_needs_to_be_updated) {
+      this.update_bars();
+      this.bar_needs_to_be_updated = false;
+    }
 
     this.palette_container.zIndex = this.y;
+  }
+
+  public update_bar_params(params: typeof this.bar_params) {
+    this.bar_params = params;
+    this.bar_needs_to_be_updated = true;
   }
 
   private update_bars() {

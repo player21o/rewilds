@@ -14,6 +14,7 @@ import { WS } from "./networking";
 import { Viewport } from "pixi-viewport";
 import { Stats } from "pixi-stats";
 import layers from "./render/layers";
+import { Citizen } from "./entities/citizen";
 
 export class GameManager {
   public deps!: GameDependencies;
@@ -23,6 +24,7 @@ export class GameManager {
 
   private lastX = 0;
   private lastY = 0;
+  private txt!: Text;
 
   public stop() {
     this.app.stop();
@@ -68,12 +70,13 @@ export class GameManager {
         const ground = TilingSprite.from(assets.bg, {
           width: viewport.worldWidth,
           height: viewport.worldHeight,
+          cullable: false,
         });
 
         viewport.addChild(ground);
         layers.ground.attach(ground);
 
-        app.stage.addChild(new Text({ text: "Hello world!" }));
+        //this.txt = viewport.addChild(new Text({ text: "Hello world!" }));
 
         const cb = this.ticker_cb(assets);
         this.cb = cb;
@@ -89,8 +92,19 @@ export class GameManager {
 
       this.deps.entities.entities.forEach((e) => {
         //console.log(deltaTime);
-        e.step(deltaTime, this.deps.inputs);
-        e.render(deltaTime, this.deps.inputs, assets, ticker);
+
+        if (
+          e.x < this.deps.viewport.left ||
+          e.x > this.deps.viewport.right ||
+          e.y > this.deps.viewport.bottom ||
+          e.y < this.deps.viewport.top
+        ) {
+          (e as Citizen).container.visible = false;
+        } else {
+          (e as Citizen).container.visible = true;
+          e.step(deltaTime, this.deps.inputs);
+          e.render(deltaTime, this.deps.inputs, assets, ticker);
+        }
       });
 
       if (this.deps.me.citizen != null) {

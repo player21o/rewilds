@@ -107,8 +107,6 @@ export default {
     },
     leave(_entity, _manager) {},
     render(dt, entity, _manager, _assets) {
-      if (entity.container.culled) console.log("cul");
-      if (entity.container.culled) return;
       handle_body_bobbing(entity);
       handle_direction(entity, dt);
       handle_run_moving_animation(entity, 150 / 3000);
@@ -133,7 +131,6 @@ export default {
       handle_movement(entity, dt);
     },
     render(dt, entity, _manager, _assets) {
-      if (entity.container.culled) return;
       handle_body_bobbing(entity);
       handle_direction(entity, dt);
       handle_run_moving_animation(entity, 400 / 3000);
