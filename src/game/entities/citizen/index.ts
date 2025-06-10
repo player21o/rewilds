@@ -7,6 +7,7 @@ import { InputsManager } from "../../input";
 import { GameSprite } from "../../render/anim";
 import { StateManager } from "../state";
 import states from "./states";
+import layers from "../../render/layers";
 
 //type AnimatedSpriteWithRows = AdvancedAnimatedSprite & { rows: number };
 
@@ -19,6 +20,7 @@ export class Citizen extends Entity<CitizenType> {
     bars: Graphics;
   };
   public container!: Container;
+  public palette_container!: Container;
 
   public last_turn_row = 0;
   public isMoving = false;
@@ -34,7 +36,10 @@ export class Citizen extends Entity<CitizenType> {
     stamina: 0.5,
   };
 
-  public init(assets: ObjectManifest["bundles"]["game"]) {
+  public init(
+    assets: ObjectManifest["bundles"]["game"],
+    { entities, ground }: typeof layers
+  ) {
     this.state.assets = assets;
     this.x = this.shared.x;
     this.y = this.shared.y;
@@ -73,10 +78,14 @@ export class Citizen extends Entity<CitizenType> {
 
     const palette_container = new Container({ zIndex: 1 });
     palette_container.addChild(legs, body);
+    this.palette_container = palette_container;
 
     container.addChild(palette_container, bars);
 
     palette.apply_palette(palette_container, this.shared.team);
+
+    entities.attach(palette_container);
+    ground.attach(bars);
 
     this.sprites = { body, legs, bars };
 
@@ -104,6 +113,8 @@ export class Citizen extends Entity<CitizenType> {
 
     this.update_anims(elapsedMS);
     this.update_bars();
+
+    this.palette_container.zIndex = this.y;
   }
 
   private update_bars() {

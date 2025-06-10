@@ -13,6 +13,7 @@ import { GameDependencies } from "./game_deps";
 import { WS } from "./networking";
 import { Viewport } from "pixi-viewport";
 import { Stats } from "pixi-stats";
+import layers from "./render/layers";
 
 export class GameManager {
   public deps!: GameDependencies;
@@ -42,6 +43,10 @@ export class GameManager {
 
     app.stage.addChild(viewport);
 
+    Object.keys(layers).forEach((layer) =>
+      viewport.addChild(layers[layer as keyof typeof layers])
+    );
+
     Assets.init({ manifest: manifest as any as AssetsManifest });
     Assets.backgroundLoadBundle(["game"]);
 
@@ -60,12 +65,13 @@ export class GameManager {
         assets.palette.source.style.mipmapFilter = "nearest";
         assets.palette.source.update();
 
-        viewport.addChild(
-          TilingSprite.from(assets.bg, {
-            width: viewport.worldWidth,
-            height: viewport.worldHeight,
-          })
-        );
+        const ground = TilingSprite.from(assets.bg, {
+          width: viewport.worldWidth,
+          height: viewport.worldHeight,
+        });
+
+        viewport.addChild(ground);
+        layers.ground.attach(ground);
 
         app.stage.addChild(new Text({ text: "Hello world!" }));
 

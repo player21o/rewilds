@@ -1,6 +1,7 @@
 import { Container, Ticker } from "pixi.js";
 import { ObjectManifest } from "../../assets/manifest";
 import { InputsManager } from "../input";
+import layers from "../render/layers";
 
 export class Entity<T extends object = any> {
   public sid: number;
@@ -15,7 +16,8 @@ export class Entity<T extends object = any> {
 
   public init(
     // @ts-ignore
-    assets: ObjectManifest["bundles"]["game"]
+    assets: ObjectManifest["bundles"]["game"],
+    layers_collection: typeof layers
   ): undefined | Container {
     return;
   }

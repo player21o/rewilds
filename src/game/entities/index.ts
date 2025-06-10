@@ -2,6 +2,7 @@ import { Container } from "pixi.js";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
 import { Citizen } from "./citizen";
+import layers from "../render/layers";
 
 export class EntitiesManager {
   public entities: Entity[] = [];
@@ -25,7 +26,7 @@ export class EntitiesManager {
     this.sid_map[entity.sid] = entity;
 
     if (this.assets != undefined) {
-      const rendered_entity = entity.init(this.assets);
+      const rendered_entity = entity.init(this.assets, layers);
       if (rendered_entity != undefined) this.stage.addChild(rendered_entity);
     }
 
