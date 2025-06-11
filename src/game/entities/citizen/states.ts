@@ -1,4 +1,5 @@
 import type { Citizen } from ".";
+import { audio_manifest } from "../../../assets/manifest";
 import { circWrapTo, lookAt } from "../../utils";
 import { States } from "../state";
 
@@ -8,7 +9,14 @@ function handle_movement(entity: Citizen, dt: number) {
   entity.x += (entity.shared.x - entity.x) * 0.3 * dt;
   entity.y += (entity.shared.y - entity.y) * 0.3 * dt;
 
+  if (entity.culled) {
+    entity.lastMoveDate = Date.now();
+    entity.isMoving = false;
+    console.log("culled lol");
+  }
+
   if (Date.now() - entity.lastMoveDate > 50) {
+    //console.log(Date.now(), entity.lastMoveDate);
     entity.isMoving =
       entity.shared.x != entity.lastPos[0] ||
       entity.shared.y != entity.lastPos[1];
@@ -113,6 +121,11 @@ export default {
     },
     step(dt, entity, _manager) {
       handle_movement(entity, dt);
+      if (entity.isMoving && Date.now() - entity.played_footstep >= 500) {
+        //console.log(entity.isMoving, Date.now(), entity.lastMoveDate);
+        audio_manifest.footstep.play();
+        entity.played_footstep = Date.now();
+      }
     },
   },
   growl: {

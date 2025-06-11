@@ -95,15 +95,19 @@ export class GameManager {
 
         if (
           e.x < this.deps.viewport.left ||
-          e.x > this.deps.viewport.right ||
-          e.y > this.deps.viewport.bottom ||
+          e.x > this.deps.viewport.left + this.app.renderer.width ||
+          e.y > this.deps.viewport.top + this.app.renderer.height ||
           e.y < this.deps.viewport.top
         ) {
           (e as Citizen).container.visible = false;
+          e.culled = true;
         } else {
           (e as Citizen).container.visible = true;
+
           e.step(deltaTime, this.deps.inputs);
           e.render(deltaTime, this.deps.inputs, assets, ticker);
+
+          e.culled = false;
         }
       });
 

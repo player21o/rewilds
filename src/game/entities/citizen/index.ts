@@ -31,6 +31,8 @@ export class Citizen extends Entity<CitizenType> {
 
   public state = new StateManager<typeof this.shared.state>(states, this);
 
+  public played_footstep = 0;
+
   public bar_params: { enemy: boolean; stamina: number } = {
     enemy: false,
     stamina: 0.5,

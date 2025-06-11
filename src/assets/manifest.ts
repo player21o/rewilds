@@ -7,6 +7,8 @@ import type female_run_atlas_type from "../../public/assets/sprites/grunt/female
 import type female_growl_atlas_type from "../../public/assets/sprites/grunt/female/growl.json";
 import type shield_wooden_run_atlas_type from "../../public/assets/sprites/grunt/shield_wooden_run.json";
 
+import { Howl } from "howler";
+
 export type ObjectManifest = {
   bundles: {
     [B in (typeof manifest)["bundles"][number] as B["name"]]: {
@@ -74,3 +76,7 @@ export const manifest = {
     },
   ],
 } as const;
+
+export const audio_manifest = {
+  footstep: new Howl({ src: ["/assets/sounds/footstep.ogg"], loop: false }),
+};

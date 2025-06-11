@@ -42,7 +42,7 @@ export class WS {
           formatted.push(converterPair[1](sliced[i]));
         }
 
-        console.log(this.bytes / 1048576);
+        //console.log(this.bytes / 1048576);
 
         packets[constructor_name](this.send, this.game, ...(formatted as any));
       });

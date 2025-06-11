@@ -8,6 +8,7 @@ export class Entity<T extends object = any> {
   public shared: T;
   public x: number = 0;
   public y: number = 0;
+  public culled = false;
 
   public constructor(shared: T & { sid: number }) {
     this.sid = shared.sid;
