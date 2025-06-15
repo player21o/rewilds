@@ -1,31 +1,12 @@
 import type { Citizen } from ".";
-import { audio_manifest } from "../../../assets/manifest";
 import { circWrapTo, lookAt } from "../../utils";
 import { States } from "../state";
 
 function handle_movement(entity: Citizen, dt: number) {
-  const lastIsMoving = entity.isMoving;
-
   entity.x += (entity.shared.x - entity.x) * 0.3 * dt;
   entity.y += (entity.shared.y - entity.y) * 0.3 * dt;
 
-  if (entity.culled) {
-    entity.lastMoveDate = Date.now();
-    entity.isMoving = false;
-    console.log("culled lol");
-  }
-
-  if (Date.now() - entity.lastMoveDate > 50) {
-    //console.log(Date.now(), entity.lastMoveDate);
-    entity.isMoving =
-      entity.shared.x != entity.lastPos[0] ||
-      entity.shared.y != entity.lastPos[1];
-
-    entity.lastMoveDate = Date.now();
-    entity.lastPos = [entity.shared.x, entity.shared.y];
-
-    if (lastIsMoving != entity.isMoving) entity.sprites.body.frame = 0;
-  }
+  entity.isMoving = entity.shared.moving;
 }
 
 function handle_direction(entity: Citizen, dt: number) {
@@ -112,6 +93,7 @@ export default {
       entity.sprites.legs.animations = assets.legs_run.animations;
       entity.sprites.body.speed = 150 / 3000;
       entity.sprites.legs.speed = 150 / 3000;
+      entity.sounds.male_growl.stop();
     },
     leave(_entity, _manager) {},
     render(dt, entity, _manager, _assets) {
@@ -123,7 +105,8 @@ export default {
       handle_movement(entity, dt);
       if (entity.isMoving && Date.now() - entity.played_footstep >= 500) {
         //console.log(entity.isMoving, Date.now(), entity.lastMoveDate);
-        audio_manifest.footstep.play();
+        entity.sounds.footstep.rate(1 + (-1 + Math.random() * 2) * 0.2);
+        entity.sounds.footstep.play();
         entity.played_footstep = Date.now();
       }
     },
@@ -137,6 +120,8 @@ export default {
       entity.sprites.legs.animations = assets.legs_run.animations;
       entity.sprites.body.first_frame = 2;
       entity.sprites.body.last_frame = 9;
+
+      entity.sounds.male_growl.play();
       //entity.sprites.body.speed = (150 / 3000) * 2.5;
       //entity.sprites.legs.speed = 150 / 3000;
     },

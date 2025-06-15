@@ -1,7 +1,7 @@
 import { Container, Graphics, Ticker } from "pixi.js";
 import { CitizenType } from "../../../common/interfaces";
 import { Entity } from "../entity";
-import { ObjectManifest } from "../../../assets/manifest";
+import { audio_manifest, ObjectManifest } from "../../../assets/manifest";
 import { lerp, palette } from "../../utils";
 import { InputsManager } from "../../input";
 import { GameSprite } from "../../render/anim";
@@ -24,8 +24,6 @@ export class Citizen extends Entity<CitizenType> {
 
   public last_turn_row = 0;
   public isMoving = false;
-  public lastPos = [0, 0];
-  public lastMoveDate = Date.now();
 
   public direction = this.shared.direction;
 
@@ -38,7 +36,18 @@ export class Citizen extends Entity<CitizenType> {
     stamina: 0.5,
   };
 
+  public sounds = {
+    footstep: audio_manifest.footstep(),
+    male_growl: audio_manifest.male_growl(),
+  };
+
   private bar_needs_to_be_updated = true;
+
+  public on_first_appearance(): void {
+    Object.keys(this.sounds).forEach((sound) => {
+      this.sounds[sound as keyof typeof this.sounds].load();
+    });
+  }
 
   public init(
     assets: ObjectManifest["bundles"]["game"],

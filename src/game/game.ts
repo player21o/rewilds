@@ -104,8 +104,14 @@ export class GameManager {
         } else {
           (e as Citizen).container.visible = true;
 
+          //console.log("we go step", e.sid);
           e.step(deltaTime, this.deps.inputs);
           e.render(deltaTime, this.deps.inputs, assets, ticker);
+
+          if (e.new) {
+            e.new = false;
+            e.on_first_appearance();
+          }
 
           e.culled = false;
         }

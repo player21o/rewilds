@@ -9,6 +9,7 @@ export class Entity<T extends object = any> {
   public x: number = 0;
   public y: number = 0;
   public culled = false;
+  public new = true;
 
   public constructor(shared: T & { sid: number }) {
     this.sid = shared.sid;
@@ -31,4 +32,6 @@ export class Entity<T extends object = any> {
     ___: ObjectManifest["bundles"]["game"],
     ____: Ticker
   ) {}
+
+  public on_first_appearance() {}
 }

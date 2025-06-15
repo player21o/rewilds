@@ -78,5 +78,26 @@ export const manifest = {
 } as const;
 
 export const audio_manifest = {
-  footstep: new Howl({ src: ["/assets/sounds/footstep.ogg"], loop: false }),
+  footstep: () =>
+    new Howl({
+      src: ["/assets/sounds/footstep.ogg"],
+      loop: false,
+      volume: 0.8,
+      autoplay: false,
+      preload: false,
+    }),
+  male_growl: () =>
+    new Howl({
+      src: ["/assets/sounds/grunt/male/growl.ogg"],
+      loop: true,
+      autoplay: false,
+      preload: false,
+    }),
+  female_growl: () =>
+    new Howl({
+      src: ["/assets/sounds/grunt/female/growl.ogg"],
+      loop: true,
+      autoplay: false,
+      preload: false,
+    }),
 };
