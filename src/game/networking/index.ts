@@ -37,8 +37,6 @@ export class WS {
             (val: any) => any
           ];
 
-          if (constructor_name == "snapshot") console.log(converterPair);
-
           formatted.push(converterPair[1](sliced[i]));
         }
 

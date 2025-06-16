@@ -44,6 +44,7 @@ export class MyPlayer {
       ...this.citizen.bar_params,
       stamina: this.private_data.stamina,
     });
+    console.log(this.citizen.bar_params);
   }
 
   private on_entity_created_cb(test: (e: Citizen) => boolean) {
@@ -104,6 +105,10 @@ export class MyPlayer {
 
   set citizen(value: Citizen | null) {
     this._citizen = value;
+    this._citizen!.update_bar_params({
+      ...this._citizen!.bar_params,
+      hide_stamina: false,
+    });
 
     this.citizen!.bar_params.enemy = false;
 

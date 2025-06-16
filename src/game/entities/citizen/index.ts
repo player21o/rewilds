@@ -31,9 +31,14 @@ export class Citizen extends Entity<CitizenType> {
 
   public played_footstep = 0;
 
-  public bar_params: { enemy: boolean; stamina: number } = {
+  public bar_params: {
+    enemy: boolean;
+    stamina: number;
+    hide_stamina: boolean;
+  } = {
     enemy: false,
     stamina: 0.5,
+    hide_stamina: true,
   };
 
   public sounds = {
@@ -151,43 +156,46 @@ export class Citizen extends Entity<CitizenType> {
 
     bars.clear();
 
+    if (!params.hide_stamina) {
+      bars
+        .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 13)
+        .fill({ alpha: 0.25, color: 0x000000 })
+        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+        .closePath()
+        .arc(
+          250 / 4 - 3,
+          250 / 4 + 62 - 2,
+          stamina_bar_looks.radius,
+          0,
+          Math.PI,
+          false
+        )
+        .stroke({ color: 0x555555, width: stamina_bar_looks.line_thickness })
+        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+        .arc(
+          250 / 4 - 3,
+          250 / 4 + 62 - 2,
+          stamina_bar_looks.radius,
+          Math.PI / 2,
+          lerp(Math.PI / 2, 0, params.stamina),
+          true
+        )
+        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+        .arc(
+          250 / 4 - 3,
+          250 / 4 + 62 - 2,
+          stamina_bar_looks.radius,
+          Math.PI / 2,
+          lerp(Math.PI / 2, Math.PI, params.stamina),
+          false
+        )
+        .stroke({ color: 0xffffff, width: stamina_bar_looks.line_thickness })
+        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + health_bar_looks.radius)
+
+        .closePath();
+    }
+
     bars
-      .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 13)
-      .fill({ alpha: 0.25, color: 0x000000 })
-      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
-      .closePath()
-      .arc(
-        250 / 4 - 3,
-        250 / 4 + 62 - 2,
-        stamina_bar_looks.radius,
-        0,
-        Math.PI,
-        false
-      )
-      .stroke({ color: 0x555555, width: stamina_bar_looks.line_thickness })
-      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
-      .arc(
-        250 / 4 - 3,
-        250 / 4 + 62 - 2,
-        stamina_bar_looks.radius,
-        Math.PI / 2,
-        lerp(Math.PI / 2, 0, params.stamina),
-        true
-      )
-      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
-      .arc(
-        250 / 4 - 3,
-        250 / 4 + 62 - 2,
-        stamina_bar_looks.radius,
-        Math.PI / 2,
-        lerp(Math.PI / 2, Math.PI, params.stamina),
-        false
-      )
-      .stroke({ color: 0xffffff, width: stamina_bar_looks.line_thickness })
-      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + health_bar_looks.radius)
-
-      .closePath()
-
       .arc(
         250 / 4 - 3,
         250 / 4 + 62 - 2,

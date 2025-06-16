@@ -84,6 +84,7 @@ export default {
     }
   },
   private(_, { me }, bits, data) {
+    console.log(data);
     let prop_pointer = 0;
     constructors_inner_keys["CitizenPrivateData"].forEach((prop, i) => {
       if ((bits >> i) % 2 != 0) {
@@ -93,6 +94,7 @@ export default {
           constructors_object["CitizenPrivateData"][prop][1](networked_prop);
 
         me.private_data[prop] = formatted_prop;
+        console.log(prop, formatted_prop);
 
         prop_pointer += 1;
       }
