@@ -14,7 +14,6 @@ import { WS } from "./networking";
 import { Viewport } from "pixi-viewport";
 import { Stats } from "pixi-stats";
 import layers from "./render/layers";
-import { Citizen } from "./entities/citizen";
 
 export class GameManager {
   public deps!: GameDependencies;
@@ -91,20 +90,17 @@ export class GameManager {
       const deltaTime = ticker.deltaTime;
 
       this.deps.entities.entities.forEach((e) => {
-        //console.log(deltaTime);
-
         if (
           e.x < this.deps.viewport.left ||
           e.x > this.deps.viewport.left + this.app.renderer.width ||
           e.y > this.deps.viewport.top + this.app.renderer.height ||
           e.y < this.deps.viewport.top
         ) {
-          (e as Citizen).container.visible = false;
+          e.hide();
           e.culled = true;
         } else {
-          (e as Citizen).container.visible = true;
+          e.show();
 
-          //console.log("we go step", e.sid);
           e.step(deltaTime, this.deps.inputs);
           e.render(deltaTime, this.deps.inputs, assets, ticker);
 

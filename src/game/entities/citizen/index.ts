@@ -54,6 +54,14 @@ export class Citizen extends Entity<CitizenType> {
     });
   }
 
+  public hide(): void {
+    this.container.visible = false;
+  }
+
+  public show(): void {
+    this.container.visible = true;
+  }
+
   public init(
     assets: ObjectManifest["bundles"]["game"],
     { entities, ground }: typeof layers
