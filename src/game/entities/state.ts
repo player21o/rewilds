@@ -1,4 +1,5 @@
 import { ObjectManifest } from "../../assets/manifest";
+import { GameDependencies } from "../game_deps";
 import { Entity } from "./entity";
 
 export class StateManager<T = any> {
@@ -39,9 +40,14 @@ export class StateManager<T = any> {
       s.enter(this.entity, this, this.assets);
   }
 
-  public render(dt: number, assets: ObjectManifest["bundles"]["game"]) {
+  public render(
+    dt: number,
+    dp: GameDependencies,
+    assets: ObjectManifest["bundles"]["game"]
+  ) {
     const state = this.states[this.state as keyof typeof this.states];
-    if (state.render != undefined) state.render(dt, this.entity, this, assets);
+    if (state.render != undefined)
+      state.render(dt, this.entity, dp, this, assets);
   }
 
   public step(dt: number) {
@@ -66,6 +72,7 @@ export type States<T extends Entity = any> = {
     render?: (
       dt: number,
       entity: T,
+      dp: GameDependencies,
       manager: StateManager,
       assets: ObjectManifest["bundles"]["game"]
     ) => void;

@@ -1,8 +1,8 @@
 import { Container } from "pixi.js";
 import layers from "../render/layers";
-import { InputsManager } from "../input";
 import { ObjectManifest } from "../../assets/manifest";
 import { Ticker } from "pixi.js";
+import { GameDependencies } from "../game_deps";
 
 /**
  * a gameobject is like an... object??? i mean... it's just a game object
@@ -26,11 +26,11 @@ export class GameObject {
     return;
   }
 
-  public step(_: number, __: InputsManager): any {}
+  public step(__: number, _: GameDependencies): any {}
 
   public render(
-    _: number,
-    __: InputsManager,
+    _____: number,
+    _: GameDependencies,
     ___: ObjectManifest["bundles"]["game"],
     ____: Ticker
   ) {}

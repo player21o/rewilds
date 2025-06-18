@@ -107,8 +107,8 @@ export class GameManager {
         } else {
           e.show();
 
-          e.step(deltaTime, this.deps.inputs);
-          e.render(deltaTime, this.deps.inputs, assets, ticker);
+          e.step(deltaTime, this.deps);
+          e.render(deltaTime, this.deps, assets, ticker);
 
           if (e.new) {
             e.new = false;

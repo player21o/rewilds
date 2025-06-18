@@ -1,5 +1,4 @@
 import { GameObject } from "../objects/object";
-import timer from "../utils/timer";
 
 /**
  * basically a networked gameobject
@@ -13,11 +12,5 @@ export class Entity<T extends object = any> extends GameObject {
     super();
     this.sid = shared.sid;
     this.shared = shared;
-  }
-
-  public destroy() {
-    this.rip = true;
-    timer.remove_id(this.sid);
-    this.destory_container();
   }
 }

@@ -1,4 +1,5 @@
 import type { Citizen } from ".";
+import Dust from "../../objects/dust";
 import { circWrapTo, lookAt } from "../../utils";
 import timer from "../../utils/timer";
 import { States } from "../state";
@@ -104,7 +105,7 @@ export default {
     },
     step(dt, entity, _manager) {
       handle_movement(entity, dt);
-      if (entity.isMoving && timer.every(0.5, entity.sid)) {
+      if (entity.isMoving && timer.every(0.5, entity.sid + "growl")) {
         //console.log(entity.isMoving, Date.now(), entity.lastMoveDate);
         entity.sounds.footstep.rate(1 + (-1 + Math.random() * 2) * 0.2);
         entity.sounds.footstep.play();
@@ -128,10 +129,13 @@ export default {
     step(dt, entity, _manager) {
       handle_movement(entity, dt);
     },
-    render(dt, entity, _manager, _assets) {
+    render(dt, entity, { entities }, _manager, _assets) {
       handle_body_bobbing(entity);
       handle_direction(entity, dt);
       handle_run_moving_animation(entity, 400 / 3000);
+
+      if (timer.every(0.5, entity.sid + "puff"))
+        entities.add(new Dust(entity.x, entity.y));
     },
   },
 } as States<Citizen>;

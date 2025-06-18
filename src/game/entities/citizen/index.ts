@@ -3,13 +3,11 @@ import { CitizenType } from "../../../common/interfaces";
 import { Entity } from "../entity";
 import { audio_manifest, ObjectManifest } from "../../../assets/manifest";
 import { lerp, palette } from "../../utils";
-import { InputsManager } from "../../input";
 import { GameSprite } from "../../render/anim";
 import { StateManager } from "../state";
 import states from "./states";
 import layers from "../../render/layers";
-
-//type AnimatedSpriteWithRows = AdvancedAnimatedSprite & { rows: number };
+import { GameDependencies } from "../../game_deps";
 
 export class Citizen extends Entity<CitizenType> {
   public sprites!: {
@@ -125,7 +123,7 @@ export class Citizen extends Entity<CitizenType> {
 
   public render(
     __: number,
-    _: InputsManager,
+    dp: GameDependencies,
     assets: ObjectManifest["bundles"]["game"],
     { elapsedMS, deltaTime }: Ticker
   ) {
@@ -135,7 +133,7 @@ export class Citizen extends Entity<CitizenType> {
     );
     this.container.position.set(this.x, this.y);
 
-    this.state.render(deltaTime, assets);
+    this.state.render(deltaTime, dp, assets);
 
     this.update_anims(elapsedMS);
     if (this.bar_needs_to_be_updated) {
