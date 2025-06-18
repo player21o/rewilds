@@ -6,6 +6,7 @@ type GameSpriteOptions = {
   animations: Anims;
   speed: number;
   autoUpdate: boolean;
+  loop: boolean;
 };
 
 export class GameSprite<
@@ -21,6 +22,7 @@ export class GameSprite<
   private _playing: boolean = false;
   private _start_frame = 0;
   private _last_frame = -1;
+  private _loop = false;
 
   constructor(options: GameSpriteOptions) {
     super({ cullable: true });
@@ -33,6 +35,7 @@ export class GameSprite<
     this.speed = options.speed;
     this._total_animations = Object.keys(this._animations).length;
     this._auto_update = options.autoUpdate;
+    this._loop = options.loop;
   }
 
   private callback(ticker: Ticker) {
@@ -58,8 +61,13 @@ export class GameSprite<
       if (this._timer >= this._speed) {
         this._timer = 0;
 
-        this._frame =
-          this._frame == this._last_frame ? this._start_frame : this._frame + 1;
+        this._frame = this._loop
+          ? this._frame == this._last_frame
+            ? this._start_frame
+            : this._frame + 1
+          : this._frame == this._last_frame
+          ? this._last_frame
+          : this._frame + 1;
 
         this.updateTexture();
       }

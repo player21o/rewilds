@@ -86,6 +86,7 @@ export class Citizen extends Entity<CitizenType> {
       animations: assets.legs_run.animations,
       speed: 150 / 3000,
       autoUpdate: false,
+      loop: true,
     });
     legs.scale = 1;
     legs.play();
@@ -96,6 +97,7 @@ export class Citizen extends Entity<CitizenType> {
       animations: assets.run.animations,
       speed: 150 / 3000,
       autoUpdate: false,
+      loop: true,
     });
     body.scale = 1;
     body.play();

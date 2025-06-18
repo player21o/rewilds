@@ -20,6 +20,7 @@ class Dust extends GameObject {
       animations: assets.smoke_puff.animations,
       speed: 150 / 3000,
       autoUpdate: false,
+      loop: false,
     });
 
     this.puff = smoke;
