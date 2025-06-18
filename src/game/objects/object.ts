@@ -4,9 +4,18 @@ import { InputsManager } from "../input";
 import { ObjectManifest } from "../../assets/manifest";
 import { Ticker } from "pixi.js";
 
+/**
+ * a gameobject is like an... object??? i mean... it's just a game object
+ * the difference between an entity and a gameobject is that the entity is synced across the network, while the gameobject is just a local thing
+ * but entity inherits from gameobject. wow.
+ */
+
 export class GameObject {
   public culled = false;
   public new = true;
+  public rip = false;
+  public x: number = 0;
+  public y: number = 0;
 
   public init(
     // @ts-ignore
@@ -30,4 +39,9 @@ export class GameObject {
 
   public show() {}
   public hide() {}
+  public destroy() {
+    this.rip = true;
+    this.destory_container();
+  }
+  public destory_container() {}
 }

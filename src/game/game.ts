@@ -15,6 +15,10 @@ import { Viewport } from "pixi-viewport";
 import { Stats } from "pixi-stats";
 import layers from "./render/layers";
 
+/**
+ * the main class where all magic happens
+ */
+
 export class GameManager {
   public deps!: GameDependencies;
   private app: Application;
@@ -89,7 +93,7 @@ export class GameManager {
     return (ticker: Ticker) => {
       const deltaTime = ticker.deltaTime;
 
-      this.deps.entities.entities.forEach((e) => {
+      this.deps.entities.forEach((e) => {
         if (
           e.x < this.deps.viewport.left ||
           e.x > this.deps.viewport.left + this.app.renderer.width ||

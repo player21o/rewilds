@@ -6,6 +6,7 @@ import type growl_atlas_type from "../../public/assets/sprites/grunt/male/growl.
 import type female_run_atlas_type from "../../public/assets/sprites/grunt/female/run.json";
 import type female_growl_atlas_type from "../../public/assets/sprites/grunt/female/growl.json";
 import type shield_wooden_run_atlas_type from "../../public/assets/sprites/grunt/shield_wooden_run.json";
+import type smoke_puff_atlas_type from "../../public/assets/sprites/fx/smoke_puff.json";
 
 import { Howl } from "howler";
 
@@ -71,6 +72,12 @@ export const manifest = {
         {
           alias: "shield_wooden_run",
           src: "/assets/sprites/grunt/shield_wooden_run.json" as any as typeof shield_wooden_run_atlas_type,
+        },
+        {
+          alias: "smoke_puff",
+          src: "/assets/sprites/fx/smoke_puff.json" as any as Atlas<
+            typeof smoke_puff_atlas_type
+          >,
         },
       ],
     },
