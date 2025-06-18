@@ -95,7 +95,6 @@ export default {
       entity.sprites.legs.animations = assets.legs_run.animations;
       entity.sprites.body.speed = 150 / 3000;
       entity.sprites.legs.speed = 150 / 3000;
-      entity.sounds.male_growl.stop();
     },
     leave(_entity, _manager) {},
     render(dt, entity, _manager, _assets) {
@@ -122,9 +121,9 @@ export default {
       entity.sprites.body.first_frame = 2;
       entity.sprites.body.last_frame = 9;
 
-      entity.sounds.male_growl.play();
-      //entity.sprites.body.speed = (150 / 3000) * 2.5;
-      //entity.sprites.legs.speed = 150 / 3000;
+      entity.shared.gender == "male"
+        ? entity.sounds.male_growl.play()
+        : entity.sounds.female_growl.play();
     },
     step(dt, entity, _manager) {
       handle_movement(entity, dt);
@@ -136,6 +135,10 @@ export default {
 
       if (timer.every(0.5, entity.sid + "puff"))
         entities.add(new Dust(entity.x, entity.y));
+    },
+    leave(entity, _manager, _assets) {
+      entity.sounds.male_growl.stop();
+      entity.sounds.female_growl.stop();
     },
   },
 } as States<Citizen>;

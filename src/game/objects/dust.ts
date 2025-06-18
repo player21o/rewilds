@@ -40,8 +40,6 @@ export default class Dust extends GameObject {
     smoke.animation = "default";
     smoke.play();
 
-    console.log(assets.smoke_puff.animations);
-
     this.puff = smoke;
 
     container.addChild(smoke);

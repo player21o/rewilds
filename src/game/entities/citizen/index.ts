@@ -40,6 +40,7 @@ export class Citizen extends Entity<CitizenType> {
   public sounds = {
     footstep: audio_manifest.footstep(),
     male_growl: audio_manifest.male_growl(),
+    female_growl: audio_manifest.female_growl(),
   };
 
   private bar_needs_to_be_updated = true;
