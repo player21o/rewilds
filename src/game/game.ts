@@ -14,6 +14,7 @@ import { WS } from "./networking";
 import { Viewport } from "pixi-viewport";
 import { Stats } from "pixi-stats";
 import layers from "./render/layers";
+import timer from "./utils/timer";
 
 /**
  * the main class where all magic happens
@@ -91,6 +92,7 @@ export class GameManager {
 
   private ticker_cb(assets: ObjectManifest["bundles"]["game"]) {
     return (ticker: Ticker) => {
+      timer.update(ticker.elapsedMS);
       const deltaTime = ticker.deltaTime;
 
       this.deps.entities.forEach((e) => {

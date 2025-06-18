@@ -1,5 +1,6 @@
 import type { Citizen } from ".";
 import { circWrapTo, lookAt } from "../../utils";
+import timer from "../../utils/timer";
 import { States } from "../state";
 
 function handle_movement(entity: Citizen, dt: number) {
@@ -103,11 +104,10 @@ export default {
     },
     step(dt, entity, _manager) {
       handle_movement(entity, dt);
-      if (entity.isMoving && Date.now() - entity.played_footstep >= 500) {
+      if (entity.isMoving && timer.every(0.5, entity.sid)) {
         //console.log(entity.isMoving, Date.now(), entity.lastMoveDate);
         entity.sounds.footstep.rate(1 + (-1 + Math.random() * 2) * 0.2);
         entity.sounds.footstep.play();
-        entity.played_footstep = Date.now();
       }
     },
   },
