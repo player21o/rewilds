@@ -28,7 +28,7 @@ export default class Dust extends GameObject {
     container.x = this.x;
     container.y = this.y;
 
-    container.scale = 0.3;
+    container.scale = 0.15;
 
     const smoke = new GameSprite({
       animations: assets.smoke_puff.animations,
@@ -37,19 +37,20 @@ export default class Dust extends GameObject {
       loop: false,
     });
 
+    smoke.anchor = { x: 0.5, y: 0.5 };
+
     smoke.animation = "default";
     smoke.play();
 
     this.puff = smoke;
 
     container.addChild(smoke);
-    layers_collection.entities.attach(container);
+    layers_collection.ground.attach(container);
 
     return container;
   }
 
   public destory_container(): void {
-    console.log("d");
     this.container.destroy();
   }
 
@@ -66,6 +67,6 @@ export default class Dust extends GameObject {
 
     this.puff.update(elapsedMS);
 
-    if (this.puff.frame == this.puff.last_frame) this.destroy();
+    if (this.puff.frame == this.puff.last_frame) this.rip = true;
   }
 }

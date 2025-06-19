@@ -51,6 +51,10 @@ export class Citizen extends Entity<CitizenType> {
     });
   }
 
+  public destory_container() {
+    this.container.destroy();
+  }
+
   public hide(): void {
     this.container.visible = false;
   }

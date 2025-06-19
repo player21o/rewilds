@@ -100,6 +100,10 @@ export class GameSprite<
     this.frame = this.frame > f ? f : this.frame;
   }
 
+  get last_frame() {
+    return this._last_frame;
+  }
+
   set animations(v: T) {
     this._animations = v;
     //this.animation = Object.keys(v)[0];

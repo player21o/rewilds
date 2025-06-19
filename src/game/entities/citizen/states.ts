@@ -133,8 +133,8 @@ export default {
       handle_direction(entity, dt);
       handle_run_moving_animation(entity, 400 / 3000);
 
-      if (timer.every(0.5, entity.sid + "puff"))
-        entities.add(new Dust(entity.x, entity.y));
+      if (entity.shared.moving && timer.every(0.1, entity.sid + "puff"))
+        entities.add(new Dust(entity.x, entity.y + Math.random() * 6));
     },
     leave(entity, _manager, _assets) {
       entity.sounds.male_growl.stop();

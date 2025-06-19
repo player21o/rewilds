@@ -47,12 +47,15 @@ export class EntitiesManager {
 
   public remove(entity: Entity | GameObject | number) {
     if (entity instanceof Entity) {
+      entity.destroy();
       this.entities.splice(this.entities.indexOf(entity), 1);
       delete this.sid_map[entity.sid];
     } else if (entity instanceof GameObject) {
+      entity.destroy();
       this.objects.splice(this.objects.indexOf(entity), 1);
     } else {
       const rip = this.sid_map[entity];
+      rip.destroy();
       delete this.sid_map[entity];
       this.entities.splice(this.entities.indexOf(rip), 1);
     }

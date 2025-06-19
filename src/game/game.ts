@@ -31,10 +31,11 @@ export class GameManager {
   private txt!: Text;
 
   public stop() {
-    this.app.stop();
     this.deps.stop();
     this.ws.stop();
     Ticker.shared.remove(this.cb);
+    this.app.stop();
+    layers.stop();
   }
 
   constructor(app: Application, url: string) {
@@ -49,9 +50,11 @@ export class GameManager {
 
     app.stage.addChild(viewport);
 
-    Object.keys(layers).forEach((layer) =>
-      viewport.addChild(layers[layer as keyof typeof layers])
-    );
+    Object.keys(layers)
+      .filter((l) => l != "stop")
+      .forEach((layer) =>
+        viewport.addChild(layers[layer as keyof typeof layers] as any)
+      );
 
     Assets.init({ manifest: manifest as any as AssetsManifest });
     Assets.backgroundLoadBundle(["game"]);
