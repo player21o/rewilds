@@ -190,7 +190,7 @@ export class Citizen extends Entity<CitizenType> {
           250 / 4 + 62 - 2,
           stamina_bar_looks.radius,
           Math.PI / 2,
-          lerp(Math.PI / 2, 0, params.stamina / 10),
+          lerp(Math.PI / 2, 0, params.stamina / 1),
           true
         )
         .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
@@ -199,7 +199,7 @@ export class Citizen extends Entity<CitizenType> {
           250 / 4 + 62 - 2,
           stamina_bar_looks.radius,
           Math.PI / 2,
-          lerp(Math.PI / 2, Math.PI, params.stamina / 10),
+          lerp(Math.PI / 2, Math.PI, params.stamina / 1),
           false
         )
         .stroke({ color: 0xffffff, width: stamina_bar_looks.line_thickness })
@@ -214,7 +214,7 @@ export class Citizen extends Entity<CitizenType> {
         250 / 4 + 62 - 2,
         health_bar_looks.radius,
         Math.PI / 2,
-        lerp(Math.PI / 2, 0, this.shared.health / 10),
+        lerp(Math.PI / 2, 0, this.shared.health / this.shared.maxHealth),
         true
       )
       .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + health_bar_looks.radius)
@@ -223,7 +223,7 @@ export class Citizen extends Entity<CitizenType> {
         250 / 4 + 62 - 2,
         health_bar_looks.radius,
         Math.PI / 2,
-        lerp(Math.PI / 2, Math.PI, this.shared.health / 10),
+        lerp(Math.PI / 2, Math.PI, this.shared.health / this.shared.maxHealth),
         false
       )
       .stroke({
