@@ -1,3 +1,4 @@
+import { Graphics } from "pixi.js";
 import { GameObject } from "../objects/object";
 
 /**

@@ -8,6 +8,9 @@ import { StateManager } from "../state";
 import states from "./states";
 import layers from "../../render/layers";
 import { GameDependencies } from "../../game_deps";
+import { EntitiesManager } from "..";
+import Footstep from "../../objects/footstep";
+import timer from "../../utils/timer";
 
 export class Citizen extends Entity<CitizenType> {
   public sprites!: {
@@ -147,6 +150,8 @@ export class Citizen extends Entity<CitizenType> {
     }
 
     this.palette_container.zIndex = this.y;
+
+    this.render_stains(dp.entities);
   }
 
   public update_bar_params(params: typeof this.bar_params) {
@@ -235,5 +240,16 @@ export class Citizen extends Entity<CitizenType> {
   private update_anims(elapsed: number) {
     this.sprites.body.update(elapsed);
     this.sprites.legs.update(elapsed);
+  }
+
+  private render_stains(entities: EntitiesManager) {
+    if (this.isMoving && timer.every(0.5, "footstep_" + this.sid)) {
+      entities.add(
+        new Footstep(
+          this.x + Math.random() * 8 - 4,
+          this.y + Math.random() * 8 - 4
+        )
+      );
+    }
   }
 }
