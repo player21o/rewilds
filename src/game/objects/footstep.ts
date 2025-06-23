@@ -3,6 +3,7 @@ import { GameObject } from "./object";
 import { ObjectManifest } from "../../assets/manifest";
 import layers from "../render/layers";
 import { GameDependencies } from "../game_deps";
+import timer from "../utils/timer";
 
 const ctx = new GraphicsContext()
   .rect(0, 0, 3, 3)
@@ -39,13 +40,15 @@ export default class Footstep extends GameObject {
   }
 
   public render(
-    dt: number,
+    _dt: number,
     _: GameDependencies,
     ___: ObjectManifest["bundles"]["game"],
     ____: Ticker
   ): void {
-    this.graphics.alpha -= 0.005 * dt;
+    if (timer.every(0.2, "stains")) {
+      this.graphics.alpha -= 0.05;
+    }
 
-    if (this.graphics.alpha == 0) this.rip = true;
+    if (this.graphics.alpha <= 0 || this.culled) this.rip = true;
   }
 }

@@ -121,9 +121,13 @@ export default {
       entity.sprites.body.first_frame = 2;
       entity.sprites.body.last_frame = 9;
 
-      entity.shared.gender == "male"
-        ? entity.sounds.male_growl.play()
-        : entity.sounds.female_growl.play();
+      const growl_sound =
+        entity.shared.gender == "male"
+          ? entity.sounds.male_growl
+          : entity.sounds.female_growl;
+
+      growl_sound.play();
+      growl_sound.fade(0, 1, 1);
     },
     step(dt, entity, _manager) {
       handle_movement(entity, dt);
