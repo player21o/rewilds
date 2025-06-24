@@ -21,8 +21,8 @@ function handle_direction(entity: Citizen, dt: number) {
   const direction_for_sprite = lookAt(
     0,
     0,
-    Math.cos(entity.direction) * 16,
-    1.4 * Math.sin(entity.direction) * 16
+    Math.cos(entity.direction) * entity.sprites.body.total_animations,
+    1.4 * Math.sin(entity.direction) * entity.sprites.body.total_animations
   );
 
   const row =
@@ -143,6 +143,21 @@ export default {
     leave(entity, _manager, _assets) {
       entity.sounds.male_growl.stop();
       entity.sounds.female_growl.stop();
+    },
+  },
+  attack: {
+    enter(entity, manager, assets) {
+      entity.sprites.body.animations =
+        assets.female_attack_horizontal.animations;
+      entity.sprites.body.speed = 
+    },
+    step(dt, entity, _manager) {
+      handle_movement(entity, dt);
+    },
+    render(dt, entity, { entities }, _manager, _assets) {
+      handle_body_bobbing(entity);
+      handle_direction(entity, dt);
+      handle_run_moving_animation(entity, 400 / 3000);
     },
   },
 } as States<Citizen>;

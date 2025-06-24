@@ -7,6 +7,10 @@ import type female_run_atlas_type from "../../public/assets/sprites/grunt/female
 import type female_growl_atlas_type from "../../public/assets/sprites/grunt/female/growl.json";
 import type shield_wooden_run_atlas_type from "../../public/assets/sprites/grunt/shield_wooden_run.json";
 import type smoke_puff_atlas_type from "../../public/assets/sprites/fx/smoke_puff.json";
+import type male_attack_horizontal_atlas_type from "../../public/assets/sprites/grunt/male/attack_horizontal.json";
+import type male_attack_vertical_atlas_type from "../../public/assets/sprites/grunt/male/attack_vertical.json";
+import type female_attack_horizontal_atlas_type from "../../public/assets/sprites/grunt/female/attack_horizontal.json";
+import type female_attack_vertical_atlas_type from "../../public/assets/sprites/grunt/female/attack_vertical.json";
 
 import { Howl } from "howler";
 
@@ -77,6 +81,30 @@ export const manifest = {
           alias: "smoke_puff",
           src: "/assets/sprites/fx/smoke_puff.json" as any as Atlas<
             typeof smoke_puff_atlas_type
+          >,
+        },
+        {
+          alias: "male_attack_horizontal",
+          src: "/assets/sprites/grunt/male/attack_horizontal.json" as any as Atlas<
+            typeof male_attack_horizontal_atlas_type
+          >,
+        },
+        {
+          alias: "male_attack_vertical",
+          src: "/assets/sprites/grunt/male/attack_vertical.json" as any as Atlas<
+            typeof male_attack_vertical_atlas_type
+          >,
+        },
+        {
+          alias: "female_attack_horizontal",
+          src: "/assets/sprites/grunt/female/attack_horizontal.json" as any as Atlas<
+            typeof female_attack_horizontal_atlas_type
+          >,
+        },
+        {
+          alias: "female_attack_vertical",
+          src: "/assets/sprites/grunt/female/attack_vertical.json" as any as Atlas<
+            typeof female_attack_vertical_atlas_type
           >,
         },
       ],

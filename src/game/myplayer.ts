@@ -32,6 +32,7 @@ export class MyPlayer {
     inputs.on_mouse_move(this.mouse_callback());
     inputs.on_right_button_pressed(this.right_mouse_down_callback());
     inputs.on_right_button_released(this.right_mouse_up_callback());
+    inputs.on_left_button_pressed(this.left_mouse_down_callback());
 
     entities.on_entity_created(this.on_entity_created_cb(this.test_if_enemy));
     this.entities = entities;
@@ -54,6 +55,12 @@ export class MyPlayer {
 
   private test_if_enemy(e: Citizen) {
     return e.shared.team == 2;
+  }
+
+  private left_mouse_down_callback(): (arg0: InputsManager) => void {
+    return () => {
+      this.send("action", "attack");
+    };
   }
 
   private right_mouse_down_callback(): (arg0: InputsManager) => void {
