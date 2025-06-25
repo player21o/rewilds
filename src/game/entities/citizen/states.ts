@@ -25,21 +25,25 @@ function handle_direction(entity: Citizen, dt: number) {
     1.4 * Math.sin(entity.direction) * entity.sprites.body.total_animations
   );
 
-  const row =
+  const body_row =
     (((direction_for_sprite - fo) / (Math.PI * 2)) *
       entity.sprites.body.total_animations) |
     0;
+  const legs_row =
+    (((direction_for_sprite - fo) / (Math.PI * 2)) *
+      entity.sprites.legs.total_animations) |
+    0;
 
   if (
-    entity.last_turn_row != row &&
-    row > 0 &&
-    row < entity.sprites.body.total_animations
+    entity.last_turn_row != body_row &&
+    body_row > 0 &&
+    body_row < entity.sprites.body.total_animations
   ) {
-    entity.last_turn_row = row;
+    entity.last_turn_row = body_row;
 
-    entity.sprites.body.animation = `frame_row_${row.toString()}` as any;
+    entity.sprites.body.animation = `frame_row_${body_row.toString()}` as any;
 
-    entity.sprites.legs.animation = `frame_row_${row.toString()}` as any;
+    entity.sprites.legs.animation = `frame_row_${legs_row.toString()}` as any;
   }
 }
 
@@ -74,9 +78,13 @@ function handle_body_bobbing(entity: Citizen) {
   entity.sprites.body.y = finalBodyRelativeY;
 }
 
-function handle_run_moving_animation(entity: Citizen, duration: number) {
+function handle_run_moving_animation(
+  entity: Citizen,
+  duration: number,
+  multiplier: number = 2.5
+) {
   if (!entity.isMoving) {
-    entity.sprites.body.speed = duration * 2.5;
+    entity.sprites.body.speed = duration * multiplier;
     entity.sprites.legs.stop();
     entity.sprites.legs.frame = 19;
   } else {
@@ -146,18 +154,21 @@ export default {
     },
   },
   attack: {
-    enter(entity, manager, assets) {
+    enter(entity, _manager, assets) {
       entity.sprites.body.animations =
-        assets.female_attack_horizontal.animations;
-      entity.sprites.body.speed = 
+        entity.shared.gender == "male"
+          ? assets.male_attack_horizontal.animations
+          : assets.female_attack_horizontal.animations;
+      entity.last_turn_row = -1;
+      entity.sprites.body.speed = 100 / 3000;
     },
     step(dt, entity, _manager) {
       handle_movement(entity, dt);
     },
-    render(dt, entity, { entities }, _manager, _assets) {
+    render(dt, entity, _, _manager, _assets) {
       handle_body_bobbing(entity);
       handle_direction(entity, dt);
-      handle_run_moving_animation(entity, 400 / 3000);
+      handle_run_moving_animation(entity, 100 / 3000, 1);
     },
   },
 } as States<Citizen>;

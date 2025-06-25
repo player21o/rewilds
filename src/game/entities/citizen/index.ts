@@ -14,10 +14,8 @@ import timer from "../../utils/timer";
 
 export class Citizen extends Entity<CitizenType> {
   public sprites!: {
-    legs: GameSprite<
-      ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
-    >;
-    body: GameSprite<ObjectManifest["bundles"]["game"]["run"]["animations"]>;
+    legs: GameSprite;
+    body: GameSprite;
     bars: Graphics;
   };
   public container!: Container;

@@ -44,6 +44,7 @@ export class MyPlayer {
     this.citizen.update_bar_params({
       ...this.citizen.bar_params,
       stamina: this.private_data.stamina,
+      hide_stamina: false,
     });
   }
 
@@ -111,10 +112,7 @@ export class MyPlayer {
 
   set citizen(value: Citizen | null) {
     this._citizen = value;
-    this._citizen!.update_bar_params({
-      ...this._citizen!.bar_params,
-      hide_stamina: false,
-    });
+    this.update_private_data();
 
     this.citizen!.bar_params.enemy = false;
 

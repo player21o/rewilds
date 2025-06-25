@@ -10,7 +10,7 @@ type GameSpriteOptions = {
 };
 
 export class GameSprite<
-  T extends GameSpriteOptions["animations"]
+  T extends GameSpriteOptions["animations"] = any
 > extends Sprite {
   private _animations: T;
   private _anim!: keyof T;
@@ -75,7 +75,11 @@ export class GameSprite<
   }
 
   private updateTexture() {
-    this.texture = this._animations[this._anim][this._frame];
+    if (this._anim in this._animations) {
+      this.texture = this._animations[this._anim][this._frame];
+    } else {
+      throw "Didn`t find any texture";
+    }
   }
 
   set animation(anim: keyof T) {

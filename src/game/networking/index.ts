@@ -19,6 +19,8 @@ export class WS {
     this.ws = ws;
     this.game = game;
 
+    ws.onopen = () => this.send("hello");
+
     ws.onmessage = ({ data }) => {
       (data as Blob).arrayBuffer().then((buffer) => {
         const packet: [packet: number, ...args: any[]] = unpack(buffer) as any;
