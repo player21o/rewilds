@@ -80,3 +80,7 @@ export function circWrapTo(
   // 6. Normalize the new angle again
   return circWrap(newAngle, circleRadians);
 }
+
+export function choose(arr: any[]) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}

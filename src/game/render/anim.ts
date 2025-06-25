@@ -78,7 +78,7 @@ export class GameSprite<
     if (this._anim in this._animations) {
       this.texture = this._animations[this._anim][this._frame];
     } else {
-      throw "Didn`t find any texture";
+      console.warn("Didn`t find any texture");
     }
   }
 

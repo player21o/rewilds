@@ -1,6 +1,6 @@
 import type { Citizen } from ".";
 import Dust from "../../objects/dust";
-import { circWrapTo, lookAt } from "../../utils";
+import { choose, circWrapTo, lookAt } from "../../utils";
 import timer from "../../utils/timer";
 import { States } from "../state";
 
@@ -157,8 +157,14 @@ export default {
     enter(entity, _manager, assets) {
       entity.sprites.body.animations =
         entity.shared.gender == "male"
-          ? assets.male_attack_horizontal.animations
-          : assets.female_attack_horizontal.animations;
+          ? choose([
+              assets.male_attack_horizontal.animations,
+              assets.male_attack_vertical.animations,
+            ])
+          : choose([
+              assets.female_attack_horizontal.animations,
+              assets.female_attack_vertical.animations,
+            ]);
       entity.last_turn_row = -1;
       entity.sprites.body.speed = 100 / 3000;
     },
