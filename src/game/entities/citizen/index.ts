@@ -2,7 +2,7 @@ import { Container, Graphics, Ticker } from "pixi.js";
 import { CitizenType } from "../../../common/interfaces";
 import { Entity } from "../entity";
 import { audio_manifest, ObjectManifest } from "../../../assets/manifest";
-import { lerp, palette } from "../../utils";
+import { lerp, moveTo, palette } from "../../utils";
 import { GameSprite } from "../../render/anim";
 import { StateManager } from "../state";
 import states from "./states";
@@ -32,10 +32,12 @@ export class Citizen extends Entity<CitizenType> {
     enemy: boolean;
     stamina: number;
     hide_stamina: boolean;
+    current_stamina: number;
   } = {
     enemy: false,
     stamina: 0.5,
     hide_stamina: true,
+    current_stamina: 0.4,
   };
 
   public sounds = {
@@ -43,8 +45,6 @@ export class Citizen extends Entity<CitizenType> {
     male_growl: audio_manifest.male_growl(),
     female_growl: audio_manifest.female_growl(),
   };
-
-  private bar_needs_to_be_updated = true;
 
   public on_first_appearance(): void {
     Object.keys(this.sounds).forEach((sound) => {
@@ -142,36 +142,46 @@ export class Citizen extends Entity<CitizenType> {
     this.state.render(deltaTime, dp, assets);
 
     this.update_anims(elapsedMS);
-    if (this.bar_needs_to_be_updated) {
-      this.update_bars();
-      this.bar_needs_to_be_updated = false;
-    }
+
+    const bar_needs_to_be_updated =
+      this.bar_params.current_stamina != this.bar_params.stamina;
+
+    if (bar_needs_to_be_updated) this.update_bars(deltaTime);
 
     this.palette_container.zIndex = this.y;
 
     this.render_stains(dp.entities);
   }
 
-  public update_bar_params(params: typeof this.bar_params) {
-    this.bar_params = params;
-    this.bar_needs_to_be_updated = true;
+  public update_bar_params(params: Partial<typeof this.bar_params>) {
+    this.bar_params = { ...this.bar_params, ...params };
   }
 
-  private update_bars() {
+  private update_bars(dt: number) {
     const params = this.bar_params;
     const bars = this.sprites.bars;
 
-    const stamina_bar_looks = { line_thickness: 3, radius: 12 };
+    this.update_bar_params({
+      current_stamina: moveTo(
+        this.bar_params.current_stamina,
+        this.bar_params.stamina,
+        Math.abs(this.bar_params.current_stamina - this.bar_params.stamina) *
+          (dt / 50) *
+          2.0
+      ),
+    });
+
+    const stamina_bar_looks = { line_thickness: 3, radius: 10.5 };
     const health_bar_looks = {
       line_thickness: 3,
-      radius: 17,
+      radius: 15,
       color: !params.enemy ? 0x37946e : 0xaa0000,
     };
 
     bars.clear();
 
     bars
-      .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 13)
+      .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 12)
       .fill({ alpha: 0.25, color: 0x000000 })
       .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
       .closePath();
@@ -193,7 +203,7 @@ export class Citizen extends Entity<CitizenType> {
           250 / 4 + 62 - 2,
           stamina_bar_looks.radius,
           Math.PI / 2,
-          lerp(Math.PI / 2, 0, params.stamina / 1),
+          lerp(Math.PI / 2, 0, params.current_stamina / 1),
           true
         )
         .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
@@ -202,7 +212,7 @@ export class Citizen extends Entity<CitizenType> {
           250 / 4 + 62 - 2,
           stamina_bar_looks.radius,
           Math.PI / 2,
-          lerp(Math.PI / 2, Math.PI, params.stamina / 1),
+          lerp(Math.PI / 2, Math.PI, params.current_stamina / 1),
           false
         )
         .stroke({ color: 0xffffff, width: stamina_bar_looks.line_thickness })
@@ -214,16 +224,16 @@ export class Citizen extends Entity<CitizenType> {
     bars
       .arc(
         250 / 4 - 3,
-        250 / 4 + 62 - 2,
+        250 / 4 + 62 - 1,
         health_bar_looks.radius,
         Math.PI / 2,
         lerp(Math.PI / 2, 0, this.shared.health / this.shared.maxHealth),
         true
       )
-      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + health_bar_looks.radius)
+      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + health_bar_looks.radius)
       .arc(
         250 / 4 - 3,
-        250 / 4 + 62 - 2,
+        250 / 4 + 62 - 1,
         health_bar_looks.radius,
         Math.PI / 2,
         lerp(Math.PI / 2, Math.PI, this.shared.health / this.shared.maxHealth),

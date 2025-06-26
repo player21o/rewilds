@@ -84,3 +84,18 @@ export function circWrapTo(
 export function choose(arr: any[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
+
+export function moveTo(current: number, target: number, step: number): number {
+  // If we are already at (or very close to) the target, return the target to prevent floating point issues.
+  if (Math.abs(target - current) <= step) {
+    return target;
+  }
+
+  // Determine the direction of movement (1 for positive, -1 for negative)
+  // and move the value by the step amount.
+  if (target > current) {
+    return current + step;
+  } else {
+    return current - step;
+  }
+}
