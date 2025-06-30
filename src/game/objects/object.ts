@@ -3,6 +3,7 @@ import layers from "../render/layers";
 import { ObjectManifest } from "../../assets/manifest";
 import { Ticker } from "pixi.js";
 import { GameDependencies } from "../game_deps";
+import { Timer } from "../utils/timer";
 
 /**
  * a gameobject is like an... object??? i mean... it's just a game object
@@ -17,6 +18,8 @@ export class GameObject {
   public x: number = 0;
   public y: number = 0;
 
+  public timer: Timer = new Timer();
+
   public init(
     // @ts-ignore
     assets: ObjectManifest["bundles"]["game"],
@@ -26,7 +29,7 @@ export class GameObject {
     return;
   }
 
-  public step(__: number, _: GameDependencies): any {}
+  public step(__: number, _: GameDependencies, ___: Ticker): any {}
 
   public render(
     _____: number,

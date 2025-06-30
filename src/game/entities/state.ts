@@ -40,6 +40,7 @@ export class StateManager<T = any> {
       s.enter(this.entity, this, this.assets);
   }
 
+  /*
   public render(
     dt: number,
     dp: GameDependencies,
@@ -49,10 +50,15 @@ export class StateManager<T = any> {
     if (state.render != undefined)
       state.render(dt, this.entity, dp, this, assets);
   }
+    */
 
-  public step(dt: number) {
+  public step(
+    dt: number,
+    dp: GameDependencies,
+    assets: ObjectManifest["bundles"]["game"]
+  ) {
     const state = this.states[this.state as keyof typeof this.states];
-    if (state.step != undefined) state.step(dt, this.entity, this);
+    if (state.step != undefined) state.step(dt, this.entity, dp, this, assets);
   }
 }
 
@@ -68,7 +74,14 @@ export type States<T extends Entity = any> = {
       manager: StateManager,
       assets: ObjectManifest["bundles"]["game"]
     ) => void;
-    step?: (dt: number, entity: T, manager: StateManager) => void;
+    step?: (
+      dt: number,
+      entity: T,
+      dp: GameDependencies,
+      manager: StateManager,
+      assets: ObjectManifest["bundles"]["game"]
+    ) => void;
+    /*
     render?: (
       dt: number,
       entity: T,
@@ -76,5 +89,6 @@ export type States<T extends Entity = any> = {
       manager: StateManager,
       assets: ObjectManifest["bundles"]["game"]
     ) => void;
+     */
   };
 };

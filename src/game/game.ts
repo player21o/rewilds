@@ -110,7 +110,7 @@ export class GameManager {
         } else {
           e.show();
 
-          e.step(deltaTime, this.deps);
+          e.step(deltaTime, this.deps, ticker);
           e.render(deltaTime, this.deps, assets, ticker);
 
           if (e.new) {

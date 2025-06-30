@@ -10,7 +10,6 @@ import layers from "../../render/layers";
 import { GameDependencies } from "../../game_deps";
 import { EntitiesManager } from "..";
 import Footstep from "../../objects/footstep";
-import timer from "../../utils/timer";
 
 export class Citizen extends Entity<CitizenType> {
   public sprites!: {
@@ -122,9 +121,10 @@ export class Citizen extends Entity<CitizenType> {
     return container;
   }
 
-  public step(dt: number) {
+  public step(_: number, __: GameDependencies, { elapsedMS }: Ticker) {
     this.state.set(this.shared.state);
-    this.state.step(dt);
+    this.timer.update(elapsedMS);
+    //console.log(this.shared.growling);
   }
 
   public render(
@@ -139,7 +139,7 @@ export class Citizen extends Entity<CitizenType> {
     );
     this.container.position.set(this.x, this.y);
 
-    this.state.render(deltaTime, dp, assets);
+    this.state.step(deltaTime, dp, assets);
 
     this.update_anims(elapsedMS);
 
@@ -251,7 +251,7 @@ export class Citizen extends Entity<CitizenType> {
   }
 
   private render_stains(entities: EntitiesManager) {
-    if (this.isMoving && timer.every(0.5, "footstep_" + this.sid)) {
+    if (this.isMoving && this.timer.every(0.5, "footstep")) {
       entities.add(
         new Footstep(
           this.x + Math.random() * 8 - 4,
