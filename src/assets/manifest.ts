@@ -2,8 +2,10 @@ import type { Texture } from "pixi.js";
 import type key_atlas_type from "../../public/assets/sprites/pickups/key.json";
 import type legs_run_atlas_type from "../../public/assets/sprites/grunt/legs_run.json";
 import type run_atlas_type from "../../public/assets/sprites/grunt/male/run.json";
+import type run_no_shield_atlas_type from "../../public/assets/sprites/grunt/male/run_no_shield.json";
 import type growl_atlas_type from "../../public/assets/sprites/grunt/male/growl.json";
 import type female_run_atlas_type from "../../public/assets/sprites/grunt/female/run.json";
+import type female_run_no_shield_atlas_type from "../../public/assets/sprites/grunt/female/run_no_shield.json";
 import type female_growl_atlas_type from "../../public/assets/sprites/grunt/female/growl.json";
 import type shield_wooden_run_atlas_type from "../../public/assets/sprites/grunt/shield_wooden_run.json";
 import type smoke_puff_atlas_type from "../../public/assets/sprites/fx/smoke_puff.json";
@@ -11,6 +13,10 @@ import type male_attack_horizontal_atlas_type from "../../public/assets/sprites/
 import type male_attack_vertical_atlas_type from "../../public/assets/sprites/grunt/male/attack_vertical.json";
 import type female_attack_horizontal_atlas_type from "../../public/assets/sprites/grunt/female/attack_horizontal.json";
 import type female_attack_vertical_atlas_type from "../../public/assets/sprites/grunt/female/attack_vertical.json";
+import type female_punch1_atlas_type from "../../public/assets/sprites/grunt/female/punch1.json";
+import type female_punch2_atlas_type from "../../public/assets/sprites/grunt/female/punch2.json";
+import type male_punch1_atlas_type from "../../public/assets/sprites/grunt/male/punch1.json";
+import type male_punch2_atlas_type from "../../public/assets/sprites/grunt/male/punch2.json";
 
 import { Howl } from "howler";
 
@@ -56,6 +62,12 @@ export const manifest = {
           >,
         },
         {
+          alias: "no_shield_run",
+          src: "/assets/sprites/grunt/male/run_no_shield.json" as any as Atlas<
+            typeof run_no_shield_atlas_type
+          >,
+        },
+        {
           alias: "growl",
           src: "/assets/sprites/grunt/male/growl.json" as any as Atlas<
             typeof growl_atlas_type
@@ -65,6 +77,12 @@ export const manifest = {
           alias: "female_run",
           src: "/assets/sprites/grunt/female/run.json" as any as Atlas<
             typeof female_run_atlas_type
+          >,
+        },
+        {
+          alias: "female_no_shield_run",
+          src: "/assets/sprites/grunt/female/run_no_shield.json" as any as Atlas<
+            typeof female_run_no_shield_atlas_type
           >,
         },
         {
@@ -105,6 +123,31 @@ export const manifest = {
           alias: "female_attack_vertical",
           src: "/assets/sprites/grunt/female/attack_vertical.json" as any as Atlas<
             typeof female_attack_vertical_atlas_type
+          >,
+        },
+        {
+          alias: "female_punch1",
+          src: "/assets/sprites/grunt/female/punch1.json" as any as Atlas<
+            typeof female_punch1_atlas_type
+          >,
+        },
+        {
+          alias: "female_punch2",
+          src: "/assets/sprites/grunt/female/punch2.json" as any as Atlas<
+            typeof female_punch2_atlas_type
+          >,
+        },
+
+        {
+          alias: "male_punch1",
+          src: "/assets/sprites/grunt/male/punch1.json" as any as Atlas<
+            typeof male_punch1_atlas_type
+          >,
+        },
+        {
+          alias: "male_punch2",
+          src: "/assets/sprites/grunt/male/punch2.json" as any as Atlas<
+            typeof male_punch2_atlas_type
           >,
         },
       ],

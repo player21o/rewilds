@@ -1,9 +1,23 @@
 import type { Citizen } from ".";
 import { EntitiesManager } from "..";
 import { ObjectManifest } from "../../../assets/manifest";
+import { ConstructorsObject } from "../../../common/constructors";
 import Dust from "../../objects/dust";
 import { choose, circWrapTo, lookAt } from "../../utils";
 import { States } from "../state";
+
+const weapons_data: {
+  [T in ConstructorsObject["Citizen"]["weapon"]]: {
+    attack_animations: string[];
+  };
+} = {
+  axe: {
+    attack_animations: ["attack_horizontal", "attack_vertical"],
+  },
+  no_weapon: {
+    attack_animations: ["punch1", "punch2"],
+  },
+};
 
 function handle_movement(entity: Citizen, dt: number) {
   entity.x += (entity.shared.x - entity.x) * 0.3 * dt;
@@ -92,7 +106,11 @@ function idle_enter(
 ) {
   entity.sprites.body.animations =
     entity.shared.gender == "male"
-      ? assets.run.animations
+      ? entity.shared.shield == "no_shield"
+        ? assets.no_shield_run.animations
+        : assets.run.animations
+      : entity.shared.shield == "no_shield"
+      ? assets.female_no_shield_run.animations
       : assets.female_run.animations;
   entity.sprites.legs.animations = assets.legs_run.animations;
   entity.sprites.body.speed = 150 / 3000;
@@ -171,6 +189,7 @@ export default {
   },
   attack: {
     enter(entity, _manager, assets) {
+      /*
       entity.sprites.body.animations =
         entity.shared.gender == "male"
           ? choose([
@@ -181,6 +200,17 @@ export default {
               assets.female_attack_horizontal.animations,
               assets.female_attack_vertical.animations,
             ]);
+      */
+      entity.sprites.body.animations = choose(
+        weapons_data[entity.shared.weapon].attack_animations.map(
+          (anim) =>
+            (
+              assets[
+                (entity.shared.gender + "_" + anim) as keyof typeof assets
+              ] as any
+            ).animations
+        )
+      );
       entity.last_turn_row = -1;
       entity.sprites.body.speed = 100 / 3000;
     },
