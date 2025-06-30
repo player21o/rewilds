@@ -8,8 +8,10 @@ export class Timer {
 
   private every_timers: { [id: string]: { interval: number; last: number } } =
     {};
-  private key_listeners: Map<object, { keys: any[]; last_values: object }> =
-    new Map();
+  private key_listeners: Map<
+    object,
+    { keys: any[]; last_values: { [a: string]: any } }
+  > = new Map();
 
   public update(elapsedMS: number) {
     this.time += elapsedMS / 1000;
@@ -32,24 +34,17 @@ export class Timer {
       const vals = this.key_listeners.get(object)!;
 
       if (vals.keys.includes(key)) {
-        //console.log(
-        //  vals.last_values[key as keyof typeof vals.last_values],
-        //  object[key],
-        //  JSON.stringify(object)
-        //);
         const changed =
           vals.last_values[key as keyof typeof vals.last_values] != object[key];
-        if (changed)
-          this.key_listeners.set(object, {
-            keys: [...vals.keys],
-            last_values: { ...vals.last_values, [key]: object[key] },
-          });
-        return true;
+        vals.last_values[key as any] = object[key];
+        return changed;
       } else {
         this.key_listeners.set(object, {
           keys: [...vals.keys, key],
           last_values: { ...vals.last_values, [key]: object[key] },
         });
+        vals.keys.push(key);
+        vals.last_values[key as any] = object[key];
         return false;
       }
     } else {

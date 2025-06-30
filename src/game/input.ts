@@ -28,24 +28,24 @@ export class InputsManager {
       this.mouseMovedCallbacks.forEach((cb) => cb(this));
     };
 
-    viewport.onmousedown = (e) => {
+    window.onmousedown = (e) => {
       e.preventDefault();
-      this.onLeftButtonPressedCallbacks.forEach((cb) => cb(this));
+
+      if (e.button == 0)
+        this.onLeftButtonPressedCallbacks.forEach((cb) => cb(this));
+
+      if (e.button == 2)
+        this.onRightButtonPressedCallbacks.forEach((cb) => cb(this));
     };
 
-    viewport.onrightdown = (e) => {
+    window.onmouseup = (e) => {
       e.preventDefault();
-      this.onRightButtonPressedCallbacks.forEach((cb) => cb(this));
-    };
 
-    viewport.onmouseup = (e) => {
-      e.preventDefault();
-      this.onLeftButtonReleasedCallbacks.forEach((cb) => cb(this));
-    };
+      if (e.button == 0)
+        this.onLeftButtonReleasedCallbacks.forEach((cb) => cb(this));
 
-    viewport.onrightup = (e) => {
-      e.preventDefault();
-      this.onRightButtonReleasedCallbacks.forEach((cb) => cb(this));
+      if (e.button == 2)
+        this.onRightButtonReleasedCallbacks.forEach((cb) => cb(this));
     };
 
     window.onkeydown = (e) => {

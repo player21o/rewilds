@@ -1,4 +1,5 @@
 import type { Citizen } from ".";
+import { EntitiesManager } from "..";
 import { ObjectManifest } from "../../../assets/manifest";
 import Dust from "../../objects/dust";
 import { choose, circWrapTo, lookAt } from "../../utils";
@@ -13,7 +14,8 @@ function handle_movement(entity: Citizen, dt: number) {
 
 function handle_growling(
   entity: Citizen,
-  assets: ObjectManifest["bundles"]["game"]
+  assets: ObjectManifest["bundles"]["game"],
+  entities: EntitiesManager
 ) {
   if (entity.timer.on_key_change(entity.shared, "growling")) {
     if (entity.shared.growling) {
@@ -35,8 +37,17 @@ function handle_growling(
     } else {
       entity.sounds.male_growl.stop();
       entity.sounds.female_growl.stop();
+
+      idle_enter(entity, assets);
     }
   }
+
+  if (
+    entity.shared.growling &&
+    entity.isMoving &&
+    entity.timer.every(0.1, "puff")
+  )
+    entities.add(new Dust(entity.x, entity.y + Math.random() * 6));
 }
 
 function handle_direction(entity: Citizen, dt: number) {
@@ -75,6 +86,19 @@ function handle_direction(entity: Citizen, dt: number) {
   }
 }
 
+function idle_enter(
+  entity: Citizen,
+  assets: ObjectManifest["bundles"]["game"]
+) {
+  entity.sprites.body.animations =
+    entity.shared.gender == "male"
+      ? assets.run.animations
+      : assets.female_run.animations;
+  entity.sprites.legs.animations = assets.legs_run.animations;
+  entity.sprites.body.speed = 150 / 3000;
+  entity.sprites.legs.speed = 150 / 3000;
+}
+
 function handle_body_bobbing(entity: Citizen) {
   const legsZ = [
     0, 0, 0.12697569202151154, 0.5555609039391696, 0.9148130001424937,
@@ -108,88 +132,43 @@ function handle_body_bobbing(entity: Citizen) {
 
 function handle_run_moving_animation(
   entity: Citizen,
-  duration: number,
+  duration?: number,
   multiplier: number = 2.5
 ) {
+  const speed =
+    duration != undefined
+      ? duration
+      : (entity.shared.growling ? 400 : 150) / 3000;
+
   if (!entity.isMoving) {
-    entity.sprites.body.speed = duration * multiplier;
+    entity.sprites.body.speed = speed * multiplier;
     entity.sprites.legs.stop();
     entity.sprites.legs.frame = 19;
   } else {
     entity.sprites.legs.play();
-    entity.sprites.body.speed = duration;
+    entity.sprites.body.speed = speed;
   }
 }
 
 export default {
   idle: {
     enter(entity, _manager, assets) {
-      entity.sprites.body.animations =
-        entity.shared.gender == "male"
-          ? assets.run.animations
-          : assets.female_run.animations;
-      entity.sprites.legs.animations = assets.legs_run.animations;
-      entity.sprites.body.speed = 150 / 3000;
-      entity.sprites.legs.speed = 150 / 3000;
+      idle_enter(entity, assets);
     },
     leave(_entity, _manager) {},
     step(dt, entity, { entities }, _manager, assets) {
       handle_movement(entity, dt);
-      handle_growling(entity, assets);
+      handle_growling(entity, assets, entities);
       if (entity.isMoving && entity.timer.every(0.5, "footstep")) {
-        //console.log(entity.isMoving, Date.now(), entity.lastMoveDate);
         entity.sounds.footstep.rate(1 + (-1 + Math.random() * 2) * 0.2);
         entity.sounds.footstep.play();
       }
 
       handle_body_bobbing(entity);
       handle_direction(entity, dt);
-      handle_run_moving_animation(entity, 150 / 3000);
-
-      if (
-        entity.shared.growling &&
-        entity.isMoving &&
-        entity.timer.every(0.1, "puff")
-      )
-        entities.add(new Dust(entity.x, entity.y + Math.random() * 6));
+      handle_run_moving_animation(entity);
     },
   },
-  /*
-  growl: {
-    enter(entity, _manager, assets) {
-      entity.sprites.body.animations =
-        entity.shared.gender == "male"
-          ? assets.growl.animations
-          : assets.female_growl.animations;
-      entity.sprites.legs.animations = assets.legs_run.animations;
-      entity.sprites.body.first_frame = 2;
-      entity.sprites.body.last_frame = 9;
-
-      const growl_sound =
-        entity.shared.gender == "male"
-          ? entity.sounds.male_growl
-          : entity.sounds.female_growl;
-
-      growl_sound.play();
-      growl_sound.fade(0, 1, 1);
-    },
-    step(dt, entity, _manager) {
-      handle_movement(entity, dt);
-    },
-    render(dt, entity, { entities }, _manager, _assets) {
-      handle_body_bobbing(entity);
-      handle_direction(entity, dt);
-      handle_run_moving_animation(entity, 400 / 3000);
-
-      if (entity.shared.moving && timer.every(0.1, entity.sid + "puff"))
-        entities.add(new Dust(entity.x, entity.y + Math.random() * 6));
-    },
-    leave(entity, _manager, _assets) {
-      entity.sounds.male_growl.stop();
-      entity.sounds.female_growl.stop();
-    },
-  },
-  */
   attack: {
     enter(entity, _manager, assets) {
       entity.sprites.body.animations =
@@ -205,8 +184,9 @@ export default {
       entity.last_turn_row = -1;
       entity.sprites.body.speed = 100 / 3000;
     },
-    step(dt, entity, _manager) {
+    step(dt, entity, { entities }, _manager, assets) {
       handle_movement(entity, dt);
+      handle_growling(entity, assets, entities);
       handle_body_bobbing(entity);
       handle_direction(entity, dt);
       handle_run_moving_animation(entity, 100 / 3000, 1);

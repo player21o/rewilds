@@ -39,7 +39,6 @@ export default {
             ][prop][1](networked_prop);
 
           entity.shared[prop] = formatted_prop;
-          console.log(prop, formatted_prop);
 
           prop_pointer += 1;
         }

@@ -60,6 +60,7 @@ export class MyPlayer {
 
   private left_mouse_down_callback(): (arg0: InputsManager) => void {
     return () => {
+      console.log("wtf??");
       this.send("action", "attack");
     };
   }
