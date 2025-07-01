@@ -10,6 +10,7 @@ import layers from "../../render/layers";
 import { GameDependencies } from "../../game_deps";
 import { EntitiesManager } from "..";
 import Footstep from "../../objects/footstep";
+import constants from "../../../common/constants";
 
 export class Citizen extends Entity<CitizenType> {
   public sprites!: {
@@ -22,6 +23,9 @@ export class Citizen extends Entity<CitizenType> {
 
   public last_turn_row = 0;
   public isMoving = false;
+
+  public data!: (typeof constants)["minions"]["default"] &
+    (typeof constants)["minions"][keyof (typeof constants)["minions"]];
 
   public direction = this.shared.direction;
 
@@ -67,6 +71,11 @@ export class Citizen extends Entity<CitizenType> {
     assets: ObjectManifest["bundles"]["game"],
     { entities, ground }: typeof layers
   ) {
+    this.data = {
+      ...constants.minions["default"],
+      ...constants.minions[this.shared.type],
+    } as any;
+
     this.state.assets = assets;
     this.x = this.shared.x;
     this.y = this.shared.y;
@@ -87,7 +96,7 @@ export class Citizen extends Entity<CitizenType> {
       ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
     >({
       animations: assets.legs_run.animations,
-      speed: 150 / 3000,
+      duration: 150 / 3000,
       autoUpdate: false,
       loop: true,
     });
@@ -98,7 +107,7 @@ export class Citizen extends Entity<CitizenType> {
       ObjectManifest["bundles"]["game"]["run"]["animations"]
     >({
       animations: assets.run.animations,
-      speed: 150 / 3000,
+      duration: 150 / 3000,
       autoUpdate: false,
       loop: true,
     });

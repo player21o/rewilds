@@ -32,7 +32,7 @@ export default class Dust extends GameObject {
 
     const smoke = new GameSprite({
       animations: assets.smoke_puff.animations,
-      speed: 0.05,
+      duration: 0.75,
       autoUpdate: false,
       loop: false,
     });

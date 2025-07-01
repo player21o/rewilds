@@ -4,7 +4,7 @@ type Anims = { [anim: string]: Texture<any>[] };
 
 type GameSpriteOptions = {
   animations: Anims;
-  speed: number;
+  duration: number;
   autoUpdate: boolean;
   loop: boolean;
 };
@@ -15,7 +15,7 @@ export class GameSprite<
   private _animations: T;
   private _anim!: keyof T;
   private _frame: number = 0;
-  private _speed: number = 0;
+  private _duration: number = 0;
   private _timer: number = 0;
   private _total_animations: number;
   private _auto_update: boolean;
@@ -32,7 +32,7 @@ export class GameSprite<
       this._animations[Object.keys(options.animations)[0]].length - 1;
     this._start_frame = 0;
     this.animation = Object.keys(options.animations)[0];
-    this.speed = options.speed;
+    this.duration = options.duration;
     this._total_animations = Object.keys(this._animations).length;
     this._auto_update = options.autoUpdate;
     this._loop = options.loop;
@@ -57,8 +57,39 @@ export class GameSprite<
   public update(elapsedMS: number) {
     if (this._playing) {
       this._timer += elapsedMS / 1000;
+      /*
 
-      if (this._timer >= this._speed) {
+      const progress = Math.min(1.0, this._timer / this._duration);
+
+      var frameNumber =
+        (this._start_frame + (this._last_frame - this._start_frame + 1)) | 0;
+
+      var finalFrame = Math.min(this._last_frame, frameNumber);
+
+      console.log(progress, this._duration);
+
+      if (this._frame != finalFrame) {
+        this._frame = finalFrame;
+        this.updateTexture();
+
+        if (progress >= 1.0) {
+          if (this._loop) {
+            this._timer = 0;
+          } else {
+            this._playing = false;
+          }
+        }
+      }
+        */
+
+      /*
+      this.setFrame(finalFrame);
+
+      */
+      if (
+        this._timer >=
+        this._duration / (this._last_frame - this._start_frame)
+      ) {
         this._timer = 0;
 
         this._frame = this._loop
@@ -117,12 +148,12 @@ export class GameSprite<
     this._start_frame = 0;
   }
 
-  set speed(speed: number) {
-    this._speed = speed;
+  set duration(speed: number) {
+    this._duration = speed;
   }
 
-  get speed() {
-    return this._speed;
+  get duration() {
+    return this._duration;
   }
 
   get frame() {

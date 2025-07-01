@@ -9,13 +9,16 @@ import { States } from "../state";
 const weapons_data: {
   [T in ConstructorsObject["Citizen"]["weapon"]]: {
     attack_animations: string[];
+    attack_duration: number;
   };
 } = {
   axe: {
     attack_animations: ["attack_horizontal", "attack_vertical"],
+    attack_duration: 0.5,
   },
   no_weapon: {
     attack_animations: ["punch1", "punch2"],
+    attack_duration: 0.25,
   },
 };
 
@@ -61,7 +64,12 @@ function handle_growling(
     entity.isMoving &&
     entity.timer.every(0.1, "puff")
   )
-    entities.add(new Dust(entity.x, entity.y + Math.random() * 6));
+    entities.add(
+      new Dust(
+        entity.x + (Math.random() * 6 - 3),
+        entity.y + (Math.random() * 6 - 3)
+      )
+    );
 }
 
 function handle_direction(entity: Citizen, dt: number) {
@@ -113,8 +121,8 @@ function idle_enter(
       ? assets.female_no_shield_run.animations
       : assets.female_run.animations;
   entity.sprites.legs.animations = assets.legs_run.animations;
-  entity.sprites.body.speed = 150 / 3000;
-  entity.sprites.legs.speed = 150 / 3000;
+  entity.sprites.body.duration = 150 / entity.data.speed;
+  entity.sprites.legs.duration = 150 / entity.data.speed;
 }
 
 function handle_body_bobbing(entity: Citizen) {
@@ -153,18 +161,15 @@ function handle_run_moving_animation(
   duration?: number,
   multiplier: number = 2.5
 ) {
-  const speed =
-    duration != undefined
-      ? duration
-      : (entity.shared.growling ? 400 : 150) / 3000;
+  const speed = duration != undefined ? duration : 150 / entity.data.speed;
 
   if (!entity.isMoving) {
-    entity.sprites.body.speed = speed * multiplier;
+    entity.sprites.body.duration = speed * multiplier;
     entity.sprites.legs.stop();
     entity.sprites.legs.frame = 19;
   } else {
     entity.sprites.legs.play();
-    entity.sprites.body.speed = speed;
+    entity.sprites.body.duration = speed;
   }
 }
 
@@ -189,18 +194,6 @@ export default {
   },
   attack: {
     enter(entity, _manager, assets) {
-      /*
-      entity.sprites.body.animations =
-        entity.shared.gender == "male"
-          ? choose([
-              assets.male_attack_horizontal.animations,
-              assets.male_attack_vertical.animations,
-            ])
-          : choose([
-              assets.female_attack_horizontal.animations,
-              assets.female_attack_vertical.animations,
-            ]);
-      */
       entity.sprites.body.animations = choose(
         weapons_data[entity.shared.weapon].attack_animations.map(
           (anim) =>
@@ -212,14 +205,16 @@ export default {
         )
       );
       entity.last_turn_row = -1;
-      entity.sprites.body.speed = 100 / 3000;
+      entity.sprites.body.duration =
+        weapons_data[entity.shared.weapon].attack_duration *
+        entity.data.attackDuration;
     },
     step(dt, entity, { entities }, _manager, assets) {
       handle_movement(entity, dt);
       handle_growling(entity, assets, entities);
       handle_body_bobbing(entity);
       handle_direction(entity, dt);
-      handle_run_moving_animation(entity, 100 / 3000, 1);
+      //handle_run_moving_animation(entity, 100 / 3000, 1);
     },
   },
 } as States<Citizen>;
