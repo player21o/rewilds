@@ -27,7 +27,7 @@ export class Citizen extends Entity<CitizenType> {
   public data!: (typeof constants)["minions"]["default"] &
     (typeof constants)["minions"][keyof (typeof constants)["minions"]];
 
-  public direction = this.shared.direction;
+  public direction = 0;
 
   public state = new StateManager<typeof this.shared.state>(states, this);
 
@@ -65,6 +65,11 @@ export class Citizen extends Entity<CitizenType> {
 
   public show(): void {
     this.container.visible = true;
+  }
+
+  public culled_step(): void {
+    this.x = this.shared.x;
+    this.y = this.shared.y;
   }
 
   public init(

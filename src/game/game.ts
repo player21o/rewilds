@@ -107,6 +107,7 @@ export class GameManager {
         ) {
           e.hide();
           e.culled = true;
+          e.culled_step();
         } else {
           e.show();
 

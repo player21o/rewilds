@@ -30,6 +30,7 @@ export class GameObject {
   }
 
   public step(__: number, _: GameDependencies, ___: Ticker): any {}
+  public culled_step() {}
 
   public render(
     _____: number,
