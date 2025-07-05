@@ -38,9 +38,9 @@ export class Citizen extends Entity<CitizenType> {
     current_stamina: number;
   } = {
     enemy: false,
-    stamina: 0.5,
+    stamina: 0,
     hide_stamina: true,
-    current_stamina: 0.4,
+    current_stamina: 0,
   };
 
   public sounds = {
@@ -131,6 +131,7 @@ export class Citizen extends Entity<CitizenType> {
     ground.attach(bars);
 
     this.sprites = { body, legs, bars };
+    this.update_bars(1);
 
     return container;
   }
@@ -156,8 +157,12 @@ export class Citizen extends Entity<CitizenType> {
 
     this.update_anims(elapsedMS);
 
+    const crst = this.timer.on_key_change(this.bar_params, "current_stamina");
+    const st = this.timer.on_key_change(this.bar_params, "stamina");
+    const h = this.timer.on_key_change(this.shared, "health");
+
     const bar_needs_to_be_updated =
-      this.bar_params.current_stamina != this.bar_params.stamina;
+      (!this.bar_params.hide_stamina && (crst || st)) || h;
 
     if (bar_needs_to_be_updated) this.update_bars(deltaTime);
 
@@ -170,7 +175,7 @@ export class Citizen extends Entity<CitizenType> {
     this.bar_params = { ...this.bar_params, ...params };
   }
 
-  private update_bars(dt: number) {
+  public update_bars(dt: number) {
     const params = this.bar_params;
     const bars = this.sprites.bars;
 

@@ -39,12 +39,9 @@ export class Timer {
         vals.last_values[key as any] = object[key];
         return changed;
       } else {
-        this.key_listeners.set(object, {
-          keys: [...vals.keys, key],
-          last_values: { ...vals.last_values, [key]: object[key] },
-        });
         vals.keys.push(key);
         vals.last_values[key as any] = object[key];
+
         return false;
       }
     } else {

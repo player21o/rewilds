@@ -41,11 +41,10 @@ export class MyPlayer {
   public update_private_data() {
     if (this.citizen == null) return;
 
-    this.citizen.update_bar_params({
-      ...this.citizen.bar_params,
-      stamina: this.private_data.stamina,
-      hide_stamina: false,
-    });
+    this.citizen.bar_params.stamina = this.private_data.stamina;
+    this.citizen.bar_params.hide_stamina = false;
+
+    this.citizen.update_bars(1);
   }
 
   private on_entity_created_cb(test: (e: Citizen) => boolean) {
