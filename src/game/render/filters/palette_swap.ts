@@ -20,6 +20,8 @@ export class PaletteSwapFilter extends Filter {
       resources: {
         uniforms: {
           uRow: { value: options.row, type: "f32" },
+          uPaletteStepX: { value: 1.0 / 64.0, type: "f32" },
+          uPaletteY: { value: options.row * (1.0 / 64.0), type: "f32" },
         },
         uPalette: options.palette.source,
       },

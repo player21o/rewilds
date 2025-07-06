@@ -46,7 +46,7 @@ export default class Footstep extends GameObject {
     ____: Ticker
   ): void {
     if (timer.every(0.2, "stains")) {
-      this.graphics.alpha -= 0.05;
+      this.graphics.alpha -= 0.1;
     }
 
     if (this.graphics.alpha <= 0 || this.culled) this.rip = true;

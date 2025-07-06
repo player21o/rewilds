@@ -3,20 +3,18 @@ out vec4 finalColor;
 
 uniform sampler2D uTexture;
 uniform sampler2D uPalette;
-uniform float uRow;
+
+uniform float uPaletteY;
+uniform float uPaletteStepX; 
 
 void main(void) {
-  vec4 c = texture(uTexture, vTextureCoord);
+  vec4 sourceColor = texture(uTexture, vTextureCoord);
 
-  float colorIndex = floor(c.r * 32.0);
+  float colorIndex = floor(sourceColor.r * 32.0);
 
-  vec2 paluv = vec2(colorIndex * (1.0 / 64.0), uRow * (1.0 / 64.0));
+  vec2 paletteUV = vec2(colorIndex * uPaletteStepX, uPaletteY);
 
-  float a = c.a;
+  vec4 finalRGB = texture(uPalette, paletteUV);
 
-  c = texture2D(uPalette, paluv);
-
-  c.a = a;
-
-  finalColor = c;
+  finalColor = vec4(finalRGB.rgb, sourceColor.a);
 }
