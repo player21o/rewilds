@@ -49,12 +49,21 @@ export class MyPlayer {
 
   private on_entity_created_cb(test: (e: Citizen) => boolean) {
     return (e: any) => {
-      if (e instanceof Citizen) e.bar_params.enemy = test(e);
+      if (e instanceof Citizen) {
+        e.bar_params.enemy = test.bind(this)(e);
+        e.update_bars(1);
+      }
     };
   }
 
   private test_if_enemy(e: Citizen) {
-    return e.shared.team == 2;
+    //console.log(
+    //  this.citizen != null && e.shared.team != this.citizen.shared.team
+    //);
+    return (
+      e.shared.team == 2 ||
+      (this.citizen != null && e.shared.team != this.citizen.shared.team)
+    );
   }
 
   private left_mouse_down_callback(): (arg0: InputsManager) => void {
