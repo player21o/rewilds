@@ -38,9 +38,9 @@ export class Citizen extends Entity<CitizenType> {
     current_stamina: number;
   } = {
     enemy: false,
-    stamina: 0,
+    stamina: 1,
     hide_stamina: true,
-    current_stamina: 0,
+    current_stamina: 1,
   };
 
   public sounds = {
@@ -133,8 +133,8 @@ export class Citizen extends Entity<CitizenType> {
     this.sprites = { body, legs, bars };
     this.update_bars(1);
 
-    container.eventMode = "dynamic";
-    container.onclick = () => alert(JSON.stringify(this.shared));
+    //container.eventMode = "dynamic";
+    //container.onclick = () => alert(JSON.stringify(this.shared));
 
     return container;
   }
@@ -182,15 +182,13 @@ export class Citizen extends Entity<CitizenType> {
     const params = this.bar_params;
     const bars = this.sprites.bars;
 
-    this.update_bar_params({
-      current_stamina: moveTo(
-        this.bar_params.current_stamina,
-        this.bar_params.stamina,
-        Math.abs(this.bar_params.current_stamina - this.bar_params.stamina) *
-          (dt / 50) *
-          2.0
-      ),
-    });
+    this.bar_params.current_stamina = moveTo(
+      this.bar_params.current_stamina,
+      this.bar_params.stamina,
+      Math.abs(this.bar_params.current_stamina - this.bar_params.stamina) *
+        (dt / 50) *
+        2.0
+    );
 
     const stamina_bar_looks = { line_thickness: 3, radius: 10.5 };
     const health_bar_looks = {

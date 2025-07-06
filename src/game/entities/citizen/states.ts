@@ -214,7 +214,12 @@ export default {
       handle_growling(entity, assets, entities);
       handle_body_bobbing(entity);
       handle_direction(entity, dt);
-      //handle_run_moving_animation(entity, 100 / 3000, 1);
+      handle_run_moving_animation(
+        entity,
+        weapons_data[entity.shared.weapon].attack_duration *
+          entity.data.attackDuration,
+        1
+      );
     },
   },
 } as States<Citizen>;
