@@ -78,6 +78,10 @@ function handle_direction(entity: Citizen, dt: number) {
     (((direction_for_sprite - fo) / (Math.PI * 2)) *
       entity.sprites.legs.total_animations) |
     0;
+  const shield_row =
+    (((direction_for_sprite - fo) / (Math.PI * 2)) *
+      entity.sprites.shield.total_animations) |
+    0;
 
   if (
     entity.last_turn_row != body_row &&
@@ -87,8 +91,8 @@ function handle_direction(entity: Citizen, dt: number) {
     entity.last_turn_row = body_row;
 
     entity.sprites.body.animation = `frame_row_${body_row.toString()}` as any;
-
     entity.sprites.legs.animation = `frame_row_${legs_row.toString()}` as any;
+    entity.sprites.shield.animation = `frame_row_${legs_row.toString()}` as any;
   }
 }
 
@@ -155,6 +159,8 @@ function handle_run_moving_animation(
     entity.sprites.legs.play();
     entity.sprites.body.duration = speed;
   }
+
+  entity.sprites.shield.frame = entity.sprites.body.frame;
 }
 
 export default {

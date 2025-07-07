@@ -16,6 +16,7 @@ export class Citizen extends Entity<CitizenType> {
   public sprites!: {
     legs: GameSprite;
     body: GameSprite;
+    shield: GameSprite;
     bars: Graphics;
   };
   public container!: Container;
@@ -119,18 +120,28 @@ export class Citizen extends Entity<CitizenType> {
     body.scale = 1;
     body.play();
 
+    const shield = new GameSprite({
+      animations: (assets.shield_wooden_run as any).animations,
+      duration: 1,
+      autoUpdate: false,
+      loop: true,
+    });
+    shield.scale = 1;
+    shield.play();
+
     const palette_container = new Container({ zIndex: 1 });
-    palette_container.addChild(legs, body);
+    palette_container.addChild(legs, body, shield);
     this.palette_container = palette_container;
 
     container.addChild(palette_container, bars);
+    shield.zIndex = 1;
 
     palette.apply_palette(palette_container, this.shared.team);
 
     entities.attach(palette_container);
     ground.attach(bars);
 
-    this.sprites = { body, legs, bars };
+    this.sprites = { shield, body, legs, bars };
     this.update_bars(1);
 
     return container;
@@ -154,6 +165,20 @@ export class Citizen extends Entity<CitizenType> {
     this.container.position.set(this.x, this.y);
 
     this.state.step(deltaTime, dp, assets);
+
+    if (
+      this.sprites.body.animation_index >
+        (this.sprites.body.total_animations - 1) * 0.75 ||
+      this.sprites.body.animation_index === 0
+    ) {
+      // Condition A: Character is facing DOWN or a side-down angle.
+      // The shield is drawn BEFORE the torso.
+      this.sprites.shield.zIndex = -1;
+    } else {
+      // Condition B: Character is facing UP or a side-up angle.
+      // The torso is drawn BEFORE the shield.
+      this.sprites.shield.zIndex = 1;
+    }
 
     this.update_anims(elapsedMS);
 
@@ -264,6 +289,7 @@ export class Citizen extends Entity<CitizenType> {
   private update_anims(elapsed: number) {
     this.sprites.body.update(elapsed);
     this.sprites.legs.update(elapsed);
+    //this.sprites.shield.update(elapsed);
   }
 
   private render_stains(entities: EntitiesManager) {

@@ -150,6 +150,10 @@ export const manifest = {
             typeof male_punch2_atlas_type
           >,
         },
+        {
+          alias: "shield_wooden_run",
+          src: "/assets/sprites/grunt/shield_wooden_run.json",
+        },
       ],
     },
   ],

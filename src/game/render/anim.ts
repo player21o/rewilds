@@ -18,6 +18,7 @@ export class GameSprite<
   private _duration: number = 0;
   private _timer: number = 0;
   private _total_animations: number;
+  public animation_index!: number;
   private _auto_update: boolean;
   private _playing: boolean = false;
   private _start_frame = 0;
@@ -115,6 +116,9 @@ export class GameSprite<
 
   set animation(anim: keyof T) {
     this._anim = anim;
+    this.animation_index = Object.keys(this._animations).indexOf(
+      anim as string
+    );
 
     if (this._frame > this._last_frame) {
       this._frame = this._start_frame;
