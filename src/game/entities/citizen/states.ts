@@ -1,26 +1,10 @@
 import type { Citizen } from ".";
 import { EntitiesManager } from "..";
 import { ObjectManifest } from "../../../assets/manifest";
-import { ConstructorsObject } from "../../../common/constructors";
+import constants from "../../../common/constants";
 import Dust from "../../objects/dust";
 import { choose, circWrapTo, lookAt } from "../../utils";
 import { States } from "../state";
-
-const weapons_data: {
-  [T in ConstructorsObject["Citizen"]["weapon"]]: {
-    attack_animations: string[];
-    attack_duration: number;
-  };
-} = {
-  axe: {
-    attack_animations: ["attack_horizontal", "attack_vertical"],
-    attack_duration: 0.5,
-  },
-  no_weapon: {
-    attack_animations: ["punch1", "punch2"],
-    attack_duration: 0.25,
-  },
-};
 
 function handle_movement(entity: Citizen, dt: number) {
   entity.x += (entity.shared.x - entity.x) * 0.3 * dt;
@@ -195,7 +179,7 @@ export default {
   attack: {
     enter(entity, _manager, assets) {
       entity.sprites.body.animations = choose(
-        weapons_data[entity.shared.weapon].attack_animations.map(
+        constants.weapons[entity.shared.weapon].attackAnimations.map(
           (anim) =>
             (
               assets[
@@ -206,7 +190,7 @@ export default {
       );
       entity.last_turn_row = -1;
       entity.sprites.body.duration =
-        weapons_data[entity.shared.weapon].attack_duration *
+        constants.weapons[entity.shared.weapon].attackDuration *
         entity.data.attackDuration;
     },
     step(dt, entity, { entities }, _manager, assets) {
@@ -216,7 +200,7 @@ export default {
       handle_direction(entity, dt);
       handle_run_moving_animation(
         entity,
-        weapons_data[entity.shared.weapon].attack_duration *
+        constants.weapons[entity.shared.weapon].attackDuration *
           entity.data.attackDuration,
         1
       );
