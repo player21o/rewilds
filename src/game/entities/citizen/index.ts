@@ -133,9 +133,6 @@ export class Citizen extends Entity<CitizenType> {
     this.sprites = { body, legs, bars };
     this.update_bars(1);
 
-    //container.eventMode = "dynamic";
-    //container.onclick = () => alert(JSON.stringify(this.shared));
-
     return container;
   }
 

@@ -24,7 +24,12 @@ export default {
             //@ts-ignore
           ]({ sid });
 
-      if (!entity_exists) props.shift();
+      const new_one =
+        props.length >
+        constructors_inner_keys[
+          entity.constructor.name as keyof typeof constructors_inner_keys
+        ].length;
+      if (!entity_exists || new_one) props.shift();
 
       let prop_pointer = 0;
       constructors_inner_keys[
