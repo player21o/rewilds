@@ -192,20 +192,25 @@ export default {
   },
   attack: {
     enter(entity, _manager, assets) {
-      entity.sprites.body.animations = choose(
-        constants.weapons[entity.shared.weapon].attackAnimations.map(
-          (anim) =>
-            (
-              assets[
-                (entity.shared.gender + "_" + anim) as keyof typeof assets
-              ] as any
-            ).animations
-        )
+      const animation = choose(
+        constants.weapons[entity.shared.weapon].attackAnimations
       );
+      console.log(animation);
+
+      entity.sprites.body.animations = (
+        assets[
+          (entity.shared.gender + "_" + animation) as keyof typeof assets
+        ] as any
+      ).animations;
       entity.last_turn_row = -1;
       entity.sprites.body.duration =
         constants.weapons[entity.shared.weapon].attackDuration *
         entity.data.attackDuration;
+      entity.sprites.shield.animations = (
+        assets[
+          (entity.shared.shield + "_" + animation) as keyof typeof assets
+        ] as any
+      ).animations;
     },
     step(dt, entity, { entities }, _manager, assets) {
       handle_movement(entity, dt);

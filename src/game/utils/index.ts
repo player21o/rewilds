@@ -81,7 +81,7 @@ export function circWrapTo(
   return circWrap(newAngle, circleRadians);
 }
 
-export function choose(arr: any[]) {
+export function choose(arr: readonly any[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 

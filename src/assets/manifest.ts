@@ -158,6 +158,22 @@ export const manifest = {
           alias: "shield_wooden_growl",
           src: "/assets/sprites/grunt/shield_wooden_growl.json",
         },
+        {
+          alias: "shield_wooden_punch1",
+          src: "/assets/sprites/grunt/shield_wooden_punch1.json",
+        },
+        {
+          alias: "shield_wooden_punch2",
+          src: "/assets/sprites/grunt/shield_wooden_punch2.json",
+        },
+        {
+          alias: "shield_wooden_attack_horizontal",
+          src: "/assets/sprites/grunt/shield_wooden_attack_horizontal.json",
+        },
+        {
+          alias: "shield_wooden_attack_vertical",
+          src: "/assets/sprites/grunt/shield_wooden_attack_vertical.json",
+        },
       ],
     },
   ],
