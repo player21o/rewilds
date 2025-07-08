@@ -174,6 +174,22 @@ export const manifest = {
           alias: "shield_wooden_attack_vertical",
           src: "/assets/sprites/grunt/shield_wooden_attack_vertical.json",
         },
+        {
+          alias: "slash_horizontal",
+          src: "/assets/sprites/fx/slash_horizontal.json",
+        },
+        {
+          alias: "slash_vertical",
+          src: "/assets/sprites/fx/slash_vertical.json",
+        },
+        {
+          alias: "slash_punch1",
+          src: "/assets/sprites/fx/slash_punch.json",
+        },
+        {
+          alias: "slash_punch2",
+          src: "/assets/sprites/fx/slash_punch2.json",
+        },
       ],
     },
   ],

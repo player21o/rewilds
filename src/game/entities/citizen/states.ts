@@ -192,10 +192,17 @@ export default {
   },
   attack: {
     enter(entity, _manager, assets) {
-      const animation = choose(
-        constants.weapons[entity.shared.weapon].attackAnimations
-      );
-      console.log(animation);
+      const animationIndex =
+        (Math.random() *
+          constants.weapons[entity.shared.weapon].attackAnimations.length) |
+        0;
+      const animation =
+        constants.weapons[entity.shared.weapon].attackAnimations[
+          animationIndex
+        ];
+      const duration =
+        constants.weapons[entity.shared.weapon].attackDuration *
+        entity.data.attackDuration;
 
       entity.sprites.body.animations = (
         assets[
@@ -203,9 +210,7 @@ export default {
         ] as any
       ).animations;
       entity.last_turn_row = -1;
-      entity.sprites.body.duration =
-        constants.weapons[entity.shared.weapon].attackDuration *
-        entity.data.attackDuration;
+      entity.sprites.body.duration = duration;
       entity.sprites.shield.animations = (
         assets[
           (entity.shared.shield + "_" + animation) as keyof typeof assets
