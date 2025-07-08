@@ -121,7 +121,9 @@ export class Citizen extends Entity<CitizenType> {
     body.play();
 
     const shield = new GameSprite({
-      animations: (assets.shield_wooden_run as any).animations,
+      animations: (
+        assets[(this.shared.shield + "_run") as keyof typeof assets] as any
+      ).animations,
       duration: 1,
       autoUpdate: false,
       loop: true,
@@ -129,7 +131,7 @@ export class Citizen extends Entity<CitizenType> {
     shield.scale = 1;
     shield.play();
 
-    const palette_container = new Container({ zIndex: 1 });
+    const palette_container = new Container({ sortableChildren: false });
     palette_container.addChild(legs, body, shield);
     this.palette_container = palette_container;
 
@@ -179,6 +181,12 @@ export class Citizen extends Entity<CitizenType> {
       // The torso is drawn BEFORE the shield.
       this.sprites.shield.zIndex = 1;
     }
+
+    //if (this.direction > Math.PI + Math.PI / 2) {
+    //  this.sprites.shield.zIndex = -1;
+    //} else {
+    //  this.sprites.shield.zIndex = 1;
+    //}
 
     this.update_anims(elapsedMS);
 

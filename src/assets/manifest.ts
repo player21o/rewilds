@@ -154,6 +154,10 @@ export const manifest = {
           alias: "shield_wooden_run",
           src: "/assets/sprites/grunt/shield_wooden_run.json",
         },
+        {
+          alias: "shield_wooden_growl",
+          src: "/assets/sprites/grunt/shield_wooden_growl.json",
+        },
       ],
     },
   ],

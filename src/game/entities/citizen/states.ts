@@ -27,6 +27,9 @@ function handle_growling(
       entity.sprites.legs.animations = assets.legs_run.animations;
       entity.sprites.body.first_frame = 2;
       entity.sprites.body.last_frame = 9;
+      entity.sprites.shield.animations = (
+        assets[(entity.shared.shield + "_growl") as keyof typeof assets] as any
+      ).animations;
 
       const growl_sound =
         entity.shared.gender == "male"
@@ -92,7 +95,8 @@ function handle_direction(entity: Citizen, dt: number) {
 
     entity.sprites.body.animation = `frame_row_${body_row.toString()}` as any;
     entity.sprites.legs.animation = `frame_row_${legs_row.toString()}` as any;
-    entity.sprites.shield.animation = `frame_row_${legs_row.toString()}` as any;
+    entity.sprites.shield.animation =
+      `frame_row_${shield_row.toString()}` as any;
   }
 }
 
@@ -111,6 +115,9 @@ function idle_enter(
   entity.sprites.legs.animations = assets.legs_run.animations;
   entity.sprites.body.duration = 150 / entity.data.speed;
   entity.sprites.legs.duration = 150 / entity.data.speed;
+  entity.sprites.shield.animations = (
+    assets[(entity.shared.shield + "_run") as keyof typeof assets] as any
+  ).animations;
 }
 
 function handle_body_bobbing(entity: Citizen) {
@@ -142,6 +149,7 @@ function handle_body_bobbing(entity: Citizen) {
     finalLegRelativeY + bodyOffsetYFromLegBase
   );
   entity.sprites.body.y = finalBodyRelativeY;
+  entity.sprites.shield.y = finalBodyRelativeY;
 }
 
 function handle_run_moving_animation(
