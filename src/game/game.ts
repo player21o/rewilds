@@ -6,6 +6,7 @@ import {
   TilingSprite,
   TextureStyle,
   Ticker,
+  BitmapText,
 } from "pixi.js";
 import { ObjectManifest, manifest } from "../assets/manifest";
 import { lerp, palette } from "./utils";
@@ -82,6 +83,18 @@ export class GameManager {
 
         viewport.addChild(ground);
         layers.ground.attach(ground);
+
+        viewport.addChild(
+          new BitmapText({
+            text: "hello world!",
+            style: {
+              fontFamily: "WildsDefault",
+              fontSize: 24,
+              align: "center",
+              //fill: 0x0,
+            },
+          })
+        );
 
         //this.txt = viewport.addChild(new Text({ text: "Hello world!" }));
 

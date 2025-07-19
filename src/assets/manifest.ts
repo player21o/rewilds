@@ -190,6 +190,7 @@ export const manifest = {
           alias: "slash_punch2",
           src: "/assets/sprites/fx/slash_punch2.json",
         },
+        { alias: "font", src: "/assets/fonts/font.fnt" },
       ],
     },
   ],
