@@ -49,25 +49,25 @@ export class InputsManager {
     };
 
     window.onkeydown = (e) => {
-      this.pressedKeysMap[e.key] = true;
+      this.pressedKeysMap[e.code] = true;
 
       if (e.repeat) return;
 
-      if (e.key in this.pressedKeysCallbacks)
-        this.pressedKeysCallbacks[e.key].forEach((callback) => callback());
+      if (e.code in this.pressedKeysCallbacks)
+        this.pressedKeysCallbacks[e.code].forEach((callback) => callback());
 
-      this.anyPressedKeysCallbacks.forEach((cb) => cb(e.key));
+      this.anyPressedKeysCallbacks.forEach((cb) => cb(e.code));
     };
 
     window.onkeyup = (e) => {
-      this.pressedKeysMap[e.key] = false;
+      this.pressedKeysMap[e.code] = false;
 
       if (e.repeat) return;
 
-      if (e.key in this.releasedKeysCallbacks)
-        this.releasedKeysCallbacks[e.key].forEach((callback) => callback());
+      if (e.code in this.releasedKeysCallbacks)
+        this.releasedKeysCallbacks[e.code].forEach((callback) => callback());
 
-      this.anyReleasedKeysCallbacks.forEach((cb) => cb(e.key));
+      this.anyReleasedKeysCallbacks.forEach((cb) => cb(e.code));
     };
   }
 

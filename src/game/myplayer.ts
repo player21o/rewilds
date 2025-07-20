@@ -24,7 +24,7 @@ export class MyPlayer {
   ) {
     this.send = send;
 
-    ["w", "a", "s", "d"].forEach((key) => {
+    ["KeyW", "KeyA", "KeyS", "KeyD"].forEach((key) => {
       inputs.on_key_pressed(key, this.key_callback(inputs));
       inputs.on_key_released(key, this.key_callback(inputs));
     });
@@ -98,7 +98,7 @@ export class MyPlayer {
 
   private key_callback(inputs: InputsManager) {
     return () => {
-      const keys = ["w", "a", "s", "d"];
+      const keys = ["KeyW", "KeyA", "KeyS", "KeyD"];
       let bits = 0;
 
       keys.forEach((key, i) => {
