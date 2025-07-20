@@ -191,6 +191,7 @@ export const manifest = {
           src: "/assets/sprites/fx/slash_punch2.json",
         },
         { alias: "font", src: "/assets/fonts/font.fnt" },
+        { alias: "game-font", src: "/assets/fonts/game-font.fnt" },
       ],
     },
   ],

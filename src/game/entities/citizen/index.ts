@@ -1,4 +1,4 @@
-import { Container, Graphics, Ticker } from "pixi.js";
+import { BitmapText, Container, Graphics, Ticker } from "pixi.js";
 import { CitizenType } from "../../../common/interfaces";
 import { Entity } from "../entity";
 import { audio_manifest, ObjectManifest } from "../../../assets/manifest";
@@ -135,13 +135,20 @@ export class Citizen extends Entity<CitizenType> {
     palette_container.addChild(legs, body, shield);
     this.palette_container = palette_container;
 
-    container.addChild(palette_container, bars);
+    const name = new BitmapText({
+      text: this.shared.name.toUpperCase(),
+      anchor: 0.5,
+      position: { x: 60, y: 100 },
+      style: { fontFamily: "game-font", fontSize: 8, align: "center" },
+    });
+
+    container.addChild(palette_container, bars, name);
     shield.zIndex = 1;
 
     palette.apply_palette(palette_container, this.shared.team);
 
     entities.attach(palette_container);
-    ground.attach(bars);
+    ground.attach(bars, name);
 
     this.sprites = { shield, body, legs, bars };
     this.update_bars(1);
