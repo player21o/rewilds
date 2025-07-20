@@ -3,7 +3,7 @@ import { EntitiesManager } from "..";
 import { ObjectManifest } from "../../../assets/manifest";
 import constants from "../../../common/constants";
 import Dust from "../../objects/dust";
-import { choose, circWrapTo, lookAt } from "../../utils";
+import { circWrapTo, lookAt } from "../../utils";
 import { States } from "../state";
 
 function handle_movement(entity: Citizen, dt: number) {
@@ -191,7 +191,7 @@ export default {
     },
   },
   attack: {
-    enter(entity, _manager, assets) {
+    enter(entity, _manager, assets, { entities }) {
       const animationIndex =
         (Math.random() *
           constants.weapons[entity.shared.weapon].attackAnimations.length) |
@@ -216,6 +216,8 @@ export default {
           (entity.shared.shield + "_" + animation) as keyof typeof assets
         ] as any
       ).animations;
+
+      entities.add();
     },
     step(dt, entity, { entities }, _manager, assets) {
       handle_movement(entity, dt);

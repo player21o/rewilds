@@ -156,8 +156,8 @@ export class Citizen extends Entity<CitizenType> {
     return container;
   }
 
-  public step(_: number, __: GameDependencies, { elapsedMS }: Ticker) {
-    this.state.set(this.shared.state);
+  public step(_: number, dp: GameDependencies, { elapsedMS }: Ticker) {
+    this.state.set(this.shared.state, dp);
     this.timer.update(elapsedMS);
   }
 

@@ -22,7 +22,7 @@ export class StateManager<T = any> {
     this.assets = assets;
   }
 
-  public set(state: T) {
+  public set(state: T, dp: GameDependencies) {
     if (state == this.state) return;
 
     let s = this.states[this.state as keyof typeof this.states];
@@ -37,7 +37,7 @@ export class StateManager<T = any> {
     s = this.states[state as keyof typeof this.states];
 
     if (s.enter != undefined && this.assets != undefined)
-      s.enter(this.entity, this, this.assets);
+      s.enter(this.entity, this, this.assets, dp);
   }
 
   /*
@@ -67,7 +67,8 @@ export type States<T extends Entity = any> = {
     enter?: (
       entity: T,
       manager: StateManager,
-      assets: ObjectManifest["bundles"]["game"]
+      assets: ObjectManifest["bundles"]["game"],
+      dp: GameDependencies
     ) => void;
     leave?: (
       entity: T,
