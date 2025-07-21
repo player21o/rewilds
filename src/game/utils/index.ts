@@ -99,3 +99,57 @@ export function moveTo(current: number, target: number, step: number): number {
     return current - step;
   }
 }
+
+/**
+ * "Floors" a number to the nearest lower multiple of a threshold.
+ * This is the core snapping logic.
+ * Example: ground(27, 10) => 20
+ *
+ * @param value The number to process.
+ * @param threshold The grid size to snap to.
+ * @returns The snapped value.
+ */
+export function ground(value: number, threshold: number): number {
+  if (threshold === 0) return value;
+  // Using Math.floor is more explicit and readable than the original bitwise trick `| 0`
+  // and correctly handles negative numbers for all cases.
+  return Math.floor(value / threshold) * threshold;
+}
+
+/**
+ * Snaps a continuous angle (in radians) to a set of discrete directions.
+ * This is essential for mapping continuous input (like from a mouse) to
+ * a limited set of sprite directions (e.g., 8-directional movement).
+ *
+ * @param direction The input angle in radians (e.g., from Math.atan2).
+ * @param angles The number of discrete directions to snap to. Defaults to 8.
+ * @returns The new, snapped angle in radians.
+ */
+export function groundAngle(direction: number, angles: number = 8): number {
+  const TAU = Math.PI * 2; // Full circle in radians
+
+  // 1. Calculate the size of each angular "slice" or sector.
+  const sliceSize = TAU / angles; // e.g., for 8 angles, this is PI/4 or 45 degrees.
+
+  // 2. Calculate a half-slice offset to correctly center the snap zones.
+  const offset = sliceSize / 2;
+
+  // 3. Shift the input angle forward by the offset, snap it to the grid,
+  //    and then shift it back to get the final centered direction.
+  //    Note: We add the offset because the original's `fo` was negative.
+  const shiftedAngle = direction + offset;
+  const snapped = ground(shiftedAngle, sliceSize);
+
+  // The original function did not subtract the offset, which is also a valid
+  // way to do it, but subtracting it back makes the function's output more intuitive.
+  // We will stick to the original's logic for perfect replication.
+  // Let's re-implement without the final subtraction to match the original game.
+
+  // Re-implementation matching original's behavior precisely:
+  return ground(direction + offset, sliceSize);
+}
+
+// --- Example Usage ---
+
+// Convert degrees to radians for easier testing
+export const toRad = (deg: number) => deg * (Math.PI / 180);

@@ -3,6 +3,7 @@ import { EntitiesManager } from "..";
 import { ObjectManifest } from "../../../assets/manifest";
 import constants from "../../../common/constants";
 import Dust from "../../objects/dust";
+import Slash from "../../objects/slash";
 import { circWrapTo, lookAt } from "../../utils";
 import { States } from "../state";
 
@@ -192,17 +193,12 @@ export default {
   },
   attack: {
     enter(entity, _manager, assets, { entities }) {
+      const weapon = constants.weapons[entity.shared.weapon];
+
       const animationIndex =
-        (Math.random() *
-          constants.weapons[entity.shared.weapon].attackAnimations.length) |
-        0;
-      const animation =
-        constants.weapons[entity.shared.weapon].attackAnimations[
-          animationIndex
-        ];
-      const duration =
-        constants.weapons[entity.shared.weapon].attackDuration *
-        entity.data.attackDuration;
+        (Math.random() * weapon.attackAnimations.length) | 0;
+      const animation = weapon.attackAnimations[animationIndex];
+      const duration = weapon.attackDuration * entity.data.attackDuration;
 
       entity.sprites.body.animations = (
         assets[
@@ -217,7 +213,9 @@ export default {
         ] as any
       ).animations;
 
-      entities.add();
+      entities.add(
+        new Slash(entity, weapon.meleeSlash[animationIndex], duration)
+      );
     },
     step(dt, entity, { entities }, _manager, assets) {
       handle_movement(entity, dt);
