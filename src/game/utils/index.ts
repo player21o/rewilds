@@ -134,12 +134,6 @@ export function groundAngle(direction: number, angles: number = 8): number {
   // 2. Calculate a half-slice offset to correctly center the snap zones.
   const offset = sliceSize / 2;
 
-  // 3. Shift the input angle forward by the offset, snap it to the grid,
-  //    and then shift it back to get the final centered direction.
-  //    Note: We add the offset because the original's `fo` was negative.
-  const shiftedAngle = direction + offset;
-  const snapped = ground(shiftedAngle, sliceSize);
-
   // The original function did not subtract the offset, which is also a valid
   // way to do it, but subtracting it back makes the function's output more intuitive.
   // We will stick to the original's logic for perfect replication.

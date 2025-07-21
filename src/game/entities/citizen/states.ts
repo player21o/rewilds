@@ -87,6 +87,9 @@ function handle_direction(entity: Citizen, dt: number) {
       entity.sprites.shield.total_animations) |
     0;
 
+  entity.rows.body = body_row;
+  entity.rows.legs = legs_row;
+
   if (
     entity.last_turn_row != body_row &&
     body_row > 0 &&

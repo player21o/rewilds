@@ -21,6 +21,7 @@ export class Citizen extends Entity<CitizenType> {
   };
   public container!: Container;
   public palette_container!: Container;
+  public rows = { body: 0, legs: 0 };
 
   public last_turn_row = 0;
   public isMoving = false;

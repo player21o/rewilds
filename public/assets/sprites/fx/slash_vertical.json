@@ -3465,11 +3465,11 @@
       "h": 473
     },
     "scale": 1,
-    "app": "Wilds Atlas Converter (Standard)",
+    "app": "Wilds Atlas Converter (Row-Based)",
     "version": "1.2"
   },
   "animations": {
-    "default": [
+    "frame_row_0": [
       "frame_0",
       "frame_1",
       "frame_2",
@@ -3478,7 +3478,9 @@
       "frame_5",
       "frame_6",
       "frame_7",
-      "frame_8",
+      "frame_8"
+    ],
+    "frame_row_1": [
       "frame_9",
       "frame_10",
       "frame_11",
@@ -3487,7 +3489,9 @@
       "frame_14",
       "frame_15",
       "frame_16",
-      "frame_17",
+      "frame_17"
+    ],
+    "frame_row_2": [
       "frame_18",
       "frame_19",
       "frame_20",
@@ -3496,7 +3500,9 @@
       "frame_23",
       "frame_24",
       "frame_25",
-      "frame_26",
+      "frame_26"
+    ],
+    "frame_row_3": [
       "frame_27",
       "frame_28",
       "frame_29",
@@ -3505,7 +3511,9 @@
       "frame_32",
       "frame_33",
       "frame_34",
-      "frame_35",
+      "frame_35"
+    ],
+    "frame_row_4": [
       "frame_36",
       "frame_37",
       "frame_38",
@@ -3514,7 +3522,9 @@
       "frame_41",
       "frame_42",
       "frame_43",
-      "frame_44",
+      "frame_44"
+    ],
+    "frame_row_5": [
       "frame_45",
       "frame_46",
       "frame_47",
@@ -3523,7 +3533,9 @@
       "frame_50",
       "frame_51",
       "frame_52",
-      "frame_53",
+      "frame_53"
+    ],
+    "frame_row_6": [
       "frame_54",
       "frame_55",
       "frame_56",
@@ -3532,7 +3544,9 @@
       "frame_59",
       "frame_60",
       "frame_61",
-      "frame_62",
+      "frame_62"
+    ],
+    "frame_row_7": [
       "frame_63",
       "frame_64",
       "frame_65",
@@ -3541,7 +3555,9 @@
       "frame_68",
       "frame_69",
       "frame_70",
-      "frame_71",
+      "frame_71"
+    ],
+    "frame_row_8": [
       "frame_72",
       "frame_73",
       "frame_74",
@@ -3550,7 +3566,9 @@
       "frame_77",
       "frame_78",
       "frame_79",
-      "frame_80",
+      "frame_80"
+    ],
+    "frame_row_9": [
       "frame_81",
       "frame_82",
       "frame_83",
@@ -3559,7 +3577,9 @@
       "frame_86",
       "frame_87",
       "frame_88",
-      "frame_89",
+      "frame_89"
+    ],
+    "frame_row_10": [
       "frame_90",
       "frame_91",
       "frame_92",
@@ -3568,7 +3588,9 @@
       "frame_95",
       "frame_96",
       "frame_97",
-      "frame_98",
+      "frame_98"
+    ],
+    "frame_row_11": [
       "frame_99",
       "frame_100",
       "frame_101",
@@ -3577,7 +3599,9 @@
       "frame_104",
       "frame_105",
       "frame_106",
-      "frame_107",
+      "frame_107"
+    ],
+    "frame_row_12": [
       "frame_108",
       "frame_109",
       "frame_110",
@@ -3586,7 +3610,9 @@
       "frame_113",
       "frame_114",
       "frame_115",
-      "frame_116",
+      "frame_116"
+    ],
+    "frame_row_13": [
       "frame_117",
       "frame_118",
       "frame_119",
@@ -3595,7 +3621,9 @@
       "frame_122",
       "frame_123",
       "frame_124",
-      "frame_125",
+      "frame_125"
+    ],
+    "frame_row_14": [
       "frame_126",
       "frame_127",
       "frame_128",
@@ -3604,7 +3632,9 @@
       "frame_131",
       "frame_132",
       "frame_133",
-      "frame_134",
+      "frame_134"
+    ],
+    "frame_row_15": [
       "frame_135",
       "frame_136",
       "frame_137",
