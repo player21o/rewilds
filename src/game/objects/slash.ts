@@ -71,11 +71,16 @@ export default class Slash extends GameObject {
     container.blendMode = "overlay";
     container.tint = weapon_data.slashColor;
     container.alpha = 0.6;
-    container.rotation = groundAngle(
-      this.entity.shared.direction +
-        slashRotation[this.slash as keyof typeof slashRotation],
-      16
-    );
+    container.rotation =
+      Object.keys(
+        (assets[this.slash as any as keyof typeof assets] as any).animations
+      ).length == 1
+        ? groundAngle(
+            this.entity.shared.direction +
+              slashRotation[this.slash as keyof typeof slashRotation],
+            16
+          )
+        : 0;
     this.container.visible = false;
 
     this.offsetX =
