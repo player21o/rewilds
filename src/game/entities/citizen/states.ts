@@ -17,20 +17,27 @@ function handle_movement(entity: Citizen, dt: number) {
 function handle_growling(
   entity: Citizen,
   assets: ObjectManifest["bundles"]["game"],
-  entities: EntitiesManager
+  entities: EntitiesManager,
+  animate_body = true,
+  force = false
 ) {
-  if (entity.timer.on_key_change(entity.shared, "growling")) {
+  if (force || entity.timer.on_key_change(entity.shared, "growling")) {
     if (entity.shared.growling) {
-      entity.sprites.body.animations =
-        entity.shared.gender == "male"
-          ? assets.growl.animations
-          : assets.female_growl.animations;
+      if (animate_body) {
+        entity.sprites.body.animations =
+          entity.shared.gender == "male"
+            ? assets.growl.animations
+            : assets.female_growl.animations;
+        entity.sprites.body.first_frame = 2;
+        entity.sprites.body.last_frame = 9;
+        entity.sprites.shield.animations = (
+          assets[
+            (entity.shared.shield + "_growl") as keyof typeof assets
+          ] as any
+        ).animations;
+      }
+
       entity.sprites.legs.animations = assets.legs_run.animations;
-      entity.sprites.body.first_frame = 2;
-      entity.sprites.body.last_frame = 9;
-      entity.sprites.shield.animations = (
-        assets[(entity.shared.shield + "_growl") as keyof typeof assets] as any
-      ).animations;
 
       const growl_sound =
         entity.shared.gender == "male"
@@ -177,8 +184,9 @@ function handle_run_moving_animation(
 
 export default {
   idle: {
-    enter(entity, _manager, assets) {
+    enter(entity, _manager, assets, { entities }) {
       idle_enter(entity, assets);
+      handle_growling(entity, assets, entities, true, true);
     },
     leave(_entity, _manager) {},
     step(dt, entity, { entities }, _manager, assets) {
@@ -220,9 +228,9 @@ export default {
         new Slash(entity, weapon.meleeSlash[animationIndex], duration)
       );
     },
-    step(dt, entity, { entities }, _manager, assets) {
+    step(dt, entity, dp, manager, assets) {
       handle_movement(entity, dt);
-      handle_growling(entity, assets, entities);
+      handle_growling(entity, assets, dp.entities, false);
       handle_body_bobbing(entity);
       handle_direction(entity, dt);
       handle_run_moving_animation(
@@ -231,6 +239,12 @@ export default {
           entity.data.attackDuration,
         1
       );
+
+      if (
+        manager.duration >=
+        constants.weapons[entity.shared.weapon].attackDuration
+      )
+        manager.set("idle", dp);
     },
   },
 } as States<Citizen>;
