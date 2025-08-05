@@ -192,6 +192,22 @@ export const manifest = {
         },
         { alias: "font", src: "/assets/fonts/font.fnt" },
         { alias: "game-font", src: "/assets/fonts/game-font.fnt" },
+        {
+          alias: "male_dual_wield_attack_1",
+          src: "/assets/sprites/grunt/male/dual_wield_attack_1.json",
+        },
+        {
+          alias: "female_dual_wield_attack_1",
+          src: "/assets/sprites/grunt/female/dual_wield_attack_1.json",
+        },
+        {
+          alias: "slash_dual_right",
+          src: "/assets/sprites/fx/slash_dual_right.json",
+        },
+        {
+          alias: "shield_wooden_dual_wield_attack_1",
+          src: "/assets/sprites/grunt/shield_wooden_dual_wield_attack_1.json",
+        },
       ],
     },
   ],
