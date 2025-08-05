@@ -93,6 +93,10 @@ function handle_direction(entity: Citizen, dt: number) {
     (((direction_for_sprite - fo) / (Math.PI * 2)) *
       entity.sprites.shield.total_animations) |
     0;
+  const weapon_row =
+    (((direction_for_sprite - fo) / (Math.PI * 2)) *
+      entity.sprites.weapon.total_animations) |
+    0;
 
   entity.rows.body = body_row;
   entity.rows.legs = legs_row;
@@ -108,6 +112,8 @@ function handle_direction(entity: Citizen, dt: number) {
     entity.sprites.legs.animation = `frame_row_${legs_row.toString()}` as any;
     entity.sprites.shield.animation =
       `frame_row_${shield_row.toString()}` as any;
+    entity.sprites.weapon.animation =
+      `frame_row_${weapon_row.toString()}` as any;
   }
 }
 
@@ -161,6 +167,7 @@ function handle_body_bobbing(entity: Citizen) {
   );
   entity.sprites.body.y = finalBodyRelativeY;
   entity.sprites.shield.y = finalBodyRelativeY;
+  entity.sprites.weapon.y = finalBodyRelativeY;
 }
 
 function handle_run_moving_animation(
@@ -180,6 +187,7 @@ function handle_run_moving_animation(
   }
 
   entity.sprites.shield.frame = entity.sprites.body.frame;
+  entity.sprites.weapon.frame = entity.sprites.body.frame;
 }
 
 export default {

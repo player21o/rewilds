@@ -208,6 +208,10 @@ export const manifest = {
           alias: "shield_wooden_dual_wield_attack_1",
           src: "/assets/sprites/grunt/shield_wooden_dual_wield_attack_1.json",
         },
+        {
+          alias: "axe_run",
+          src: "/assets/sprites/grunt/axe_run.json",
+        },
       ],
     },
   ],

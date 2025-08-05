@@ -17,6 +17,7 @@ export class Citizen extends Entity<CitizenType> {
     legs: GameSprite;
     body: GameSprite;
     shield: GameSprite;
+    weapon: GameSprite;
     bars: Graphics;
   };
   public container!: Container;
@@ -121,6 +122,17 @@ export class Citizen extends Entity<CitizenType> {
     body.scale = 1;
     body.play();
 
+    const weapon = new GameSprite({
+      animations: (
+        assets[(this.shared.weapon + "_run") as keyof typeof assets] as any
+      ).animations,
+      duration: 1,
+      autoUpdate: false,
+      loop: true,
+    });
+    weapon.scale = 1;
+    weapon.play();
+
     const shield = new GameSprite({
       animations: (
         assets[(this.shared.shield + "_run") as keyof typeof assets] as any
@@ -133,7 +145,7 @@ export class Citizen extends Entity<CitizenType> {
     shield.play();
 
     const palette_container = new Container({ sortableChildren: false });
-    palette_container.addChild(legs, body, shield);
+    palette_container.addChild(legs, body, weapon, shield);
     this.palette_container = palette_container;
 
     const name = new BitmapText({
@@ -151,7 +163,7 @@ export class Citizen extends Entity<CitizenType> {
     entities.attach(palette_container);
     ground.attach(bars, name);
 
-    this.sprites = { shield, body, legs, bars };
+    this.sprites = { shield, body, legs, bars, weapon };
     this.update_bars(1);
 
     return container;
