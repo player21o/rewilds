@@ -144,7 +144,7 @@ export class Citizen extends Entity<CitizenType> {
     shield.play();
 
     const palette_container = new Container({ sortableChildren: false });
-    palette_container.addChild(legs, body, weapon, shield);
+    palette_container.addChild(legs, body, shield);
     this.palette_container = palette_container;
 
     const name = new BitmapText({
@@ -154,10 +154,11 @@ export class Citizen extends Entity<CitizenType> {
       style: { fontFamily: "game-font", fontSize: 8, align: "center" },
     });
 
-    container.addChild(palette_container, bars, name);
+    container.addChild(palette_container, weapon, bars, name);
     shield.zIndex = 1;
 
     palette.apply_palette(palette_container, this.shared.team);
+    palette.apply_palette(weapon, 0);
 
     entities.attach(palette_container);
     ground.attach(bars, name);
