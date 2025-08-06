@@ -30,11 +30,18 @@ function handle_growling(
             : assets.female_growl.animations;
         entity.sprites.body.first_frame = 2;
         entity.sprites.body.last_frame = 9;
-        entity.sprites.shield.animations = (
-          assets[
-            (entity.shared.shield + "_growl") as keyof typeof assets
-          ] as any
-        ).animations;
+        if (entity.shared.shield != "no_shield")
+          entity.sprites.shield.animations = (
+            assets[
+              (entity.shared.shield + "_growl") as keyof typeof assets
+            ] as any
+          ).animations;
+        if (entity.shared.weapon != "no_weapon")
+          entity.sprites.weapon.animations = (
+            assets[
+              (entity.shared.weapon + "_growl") as keyof typeof assets
+            ] as any
+          ).animations;
       }
 
       entity.sprites.legs.animations = assets.legs_run.animations;
@@ -110,10 +117,12 @@ function handle_direction(entity: Citizen, dt: number) {
 
     entity.sprites.body.animation = `frame_row_${body_row.toString()}` as any;
     entity.sprites.legs.animation = `frame_row_${legs_row.toString()}` as any;
-    entity.sprites.shield.animation =
-      `frame_row_${shield_row.toString()}` as any;
-    entity.sprites.weapon.animation =
-      `frame_row_${weapon_row.toString()}` as any;
+    if (entity.shared.shield != "no_shield")
+      entity.sprites.shield.animation =
+        `frame_row_${shield_row.toString()}` as any;
+    if (entity.shared.weapon != "no_weapon")
+      entity.sprites.weapon.animation =
+        `frame_row_${weapon_row.toString()}` as any;
   }
 }
 
@@ -132,9 +141,18 @@ function idle_enter(
   entity.sprites.legs.animations = assets.legs_run.animations;
   entity.sprites.body.duration = 150 / entity.data.speed;
   entity.sprites.legs.duration = 150 / entity.data.speed;
-  entity.sprites.shield.animations = (
-    assets[(entity.shared.shield + "_run") as keyof typeof assets] as any
-  ).animations;
+  if (entity.shared.shield != "no_shield")
+    entity.sprites.shield.animations = (
+      assets[(entity.shared.shield + "_run") as keyof typeof assets] as any
+    ).animations;
+  if (entity.shared.weapon != "no_weapon")
+    entity.sprites.weapon.animations = (
+      assets[
+        entity.shared.shield == "no_shield"
+          ? ((entity.shared.weapon + "_run_no_shield") as keyof typeof assets)
+          : ((entity.shared.weapon + "_run") as keyof typeof assets)
+      ] as any
+    ).animations;
 }
 
 function handle_body_bobbing(entity: Citizen) {
@@ -186,8 +204,10 @@ function handle_run_moving_animation(
     entity.sprites.body.duration = speed;
   }
 
-  entity.sprites.shield.frame = entity.sprites.body.frame;
-  entity.sprites.weapon.frame = entity.sprites.body.frame;
+  if (entity.shared.shield != "no_shield")
+    entity.sprites.shield.frame = entity.sprites.body.frame;
+  if (entity.shared.weapon != "no_weapon")
+    entity.sprites.weapon.frame = entity.sprites.body.frame;
 }
 
 export default {
@@ -226,11 +246,18 @@ export default {
       ).animations;
       entity.last_turn_row = -1;
       entity.sprites.body.duration = duration;
-      entity.sprites.shield.animations = (
-        assets[
-          (entity.shared.shield + "_" + animation) as keyof typeof assets
-        ] as any
-      ).animations;
+      if (entity.shared.shield != "no_shield")
+        entity.sprites.shield.animations = (
+          assets[
+            (entity.shared.shield + "_" + animation) as keyof typeof assets
+          ] as any
+        ).animations;
+      if (entity.shared.weapon != "no_weapon")
+        entity.sprites.weapon.animations = (
+          assets[
+            (entity.shared.weapon + "_" + animation) as keyof typeof assets
+          ] as any
+        ).animations;
 
       entities.add(
         new Slash(entity, weapon.meleeSlash[animationIndex], duration)

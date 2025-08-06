@@ -212,6 +212,26 @@ export const manifest = {
           alias: "axe_run",
           src: "/assets/sprites/grunt/axe_run.json",
         },
+        {
+          alias: "axe_run_no_shield",
+          src: "/assets/sprites/grunt/axe_run_no_shield.json",
+        },
+        {
+          alias: "axe_growl",
+          src: "/assets/sprites/grunt/axe_growl.json",
+        },
+        {
+          alias: "axe_attack_horizontal",
+          src: "/assets/sprites/grunt/axe_attack_horizontal.json",
+        },
+        {
+          alias: "axe_attack_vertical",
+          src: "/assets/sprites/grunt/axe_attack_vertical.json",
+        },
+        {
+          alias: "axe_dual_wield_attack_1",
+          src: "/assets/sprites/grunt/axe_dual_wield_attack_1.json",
+        },
       ],
     },
   ],

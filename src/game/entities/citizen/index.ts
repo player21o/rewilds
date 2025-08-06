@@ -180,6 +180,9 @@ export class Citizen extends Entity<CitizenType> {
     assets: ObjectManifest["bundles"]["game"],
     { elapsedMS, deltaTime }: Ticker
   ) {
+    if (this.shared.shield == "no_shield") this.sprites.shield.visible = false;
+    if (this.shared.weapon == "no_weapon") this.sprites.weapon.visible = false;
+
     this.container.pivot.set(
       this.container.width / 2,
       this.container.height / 2
