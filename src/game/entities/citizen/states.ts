@@ -195,6 +195,13 @@ function handle_run_moving_animation(
 ) {
   const speed = duration != undefined ? duration : 150 / entity.data.speed;
 
+  if (
+    entity.timer.on_key_change(entity.shared, "moving") &&
+    entity.state.state == "idle"
+  ) {
+    entity.sprites.body.frame = 0;
+  }
+
   if (!entity.isMoving) {
     entity.sprites.body.duration = speed * multiplier;
     entity.sprites.legs.stop();

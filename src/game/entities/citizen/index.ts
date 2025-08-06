@@ -124,7 +124,7 @@ export class Citizen extends Entity<CitizenType> {
 
     const weapon = new GameSprite({
       animations: (
-        assets[(this.shared.weapon + "_run") as keyof typeof assets] as any
+        assets[("shield_wooden" + "_run") as keyof typeof assets] as any
       ).animations,
       duration: 1,
       autoUpdate: false,
@@ -134,9 +134,8 @@ export class Citizen extends Entity<CitizenType> {
     weapon.play();
 
     const shield = new GameSprite({
-      animations: (
-        assets[(this.shared.shield + "_run") as keyof typeof assets] as any
-      ).animations,
+      animations: (assets[("axe" + "_run") as keyof typeof assets] as any)
+        .animations,
       duration: 1,
       autoUpdate: false,
       loop: true,

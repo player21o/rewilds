@@ -60,9 +60,19 @@ export class MyPlayer {
     //console.log(
     //  this.citizen != null && e.shared.team != this.citizen.shared.team
     //);
+
+    if (this.citizen != null)
+      console.log(
+        (this.citizen != null &&
+          e.shared.team == 2 &&
+          e.sid != this.citizen.sid) ||
+          e.shared.team != this.citizen.shared.team
+      );
+
     return (
-      e.shared.team == 2 ||
-      (this.citizen != null && e.shared.team != this.citizen.shared.team)
+      this.citizen != null &&
+      ((e.shared.team == 2 && e.sid != this.citizen.sid) ||
+        e.shared.team != this.citizen.shared.team)
     );
   }
 
@@ -125,8 +135,10 @@ export class MyPlayer {
     this.citizen!.bar_params.enemy = false;
 
     this.entities.entities.forEach((e) => {
-      if (e instanceof Citizen && e.sid != this.citizen!.sid)
+      if (e instanceof Citizen && e.sid != this.citizen!.sid) {
         e.bar_params.enemy = this.test_if_enemy(e);
+        e.update_bars(0);
+      }
     });
   }
 }
