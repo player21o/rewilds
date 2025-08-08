@@ -11,6 +11,7 @@ import { GameDependencies } from "../../game_deps";
 import { EntitiesManager } from "..";
 import Footstep from "../../objects/footstep";
 import constants from "../../../common/constants";
+import { DamageBubble } from "../../objects/damageBubble";
 
 export class Citizen extends Entity<CitizenType> {
   public sprites!: {
@@ -23,6 +24,8 @@ export class Citizen extends Entity<CitizenType> {
   public container!: Container;
   public palette_container!: Container;
   public rows = { body: 0, legs: 0 };
+
+  public health = 0;
 
   public last_turn_row = 0;
   public isMoving = false;
@@ -153,6 +156,21 @@ export class Citizen extends Entity<CitizenType> {
       position: { x: 60, y: 100 },
       style: { fontFamily: "game-font", fontSize: 8, align: "center" },
     });
+    name.tint = 0;
+
+    /*
+    const damage_text = new BitmapText({
+      text: "-1.0",
+      style: {
+        fontFamily: "game-font",
+        fontSize: 8,
+        align: "center",
+      },
+      anchor: 0.5,
+      position: { x: 60, y: 25 },
+    });
+    damage_text.tint = 0xcc0000;
+    */
 
     container.addChild(palette_container, weapon, bars, name);
     shield.zIndex = 1;
@@ -160,7 +178,7 @@ export class Citizen extends Entity<CitizenType> {
     palette.apply_palette(palette_container, this.shared.team);
     palette.apply_palette(weapon, 0);
 
-    entities.attach(palette_container);
+    entities.attach(palette_container, weapon);
     ground.attach(bars, name);
 
     this.sprites = { shield, body, legs, bars, weapon };
@@ -172,6 +190,16 @@ export class Citizen extends Entity<CitizenType> {
   public step(_: number, dp: GameDependencies, { elapsedMS }: Ticker) {
     this.state.set(this.shared.state, dp);
     this.timer.update(elapsedMS);
+
+    this.health = this.shared.health;
+
+    const hp = this.timer.on_key_change(this, "health");
+
+    if (hp[0]) {
+      const difference = hp[1] - this.shared.health;
+      console.log(difference);
+      dp.entities.add(new DamageBubble(this, difference));
+    }
   }
 
   public render(
@@ -213,9 +241,12 @@ export class Citizen extends Entity<CitizenType> {
 
     this.update_anims(elapsedMS);
 
-    const crst = this.timer.on_key_change(this.bar_params, "current_stamina");
-    const st = this.timer.on_key_change(this.bar_params, "stamina");
-    const h = this.timer.on_key_change(this.shared, "health");
+    const crst = this.timer.on_key_change(
+      this.bar_params,
+      "current_stamina"
+    )[0];
+    const st = this.timer.on_key_change(this.bar_params, "stamina")[0];
+    const h = this.timer.on_key_change(this.shared, "health")[0];
 
     const bar_needs_to_be_updated =
       (!this.bar_params.hide_stamina && (crst || st)) || h;

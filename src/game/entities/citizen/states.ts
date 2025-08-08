@@ -21,7 +21,7 @@ function handle_growling(
   animate_body = true,
   force = false
 ) {
-  if (force || entity.timer.on_key_change(entity.shared, "growling")) {
+  if (force || entity.timer.on_key_change(entity.shared, "growling")[0]) {
     if (entity.shared.growling) {
       if (animate_body) {
         entity.sprites.body.animations =
@@ -196,7 +196,7 @@ function handle_run_moving_animation(
   const speed = duration != undefined ? duration : 150 / entity.data.speed;
 
   if (
-    entity.timer.on_key_change(entity.shared, "moving") &&
+    entity.timer.on_key_change(entity.shared, "moving")[0] &&
     entity.state.state == "idle"
   ) {
     entity.sprites.body.frame = 0;

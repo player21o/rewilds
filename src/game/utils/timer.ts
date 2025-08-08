@@ -29,27 +29,32 @@ export class Timer {
     }
   }
 
-  public on_key_change<T extends object>(object: T, key: keyof T): boolean {
+  public on_key_change<T extends object, S extends keyof T>(
+    object: T,
+    key: S
+  ): [false, undefined] | [boolean, T[S]] {
     if (this.key_listeners.has(object)) {
       const vals = this.key_listeners.get(object)!;
 
       if (vals.keys.includes(key)) {
         const changed =
           vals.last_values[key as keyof typeof vals.last_values] != object[key];
+
+        const prev_value = vals.last_values[key as any];
         vals.last_values[key as any] = object[key];
-        return changed;
+        return [changed, prev_value];
       } else {
         vals.keys.push(key);
         vals.last_values[key as any] = object[key];
 
-        return false;
+        return [false, undefined];
       }
     } else {
       this.key_listeners.set(object, {
         keys: [key],
         last_values: { [key]: object[key] },
       });
-      return false;
+      return [false, undefined];
     }
   }
 
