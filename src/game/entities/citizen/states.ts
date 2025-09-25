@@ -12,6 +12,11 @@ function handle_movement(entity: Citizen, dt: number) {
   entity.y += (entity.shared.y - entity.y) * 0.3 * dt;
 
   entity.isMoving = entity.shared.moving;
+
+  if (entity.isMoving && entity.timer.every(0.5, "footstep")) {
+    entity.sounds.footstep.rate(1 + (-1 + Math.random() * 2) * 0.2);
+    entity.sounds.footstep.play();
+  }
 }
 
 function handle_growling(
@@ -227,10 +232,6 @@ export default {
     step(dt, entity, { entities }, _manager, assets) {
       handle_movement(entity, dt);
       handle_growling(entity, assets, entities);
-      if (entity.isMoving && entity.timer.every(0.5, "footstep")) {
-        entity.sounds.footstep.rate(1 + (-1 + Math.random() * 2) * 0.2);
-        entity.sounds.footstep.play();
-      }
 
       handle_body_bobbing(entity);
       handle_direction(entity, dt);
