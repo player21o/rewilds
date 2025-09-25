@@ -1,4 +1,10 @@
-import { BitmapText, Container, Graphics, Ticker } from "pixi.js";
+import {
+  BitmapText,
+  ColorMatrixFilter,
+  Container,
+  Graphics,
+  Ticker,
+} from "pixi.js";
 import { CitizenType } from "../../../common/interfaces";
 import { Entity } from "../entity";
 import { audio_manifest, ObjectManifest } from "../../../assets/manifest";
@@ -199,6 +205,22 @@ export class Citizen extends Entity<CitizenType> {
       const difference = hp[1] - this.shared.health;
       console.log(difference);
       dp.entities.add(new DamageBubble(this, difference));
+
+      const filter = new ColorMatrixFilter();
+      filter.brightness(10, true);
+      filter.tint("red", true);
+
+      this.palette_container.filters = [
+        ...this.palette_container.filters,
+        filter,
+      ];
+
+      setTimeout(
+        () =>
+          (this.palette_container.filters =
+            this.palette_container.filters.filter((f) => f != filter)),
+        200
+      );
     }
   }
 
