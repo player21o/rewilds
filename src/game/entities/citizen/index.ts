@@ -237,7 +237,7 @@ export class Citizen extends Entity<CitizenType> {
       this.container.width / 2,
       this.container.height / 2
     );
-    this.container.position.set(this.x, this.y);
+    this.container.position.set(this.x, this.y - this.z);
 
     this.state.step(deltaTime, dp, assets);
 

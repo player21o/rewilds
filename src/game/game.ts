@@ -6,6 +6,8 @@ import {
   TilingSprite,
   TextureStyle,
   Ticker,
+  Rectangle,
+  Graphics,
 } from "pixi.js";
 import { ObjectManifest, manifest } from "../assets/manifest";
 import { lerp, palette } from "./utils";
@@ -28,7 +30,12 @@ export class GameManager {
 
   private lastX = 0;
   private lastY = 0;
-  private txt!: Text;
+  private debug_sprites = [
+    new Graphics({ width: 10, height: 10 }).rect(0, 0, 10, 10).fill("red"),
+    new Graphics({ width: 10, height: 10 }).rect(0, 0, 10, 10).fill("red"),
+    new Graphics({ width: 10, height: 10 }).rect(0, 0, 10, 10).fill("red"),
+    new Graphics({ width: 10, height: 10 }).rect(0, 0, 10, 10).fill("red"),
+  ];
 
   public stop() {
     this.deps.stop();
@@ -39,7 +46,7 @@ export class GameManager {
   }
 
   constructor(app: Application, url: string) {
-    const stats = new Stats(app.renderer);
+    //const stats = new Stats(app.renderer);
     this.app = app;
 
     const viewport = new Viewport({
@@ -58,6 +65,9 @@ export class GameManager {
 
     Assets.init({ manifest: manifest as any as AssetsManifest });
     Assets.backgroundLoadBundle(["game"]);
+
+    viewport.addChild(...this.debug_sprites);
+    //layers.entities.attach(...this.debug_sprites);
 
     TextureStyle.defaultOptions.scaleMode = "nearest";
 
@@ -95,6 +105,26 @@ export class GameManager {
     return (ticker: Ticker) => {
       timer.update(ticker.elapsedMS);
       const deltaTime = ticker.deltaTime;
+
+      this.debug_sprites[0].position.set(
+        this.deps.viewport.left,
+        this.deps.viewport.top
+      );
+
+      this.debug_sprites[1].position.set(
+        this.deps.viewport.left + this.app.renderer.width,
+        this.deps.viewport.top
+      );
+
+      this.debug_sprites[2].position.set(
+        this.deps.viewport.left,
+        this.deps.viewport.top + this.app.renderer.height
+      );
+
+      this.debug_sprites[3].position.set(
+        this.deps.viewport.left + this.app.renderer.width,
+        this.deps.viewport.top + this.app.renderer.height
+      );
 
       this.deps.entities.forEach((e) => {
         if (

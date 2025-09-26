@@ -57,6 +57,7 @@ export class StateManager<T = any> {
     dp: GameDependencies,
     assets: ObjectManifest["bundles"]["game"]
   ) {
+    this.duration += dt / 100;
     const state = this.states[this.state as keyof typeof this.states];
     if (state.step != undefined) state.step(dt, this.entity, dp, this, assets);
   }

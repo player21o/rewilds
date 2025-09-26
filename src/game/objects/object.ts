@@ -17,6 +17,7 @@ export class GameObject {
   public rip = false;
   public x: number = 0;
   public y: number = 0;
+  public z: number = 0;
 
   public timer: Timer = new Timer();
 

@@ -290,4 +290,23 @@ export default {
         manager.set("idle", dp);
     },
   },
+  dead: {},
+  dying: {
+    step(dt, entity, dp, manager, assets) {
+      //coeff = 1 - (1 - x) * (1 - x)
+      //start + height * coeff
+      //we don't know start lol
+      //maybe we can know start from progress and current
+      const airlaunch_duration = 0.5;
+      const progress =
+        manager.duration <= airlaunch_duration * 0.6
+          ? (manager.duration / airlaunch_duration) * 0.6
+          : (manager.duration / airlaunch_duration) * 0.4;
+
+      console.log(progress);
+
+      if (manager.duration <= airlaunch_duration * 0.6) {
+      }
+    },
+  },
 } as States<Citizen>;
