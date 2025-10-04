@@ -292,31 +292,49 @@ export default {
     },
   },
   dead: {
-    enter(entity) {},
+    enter(entity, manager, assets) {
+      if (manager.prev_state == null)
+        entity.sprites.body.animations = (
+          assets[
+            (entity.shared.gender +
+              "_" +
+              ["fall_back", "fall_front"][
+                (Math.random() * 2) | 0
+              ]) as keyof typeof assets
+          ] as any
+        ).animations;
+      entity.sprites.body.duration = 1.5;
+      entity.sprites.body.loop = false;
+      entity.sprites.body.first_frame = 8;
+      entity.sprites.body.last_frame = 9;
+      entity.sprites.legs.visible = false;
+    },
   },
   dying: {
-    enter(entity, manager, assets, dp) {
+    enter(entity, _manager, assets, _dp) {
       const duration = 0.5;
       tween
         .tween(entity)
         .to({ z: 30 }, duration * 0.6, "outQuad")
         .to({ z: 0 }, duration * 0.4, "inQuad");
+
+      entity.sprites.body.animations = (
+        assets[
+          (entity.shared.gender +
+            "_" +
+            ["fall_back", "fall_front"][
+              (Math.random() * 2) | 0
+            ]) as keyof typeof assets
+        ] as any
+      ).animations;
+      entity.sprites.body.duration = 1.5;
+      entity.sprites.body.loop = false;
+      entity.sprites.body.last_frame = 9; //to not include the standing up anim
+      entity.sprites.legs.visible = false;
     },
-    step(dt, entity, dp, manager, assets) {
-      //coeff = 1 - (1 - x) * (1 - x)
-      //start + height * coeff
-      //we don't know start lol
-      //maybe we can know start from progress and current
-      const airlaunch_duration = 0.5;
-      const progress =
-        manager.duration <= airlaunch_duration * 0.6
-          ? (manager.duration / airlaunch_duration) * 0.6
-          : (manager.duration / airlaunch_duration) * 0.4;
-
-      console.log(progress);
-
-      if (manager.duration <= airlaunch_duration * 0.6) {
-      }
+    step(dt, entity, _dp, _manager, _assets) {
+      handle_movement(entity, dt);
+      handle_direction(entity, dt);
     },
   },
-} as States<Citizen>;
+} as States<Citizen, Citizen["shared"]["state"]>;

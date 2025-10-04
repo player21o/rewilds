@@ -58,35 +58,6 @@ export class GameSprite<
   public update(elapsedMS: number) {
     if (this._playing) {
       this._timer += elapsedMS / 1000;
-      /*
-
-      const progress = Math.min(1.0, this._timer / this._duration);
-
-      var frameNumber =
-        (this._start_frame + (this._last_frame - this._start_frame + 1)) | 0;
-
-      var finalFrame = Math.min(this._last_frame, frameNumber);
-
-      console.log(progress, this._duration);
-
-      if (this._frame != finalFrame) {
-        this._frame = finalFrame;
-        this.updateTexture();
-
-        if (progress >= 1.0) {
-          if (this._loop) {
-            this._timer = 0;
-          } else {
-            this._playing = false;
-          }
-        }
-      }
-        */
-
-      /*
-      this.setFrame(finalFrame);
-
-      */
       if (
         this._timer >=
         this._duration / (this._last_frame - this._start_frame)
@@ -175,5 +146,13 @@ export class GameSprite<
 
   get total_animations() {
     return this._total_animations;
+  }
+
+  set loop(f: boolean) {
+    this._loop = f;
+  }
+
+  get loop() {
+    return this._loop;
   }
 }

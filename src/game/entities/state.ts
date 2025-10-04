@@ -5,6 +5,7 @@ import { Entity } from "./entity";
 export class StateManager<T = any> {
   public state: T | null = null;
   public duration = 0;
+  public prev_state: T | null = null;
 
   private states: States;
   private entity: Entity;
@@ -30,6 +31,8 @@ export class StateManager<T = any> {
     if (this.state != null)
       if (s.leave != undefined && this.assets != undefined)
         s.leave(this.entity, this, this.assets);
+
+    this.prev_state = this.state;
 
     this.state = state;
     this.duration = 0;
@@ -63,24 +66,24 @@ export class StateManager<T = any> {
   }
 }
 
-export type States<T extends Entity = any> = {
+export type States<T extends Entity = any, S = any> = {
   [name: string]: {
     enter?: (
       entity: T,
-      manager: StateManager,
+      manager: StateManager<S>,
       assets: ObjectManifest["bundles"]["game"],
       dp: GameDependencies
     ) => void;
     leave?: (
       entity: T,
-      manager: StateManager,
+      manager: StateManager<S>,
       assets: ObjectManifest["bundles"]["game"]
     ) => void;
     step?: (
       dt: number,
       entity: T,
       dp: GameDependencies,
-      manager: StateManager,
+      manager: StateManager<S>,
       assets: ObjectManifest["bundles"]["game"]
     ) => void;
     /*

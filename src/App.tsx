@@ -6,7 +6,7 @@ const App = () => {
   const [gameUrl, setGameUrl] = useState<null | string>(null);
 
   return gameUrl == null ? (
-    <Lobby url="ws://localhost:8000" onPlay={(url) => setGameUrl(url)}></Lobby>
+    <Lobby url="ws://localhost:8888" onPlay={(url) => setGameUrl(url)}></Lobby>
   ) : (
     <Game url={gameUrl}></Game>
   );

@@ -232,6 +232,22 @@ export const manifest = {
           alias: "axe_dual_wield_attack_1",
           src: "/assets/sprites/grunt/axe_dual_wield_attack_1.json",
         },
+        {
+          alias: "male_fall_back",
+          src: "/assets/sprites/grunt/male/fall_back.json",
+        },
+        {
+          alias: "male_fall_front",
+          src: "/assets/sprites/grunt/male/fall_front.json",
+        },
+        {
+          alias: "female_fall_back",
+          src: "/assets/sprites/grunt/female/fall_back.json",
+        },
+        {
+          alias: "female_fall_front",
+          src: "/assets/sprites/grunt/female/fall_front.json",
+        },
       ],
     },
   ],
