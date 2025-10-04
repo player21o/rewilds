@@ -5,6 +5,7 @@ import constants from "../../../common/constants";
 import Dust from "../../objects/dust";
 import Slash from "../../objects/slash";
 import { circWrapTo, lookAt } from "../../utils";
+import tween from "../../utils/tween";
 import { States } from "../state";
 
 function handle_movement(entity: Citizen, dt: number) {
@@ -290,8 +291,17 @@ export default {
         manager.set("idle", dp);
     },
   },
-  dead: {},
+  dead: {
+    enter(entity) {},
+  },
   dying: {
+    enter(entity, manager, assets, dp) {
+      const duration = 0.5;
+      tween
+        .tween(entity)
+        .to({ z: 30 }, duration * 0.6, "outQuad")
+        .to({ z: 0 }, duration * 0.4, "inQuad");
+    },
     step(dt, entity, dp, manager, assets) {
       //coeff = 1 - (1 - x) * (1 - x)
       //start + height * coeff

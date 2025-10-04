@@ -190,6 +190,8 @@ export class Citizen extends Entity<CitizenType> {
     this.sprites = { shield, body, legs, bars, weapon };
     this.update_bars(1);
 
+    container.pivot.set(container.width / 2, container.height / 2);
+
     return container;
   }
 
@@ -233,11 +235,8 @@ export class Citizen extends Entity<CitizenType> {
     if (this.shared.shield == "no_shield") this.sprites.shield.visible = false;
     if (this.shared.weapon == "no_weapon") this.sprites.weapon.visible = false;
 
-    this.container.pivot.set(
-      this.container.width / 2,
-      this.container.height / 2
-    );
-    this.container.position.set(this.x, this.y - this.z);
+    this.container.position.set(this.x, this.y);
+    this.palette_container.position.y = -this.z;
 
     this.state.step(deltaTime, dp, assets);
 

@@ -2,11 +2,9 @@ import {
   Application,
   Assets,
   AssetsManifest,
-  Text,
   TilingSprite,
   TextureStyle,
   Ticker,
-  Rectangle,
   Graphics,
 } from "pixi.js";
 import { ObjectManifest, manifest } from "../assets/manifest";
@@ -17,6 +15,7 @@ import { Viewport } from "pixi-viewport";
 import { Stats } from "pixi-stats";
 import layers from "./render/layers";
 import timer from "./utils/timer";
+import tween from "./utils/tween";
 
 /**
  * the main class where all magic happens
@@ -46,7 +45,7 @@ export class GameManager {
   }
 
   constructor(app: Application, url: string) {
-    //const stats = new Stats(app.renderer);
+    const stats = new Stats(app.renderer);
     this.app = app;
 
     const viewport = new Viewport({
@@ -149,6 +148,8 @@ export class GameManager {
 
           e.culled = false;
         }
+
+        tween.step(ticker.deltaTime);
       });
 
       if (this.deps.me.citizen != null) {
