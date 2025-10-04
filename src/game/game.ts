@@ -45,6 +45,7 @@ export class GameManager {
   }
 
   constructor(app: Application, url: string) {
+    // @ts-ignore
     const stats = new Stats(app.renderer);
     this.app = app;
 

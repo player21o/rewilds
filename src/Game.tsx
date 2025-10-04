@@ -1,6 +1,6 @@
 import { Application } from "pixi.js";
-import { useEffect, useRef } from "react";
 import { GameManager } from "./game/game";
+import { useEffect, useRef } from "preact/hooks";
 
 interface Props {
   url: string;

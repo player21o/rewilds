@@ -44,6 +44,7 @@ export class WS {
 
         //console.log(this.bytes / 1048576);
 
+        // @ts-ignore
         packets[constructor_name](this.send, this.game, ...(formatted as any));
       });
     };

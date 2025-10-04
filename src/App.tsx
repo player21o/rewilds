@@ -1,6 +1,6 @@
-import { useState } from "react";
 import Lobby from "./Lobby";
 import Game from "./Game";
+import { useState } from "preact/hooks";
 
 const App = () => {
   const [gameUrl, setGameUrl] = useState<null | string>(null);
