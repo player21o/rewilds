@@ -71,6 +71,10 @@ export class InputsManager {
     };
   }
 
+  set onwheel(cb: (direction: -1 | 1) => void) {
+    window.onwheel = ({ deltaY }) => cb(deltaY > 0 ? 1 : -1);
+  }
+
   public stop() {
     this.anyPressedKeysCallbacks = [];
     this.anyReleasedKeysCallbacks = [];

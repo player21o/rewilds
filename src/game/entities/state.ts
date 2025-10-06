@@ -66,8 +66,11 @@ export class StateManager<T = any> {
   }
 }
 
-export type States<T extends Entity = any, S = any> = {
-  [name: string]: {
+export type States<
+  T extends Entity = any,
+  S extends string | number | symbol = any
+> = {
+  [A in S]: {
     enter?: (
       entity: T,
       manager: StateManager<S>,

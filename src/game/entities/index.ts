@@ -1,7 +1,6 @@
 import { Container } from "pixi.js";
 import { Entity } from "./entity";
 import { ObjectManifest } from "../../assets/manifest";
-import { Citizen } from "./citizen";
 import layers from "../render/layers";
 import { GameObject } from "../objects/object";
 
@@ -85,7 +84,3 @@ export class EntitiesManager {
     rip.forEach((r) => this.remove(r));
   }
 }
-
-export const entityClasses = {
-  Citizen,
-};

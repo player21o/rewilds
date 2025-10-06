@@ -337,4 +337,7 @@ export default {
       handle_direction(entity, dt);
     },
   },
+  charge: {},
+  block: {},
+  stunned: {},
 } as States<Citizen, Citizen["shared"]["state"]>;

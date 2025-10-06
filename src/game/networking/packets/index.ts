@@ -3,7 +3,7 @@ import {
   constructors_keys,
   constructors_object,
 } from "../../../common/constructors";
-import { entityClasses } from "../../entities";
+import entityClasses from "../../entities/entityClasses";
 import { Citizen } from "../../entities/citizen";
 import { Packets } from "./types";
 
