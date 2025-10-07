@@ -3,9 +3,9 @@ import layers from "../render/layers";
 import { GameObject } from "./object";
 import { GameSprite } from "../render/anim";
 import constants from "../../common/constants";
-import { Citizen } from "../entities/citizen";
+import type { Citizen } from "../entities/citizen";
 import { Ticker } from "pixi.js";
-import { GameDependencies } from "../game_deps";
+import type { GameDependencies } from "../game_deps";
 import { groundAngle } from "../utils";
 
 const slashRotation = {

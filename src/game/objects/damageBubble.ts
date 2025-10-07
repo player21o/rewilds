@@ -3,7 +3,7 @@ import { ObjectManifest } from "../../assets/manifest";
 import { Entity } from "../entities/entity";
 import { GameObject } from "./object";
 import layers from "../render/layers";
-import { GameDependencies } from "../game_deps";
+import type { GameDependencies } from "../game_deps";
 
 export class DamageBubble extends GameObject {
   private entity: Entity;

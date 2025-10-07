@@ -2,7 +2,7 @@ import { Container } from "pixi.js";
 import layers from "../render/layers";
 import { ObjectManifest } from "../../assets/manifest";
 import { Ticker } from "pixi.js";
-import { GameDependencies } from "../game_deps";
+import type { GameDependencies } from "../game_deps";
 import { Timer } from "../utils/timer";
 
 /**

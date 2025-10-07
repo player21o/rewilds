@@ -2,7 +2,7 @@ import { Container, Graphics, GraphicsContext, Ticker } from "pixi.js";
 import { GameObject } from "./object";
 import { ObjectManifest } from "../../assets/manifest";
 import layers from "../render/layers";
-import { GameDependencies } from "../game_deps";
+import type { GameDependencies } from "../game_deps";
 import timer from "../utils/timer";
 
 const ctx = new GraphicsContext()

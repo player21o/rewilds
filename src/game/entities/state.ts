@@ -1,5 +1,5 @@
 import { ObjectManifest } from "../../assets/manifest";
-import { GameDependencies } from "../game_deps";
+import type { GameDependencies } from "../game_deps";
 import { Entity } from "./entity";
 
 export class StateManager<T = any> {

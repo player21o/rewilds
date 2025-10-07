@@ -3,7 +3,7 @@ import { ObjectManifest } from "../../assets/manifest";
 import layers from "../render/layers";
 import { GameObject } from "./object";
 import { GameSprite } from "../render/anim";
-import { GameDependencies } from "../game_deps";
+import type { GameDependencies } from "../game_deps";
 
 export default class Dust extends GameObject {
   private container!: Container;

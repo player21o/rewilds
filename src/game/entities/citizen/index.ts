@@ -13,7 +13,7 @@ import { GameSprite } from "../../render/anim";
 import { StateManager } from "../state";
 import states from "./states";
 import layers from "../../render/layers";
-import { GameDependencies } from "../../game_deps";
+import type { GameDependencies } from "../../game_deps";
 import { EntitiesManager } from "..";
 import Footstep from "../../objects/footstep";
 import constants from "../../../common/constants";
