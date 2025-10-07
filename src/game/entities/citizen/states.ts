@@ -338,6 +338,37 @@ export default {
     },
   },
   charge: {},
-  block: {},
+  block: {
+    enter(entity, _m, assets) {
+      entity.sprites.weapon.visible = false;
+
+      entity.sprites.body.animations =
+        assets[
+          (entity.shared.gender +
+            "_block" +
+            (entity.shared.shield == "no_shield"
+              ? "_no_shield"
+              : "")) as keyof typeof assets
+        ];
+
+      alert(
+        entity.shared.gender +
+          "_block" +
+          (entity.shared.shield == "no_shield" ? "_no_shield" : "")
+      );
+      entity.sprites.body.play();
+      entity.sprites.body.loop = true;
+    },
+    step(dt, entity, { entities }, _manager, assets) {
+      //handle_movement(entity, dt);
+      //handle_growling(entity, assets, entities, false);
+      //handle_body_bobbing(entity);
+      //handle_direction(entity, dt);
+      //handle_run_moving_animation(entity);
+    },
+    leave(entity) {
+      entity.sprites.weapon.visible = true;
+    },
+  },
   stunned: {},
 } as States<Citizen, Citizen["shared"]["state"]>;

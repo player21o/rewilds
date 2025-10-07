@@ -248,6 +248,19 @@ export const manifest = {
           alias: "female_fall_front",
           src: "/assets/sprites/grunt/female/fall_front.json",
         },
+        { alias: "male_block", src: "/assets/sprites/grunt/male/block.json" },
+        {
+          alias: "male_block_no_shield",
+          src: "/assets/sprites/grunt/male/block_without_shield.json",
+        },
+        {
+          alias: "female_block",
+          src: "/assets/sprites/grunt/female/block.json",
+        },
+        {
+          alias: "female_block_no_shield",
+          src: "/assets/sprites/grunt/female/block_without_shield.json",
+        },
       ],
     },
   ],
