@@ -340,35 +340,49 @@ export default {
   charge: {},
   block: {
     enter(entity, _m, assets) {
-      entity.sprites.weapon.visible = false;
-
-      entity.sprites.body.animations =
+      entity.sprites.body.animations = (
         assets[
           (entity.shared.gender +
             "_block" +
             (entity.shared.shield == "no_shield"
               ? "_no_shield"
               : "")) as keyof typeof assets
-        ];
+        ] as any
+      ).animations;
 
-      alert(
-        entity.shared.gender +
-          "_block" +
-          (entity.shared.shield == "no_shield" ? "_no_shield" : "")
-      );
-      entity.sprites.body.play();
+      entity.sprites.weapon.animations = (
+        assets[
+          (entity.shared.weapon +
+            "_block" +
+            (entity.shared.shield == "no_shield"
+              ? "_no_shield"
+              : "")) as keyof typeof assets
+        ] as any
+      ).animations;
+
+      entity.sprites.shield.animations = (
+        assets[(entity.shared.shield + "_block") as keyof typeof assets] as any
+      ).animations;
+
+      entity.sprites.body.duration = 1;
       entity.sprites.body.loop = true;
+      entity.sprites.body.play();
+      entity.sprites.weapon.duration = 1;
+      entity.sprites.weapon.loop = true;
+      entity.sprites.weapon.play();
+
+      entity.sprites.shield.duration = 1;
+      entity.sprites.shield.loop = true;
+      entity.sprites.shield.play();
     },
     step(dt, entity, { entities }, _manager, assets) {
-      //handle_movement(entity, dt);
-      //handle_growling(entity, assets, entities, false);
-      //handle_body_bobbing(entity);
-      //handle_direction(entity, dt);
-      //handle_run_moving_animation(entity);
+      handle_movement(entity, dt);
+      handle_growling(entity, assets, entities, false);
+      handle_body_bobbing(entity);
+      handle_direction(entity, dt);
+      handle_run_moving_animation(entity, 1, 1);
     },
-    leave(entity) {
-      entity.sprites.weapon.visible = true;
-    },
+    leave(entity) {},
   },
   stunned: {},
 } as States<Citizen, Citizen["shared"]["state"]>;

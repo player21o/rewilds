@@ -261,6 +261,18 @@ export const manifest = {
           alias: "female_block_no_shield",
           src: "/assets/sprites/grunt/female/block_without_shield.json",
         },
+        {
+          alias: "axe_block",
+          src: "/assets/sprites/grunt/axe_block.json",
+        },
+        {
+          alias: "axe_block_no_shield",
+          src: "/assets/sprites/grunt/axe_block_without_shield.json",
+        },
+        {
+          alias: "shield_wooden_block",
+          src: "/assets/sprites/grunt/shield_wooden_block.json",
+        },
       ],
     },
   ],
