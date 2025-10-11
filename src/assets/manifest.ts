@@ -56,19 +56,19 @@ export const manifest = {
           >,
         },
         {
-          alias: "run",
+          alias: "male_run",
           src: "/assets/sprites/grunt/male/run.json" as any as Atlas<
             typeof run_atlas_type
           >,
         },
         {
-          alias: "no_shield_run",
+          alias: "male_run_no_shield",
           src: "/assets/sprites/grunt/male/run_no_shield.json" as any as Atlas<
             typeof run_no_shield_atlas_type
           >,
         },
         {
-          alias: "growl",
+          alias: "male_growl",
           src: "/assets/sprites/grunt/male/growl.json" as any as Atlas<
             typeof growl_atlas_type
           >,
@@ -80,7 +80,7 @@ export const manifest = {
           >,
         },
         {
-          alias: "female_no_shield_run",
+          alias: "female_run_no_shield",
           src: "/assets/sprites/grunt/female/run_no_shield.json" as any as Atlas<
             typeof female_run_no_shield_atlas_type
           >,
@@ -272,6 +272,22 @@ export const manifest = {
         {
           alias: "shield_wooden_block",
           src: "/assets/sprites/grunt/shield_wooden_block.json",
+        },
+        {
+          alias: "male_stunned",
+          src: "/assets/sprites/grunt/male/stunned.json",
+        },
+        {
+          alias: "female_stunned",
+          src: "/assets/sprites/grunt/female/stunned.json",
+        },
+        {
+          alias: "axe_stunned",
+          src: "/assets/sprites/grunt/axe_stunned.json",
+        },
+        {
+          alias: "shield_wooden_stunned",
+          src: "/assets/sprites/grunt/shield_wooden_stunned.json",
         },
       ],
     },

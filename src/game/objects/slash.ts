@@ -62,8 +62,7 @@ export default class Slash extends GameObject {
         (assets[this.slash as any as keyof typeof assets] as any).animations
       ).length == 1
         ? "default"
-        : "frame_row_" + this.entity.rows.legs;
-    console.log(container.animation);
+        : "frame_row_" + this.entity.rows.body;
     container.play();
     container.zIndex = 999;
     this.container = container;

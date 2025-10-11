@@ -4,7 +4,7 @@ import { ObjectManifest } from "../../../assets/manifest";
 import constants from "../../../common/constants";
 import Dust from "../../objects/dust";
 import Slash from "../../objects/slash";
-import { circWrapTo, lookAt } from "../../utils";
+import { circWrapTo, lookAt, circWrap } from "../../utils";
 import tween from "../../utils/tween";
 import { States } from "../state";
 
@@ -32,7 +32,7 @@ function handle_growling(
       if (animate_body) {
         entity.sprites.body.animations =
           entity.shared.gender == "male"
-            ? assets.growl.animations
+            ? assets.male_growl.animations
             : assets.female_growl.animations;
         entity.sprites.body.first_frame = 2;
         entity.sprites.body.last_frame = 9;
@@ -87,48 +87,34 @@ function handle_direction(entity: Citizen, dt: number) {
     0.2 * dt
   );
   const fo = (-0.5 * Math.PI * 2) / entity.sprites.body.total_animations;
-  const direction_for_sprite = lookAt(
+  const direction = lookAt(
     0,
     0,
-    Math.cos(entity.direction) * entity.sprites.body.total_animations,
-    1.4 * Math.sin(entity.direction) * entity.sprites.body.total_animations
+    Math.cos(entity.direction) * 16,
+    1.4 * Math.sin(entity.direction) * 16
   );
 
-  const body_row =
-    (((direction_for_sprite - fo) / (Math.PI * 2)) *
+  const dirrow =
+    ((circWrap(direction - fo) / (Math.PI * 2)) *
       entity.sprites.body.total_animations) |
     0;
-  const legs_row =
-    (((direction_for_sprite - fo) / (Math.PI * 2)) *
+  const dirrow_legs =
+    ((circWrap(direction - fo) / (Math.PI * 2)) *
       entity.sprites.legs.total_animations) |
     0;
-  const shield_row =
-    (((direction_for_sprite - fo) / (Math.PI * 2)) *
-      entity.sprites.shield.total_animations) |
-    0;
-  const weapon_row =
-    (((direction_for_sprite - fo) / (Math.PI * 2)) *
-      entity.sprites.weapon.total_animations) |
-    0;
 
-  entity.rows.body = body_row;
-  entity.rows.legs = legs_row;
+  entity.rows.body = dirrow;
+  entity.rows.legs = dirrow_legs;
 
-  if (
-    entity.last_turn_row != body_row &&
-    body_row > 0 &&
-    body_row < entity.sprites.body.total_animations
-  ) {
-    entity.last_turn_row = body_row;
+  if (entity.last_turn_row != dirrow) {
+    entity.last_turn_row = dirrow;
 
-    entity.sprites.body.animation = `frame_row_${body_row.toString()}` as any;
-    entity.sprites.legs.animation = `frame_row_${legs_row.toString()}` as any;
+    entity.sprites.body.animation = `frame_row_${dirrow.toString()}` as any;
+    entity.sprites.legs.animation =
+      `frame_row_${dirrow_legs.toString()}` as any;
     if (entity.shared.shield != "no_shield")
-      entity.sprites.shield.animation =
-        `frame_row_${shield_row.toString()}` as any;
-    if (entity.shared.weapon != "no_weapon")
-      entity.sprites.weapon.animation =
-        `frame_row_${weapon_row.toString()}` as any;
+      entity.sprites.shield.animation = `frame_row_${dirrow.toString()}` as any;
+    entity.sprites.weapon.animation = `frame_row_${dirrow.toString()}` as any;
   }
 }
 
@@ -139,10 +125,10 @@ function idle_enter(
   entity.sprites.body.animations =
     entity.shared.gender == "male"
       ? entity.shared.shield == "no_shield"
-        ? assets.no_shield_run.animations
-        : assets.run.animations
+        ? assets.male_run_no_shield.animations
+        : assets.male_run.animations
       : entity.shared.shield == "no_shield"
-      ? assets.female_no_shield_run.animations
+      ? assets.female_run_no_shield.animations
       : assets.female_run.animations;
   entity.sprites.legs.animations = assets.legs_run.animations;
   entity.sprites.body.duration = 150 / entity.data.speed;
@@ -216,11 +202,23 @@ function handle_run_moving_animation(
     entity.sprites.legs.play();
     entity.sprites.body.duration = speed;
   }
+}
 
-  if (entity.shared.shield != "no_shield")
-    entity.sprites.shield.frame = entity.sprites.body.frame;
-  if (entity.shared.weapon != "no_weapon")
-    entity.sprites.weapon.frame = entity.sprites.body.frame;
+function handle_basic(
+  entity: Citizen,
+  dt: number,
+  assets: ObjectManifest["bundles"]["game"],
+  entities: EntitiesManager,
+  duration?: number,
+  multiplier?: number,
+  animate_body?: boolean
+) {
+  handle_movement(entity, dt);
+  handle_growling(entity, assets, entities, animate_body);
+
+  handle_body_bobbing(entity);
+  handle_direction(entity, dt);
+  handle_run_moving_animation(entity, duration, multiplier);
 }
 
 export default {
@@ -231,12 +229,7 @@ export default {
     },
     leave(_entity, _manager) {},
     step(dt, entity, { entities }, _manager, assets) {
-      handle_movement(entity, dt);
-      handle_growling(entity, assets, entities);
-
-      handle_body_bobbing(entity);
-      handle_direction(entity, dt);
-      handle_run_moving_animation(entity);
+      handle_basic(entity, dt, assets, entities);
     },
   },
   attack: {
@@ -248,37 +241,19 @@ export default {
       const animation = weapon.attackAnimations[animationIndex];
       const duration = weapon.attackDuration * entity.data.attackDuration;
 
-      entity.sprites.body.animations = (
-        assets[
-          (entity.shared.gender + "_" + animation) as keyof typeof assets
-        ] as any
-      ).animations;
-      entity.last_turn_row = -1;
-      entity.sprites.body.duration = duration;
-      if (entity.shared.shield != "no_shield")
-        entity.sprites.shield.animations = (
-          assets[
-            (entity.shared.shield + "_" + animation) as keyof typeof assets
-          ] as any
-        ).animations;
-      if (entity.shared.weapon != "no_weapon")
-        entity.sprites.weapon.animations = (
-          assets[
-            (entity.shared.weapon + "_" + animation) as keyof typeof assets
-          ] as any
-        ).animations;
+      entity.set_sprites(animation, 1, false, assets);
+      //entity.last_turn_row = -1;
 
       entities.add(
         new Slash(entity, weapon.meleeSlash[animationIndex], duration)
       );
     },
     step(dt, entity, dp, manager, assets) {
-      handle_movement(entity, dt);
-      handle_growling(entity, assets, dp.entities, false);
-      handle_body_bobbing(entity);
-      handle_direction(entity, dt);
-      handle_run_moving_animation(
+      handle_basic(
         entity,
+        dt,
+        assets,
+        dp.entities,
         constants.weapons[entity.shared.weapon].attackDuration *
           entity.data.attackDuration,
         1
@@ -308,6 +283,8 @@ export default {
       entity.sprites.body.first_frame = 8;
       entity.sprites.body.last_frame = 9;
       entity.sprites.legs.visible = false;
+      entity.sprites.shield.visible = false;
+      entity.sprites.weapon.visible = false;
     },
   },
   dying: {
@@ -331,6 +308,8 @@ export default {
       entity.sprites.body.loop = false;
       entity.sprites.body.last_frame = 9; //to not include the standing up anim
       entity.sprites.legs.visible = false;
+      entity.sprites.shield.visible = false;
+      entity.sprites.weapon.visible = false;
     },
     step(dt, entity, _dp, _manager, _assets) {
       handle_movement(entity, dt);
@@ -340,49 +319,18 @@ export default {
   charge: {},
   block: {
     enter(entity, _m, assets) {
-      entity.sprites.body.animations = (
-        assets[
-          (entity.shared.gender +
-            "_block" +
-            (entity.shared.shield == "no_shield"
-              ? "_no_shield"
-              : "")) as keyof typeof assets
-        ] as any
-      ).animations;
-
-      entity.sprites.weapon.animations = (
-        assets[
-          (entity.shared.weapon +
-            "_block" +
-            (entity.shared.shield == "no_shield"
-              ? "_no_shield"
-              : "")) as keyof typeof assets
-        ] as any
-      ).animations;
-
-      entity.sprites.shield.animations = (
-        assets[(entity.shared.shield + "_block") as keyof typeof assets] as any
-      ).animations;
-
-      entity.sprites.body.duration = 1;
-      entity.sprites.body.loop = true;
-      entity.sprites.body.play();
-      entity.sprites.weapon.duration = 1;
-      entity.sprites.weapon.loop = true;
-      entity.sprites.weapon.play();
-
-      entity.sprites.shield.duration = 1;
-      entity.sprites.shield.loop = true;
-      entity.sprites.shield.play();
+      entity.set_sprites("block", 0.75, false, assets);
     },
     step(dt, entity, { entities }, _manager, assets) {
-      handle_movement(entity, dt);
-      handle_growling(entity, assets, entities, false);
-      handle_body_bobbing(entity);
-      handle_direction(entity, dt);
-      handle_run_moving_animation(entity, 1, 1);
+      handle_basic(entity, dt, assets, entities, 0.75, 1, false);
     },
-    leave(entity) {},
   },
-  stunned: {},
+  stunned: {
+    enter(entity, _m, assets) {
+      entity.sprites.legs.stop();
+      entity.sprites.legs.frame = 19;
+      entity.set_sprites("stunned", 1, false, assets, false);
+      handle_direction(entity, 1);
+    },
+  },
 } as States<Citizen, Citizen["shared"]["state"]>;

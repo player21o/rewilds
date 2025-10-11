@@ -121,9 +121,9 @@ export class Citizen extends Entity<CitizenType> {
     legs.play();
 
     const body = new GameSprite<
-      ObjectManifest["bundles"]["game"]["run"]["animations"]
+      ObjectManifest["bundles"]["game"]["male_run"]["animations"]
     >({
-      animations: assets.run.animations,
+      animations: assets.male_run.animations,
       duration: 150 / 3000,
       autoUpdate: false,
       loop: true,
@@ -205,7 +205,6 @@ export class Citizen extends Entity<CitizenType> {
 
     if (hp[0]) {
       const difference = hp[1] - this.shared.health;
-      console.log(difference);
       dp.entities.add(new DamageBubble(this, difference));
 
       const filter = new ColorMatrixFilter();
@@ -372,6 +371,11 @@ export class Citizen extends Entity<CitizenType> {
   private update_anims(elapsed: number) {
     this.sprites.body.update(elapsed);
     this.sprites.legs.update(elapsed);
+
+    if (this.shared.shield != "no_shield")
+      this.sprites.shield.frame = this.sprites.body.frame;
+    if (this.shared.weapon != "no_weapon")
+      this.sprites.weapon.frame = this.sprites.body.frame;
     //this.sprites.shield.update(elapsed);
   }
 
@@ -384,5 +388,46 @@ export class Citizen extends Entity<CitizenType> {
         )
       );
     }
+  }
+
+  public set_sprites(
+    animation: string,
+    duration: number,
+    loop: boolean,
+    assets: ObjectManifest["bundles"]["game"],
+    check_shield?: boolean
+  ) {
+    this.sprites.body.animations = (
+      assets[
+        (this.shared.gender +
+          "_" +
+          animation +
+          (this.shared.shield == "no_shield"
+            ? "_no_shield"
+            : "")) as keyof typeof assets
+      ] as any
+    ).animations;
+    this.sprites.body.duration = duration;
+    this.sprites.body.loop = loop;
+    this.sprites.body.play();
+
+    this.sprites.weapon.animations = (
+      assets[
+        (this.shared.weapon +
+          "_" +
+          animation +
+          (this.shared.shield == "no_shield" &&
+          (check_shield == undefined || check_shield == true)
+            ? "_no_shield"
+            : "")) as keyof typeof assets
+      ] as any
+    ).animations;
+
+    if (this.shared.shield != "no_shield")
+      this.sprites.shield.animations = (
+        assets[
+          (this.shared.shield + "_" + animation) as keyof typeof assets
+        ] as any
+      ).animations;
   }
 }
