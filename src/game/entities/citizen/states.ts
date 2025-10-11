@@ -36,6 +36,7 @@ function handle_growling(
             : assets.female_growl.animations;
         entity.sprites.body.first_frame = 2;
         entity.sprites.body.last_frame = 9;
+        entity.sprites.body.loop = true;
         if (entity.shared.shield != "no_shield")
           entity.sprites.shield.animations = (
             assets[
@@ -57,6 +58,7 @@ function handle_growling(
           ? entity.sounds.male_growl
           : entity.sounds.female_growl;
 
+      growl_sound.stop();
       growl_sound.play();
       growl_sound.fade(0, 1, 1);
     } else {
@@ -122,29 +124,10 @@ function idle_enter(
   entity: Citizen,
   assets: ObjectManifest["bundles"]["game"]
 ) {
-  entity.sprites.body.animations =
-    entity.shared.gender == "male"
-      ? entity.shared.shield == "no_shield"
-        ? assets.male_run_no_shield.animations
-        : assets.male_run.animations
-      : entity.shared.shield == "no_shield"
-      ? assets.female_run_no_shield.animations
-      : assets.female_run.animations;
+  entity.set_sprites("run", 150 / entity.data.speed, true, assets);
+
   entity.sprites.legs.animations = assets.legs_run.animations;
-  entity.sprites.body.duration = 150 / entity.data.speed;
   entity.sprites.legs.duration = 150 / entity.data.speed;
-  if (entity.shared.shield != "no_shield")
-    entity.sprites.shield.animations = (
-      assets[(entity.shared.shield + "_run") as keyof typeof assets] as any
-    ).animations;
-  if (entity.shared.weapon != "no_weapon")
-    entity.sprites.weapon.animations = (
-      assets[
-        entity.shared.shield == "no_shield"
-          ? ((entity.shared.weapon + "_run_no_shield") as keyof typeof assets)
-          : ((entity.shared.weapon + "_run") as keyof typeof assets)
-      ] as any
-    ).animations;
 }
 
 function handle_body_bobbing(entity: Citizen) {
@@ -319,10 +302,10 @@ export default {
   charge: {},
   block: {
     enter(entity, _m, assets) {
-      entity.set_sprites("block", 0.75, false, assets);
+      entity.set_sprites("block", 1, false, assets);
     },
     step(dt, entity, { entities }, _manager, assets) {
-      handle_basic(entity, dt, assets, entities, 0.75, 1, false);
+      handle_basic(entity, dt, assets, entities, 1, 1, false);
     },
   },
   stunned: {
