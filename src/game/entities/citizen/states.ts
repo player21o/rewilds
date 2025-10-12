@@ -8,18 +8,6 @@ import { circWrapTo, lookAt, circWrap } from "../../utils";
 import tween from "../../utils/tween";
 import { States } from "../state";
 
-function handle_movement(entity: Citizen, dt: number) {
-  entity.x += (entity.shared.x - entity.x) * 0.3 * dt;
-  entity.y += (entity.shared.y - entity.y) * 0.3 * dt;
-
-  entity.isMoving = entity.shared.moving;
-
-  if (entity.isMoving && entity.timer.every(0.5, "footstep")) {
-    entity.sounds.footstep.rate(1 + (-1 + Math.random() * 2) * 0.2);
-    entity.sounds.footstep.play();
-  }
-}
-
 function handle_growling(
   entity: Citizen,
   assets: ObjectManifest["bundles"]["game"],
@@ -196,7 +184,6 @@ function handle_basic(
   multiplier?: number,
   animate_body?: boolean
 ) {
-  handle_movement(entity, dt);
   handle_growling(entity, assets, entities, animate_body);
 
   handle_body_bobbing(entity);
@@ -295,7 +282,6 @@ export default {
       entity.sprites.weapon.visible = false;
     },
     step(dt, entity, _dp, _manager, _assets) {
-      handle_movement(entity, dt);
       handle_direction(entity, dt);
     },
   },

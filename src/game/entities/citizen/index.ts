@@ -195,9 +195,23 @@ export class Citizen extends Entity<CitizenType> {
     return container;
   }
 
-  public step(_: number, dp: GameDependencies, { elapsedMS }: Ticker) {
+  public step(
+    _: number,
+    dp: GameDependencies,
+    { elapsedMS, deltaTime }: Ticker
+  ) {
     this.state.set(this.shared.state, dp);
     this.timer.update(elapsedMS);
+
+    this.x += (this.shared.x - this.x) * 0.3 * deltaTime;
+    this.y += (this.shared.y - this.y) * 0.3 * deltaTime;
+
+    this.isMoving = this.shared.moving;
+
+    if (this.isMoving && this.timer.every(0.5, "footstep")) {
+      this.sounds.footstep.rate(1 + (-1 + Math.random() * 2) * 0.2);
+      this.sounds.footstep.play();
+    }
 
     this.health = this.shared.health;
 

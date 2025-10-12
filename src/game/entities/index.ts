@@ -24,13 +24,13 @@ export class EntitiesManager {
 
   public add(entity: Entity | GameObject) {
     if (entity instanceof Entity) {
-      this.entities.push(entity);
-      this.sid_map[entity.sid] = entity;
-
       if (this.assets != undefined) {
         const rendered_entity = entity.init(this.assets, layers);
         if (rendered_entity != undefined) this.stage.addChild(rendered_entity);
       }
+
+      this.entities.push(entity);
+      this.sid_map[entity.sid] = entity;
 
       this.on_entity_created_callbacks.forEach((cb) => cb(entity));
     } else {
