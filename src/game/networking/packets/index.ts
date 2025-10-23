@@ -104,5 +104,5 @@ export default {
 
     me.update_private_data();
   },
-
+  
 } as Packets;
