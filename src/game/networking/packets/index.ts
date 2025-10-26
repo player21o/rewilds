@@ -6,6 +6,7 @@ import {
 import entityClasses from "../../entities/entityClasses";
 import { Citizen } from "../../entities/citizen";
 import { Packets } from "./types";
+import { ColorMatrixFilter } from "pixi.js";
 
 export default {
   hello(send, _) {
@@ -104,5 +105,21 @@ export default {
 
     me.update_private_data();
   },
-  
+  clash_shield(_, { entities }, sid) {
+    const entity = entities.sid_map[sid] as Citizen;
+    const shield = entity.sprites.shield;
+
+    const filter = new ColorMatrixFilter();
+    filter.brightness(100, true);
+    filter.tint("rgba(61, 0, 0, 1)", true);
+
+    shield.filters != undefined
+      ? (shield.filters = [...shield.filters, filter])
+      : (shield.filters = filter);
+
+    setTimeout(
+      () => (shield.filters = shield.filters.filter((f) => f != filter)),
+      200
+    );
+  },
 } as Packets;
