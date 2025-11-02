@@ -3,7 +3,9 @@ import { EntitiesManager } from "..";
 import { ObjectManifest } from "../../../assets/manifest";
 import constants from "../../../common/constants";
 import Dust from "../../objects/dust";
+import { SimpleGameObject } from "../../objects/simple";
 import Slash from "../../objects/slash";
+import layers from "../../render/layers";
 import { circWrapTo, lookAt, circWrap } from "../../utils";
 import tween from "../../utils/tween";
 import { States } from "../state";
@@ -295,11 +297,32 @@ export default {
     },
   },
   stunned: {
-    enter(entity, _m, assets) {
+    enter(entity, _m, assets, { entities }) {
       entity.sprites.legs.stop();
       entity.sprites.legs.frame = 19;
       entity.set_sprites("stunned", 1, false, assets, false);
       handle_direction(entity, 1);
+
+      entities.add(
+        //dizzy effect
+        new SimpleGameObject({
+          animations: (assets.dizzy as any).animations,
+          autoUpdate: false,
+          duration: 1,
+          loop: true,
+          play: true,
+          layers: [layers.entities],
+          sprite: {
+            anchor: 0.5,
+            zIndex: 10,
+          },
+          lifetime: 2,
+          follow: {
+            obj: entity,
+            yOffset: -15,
+          },
+        })
+      );
     },
   },
 } as States<Citizen, Citizen["shared"]["state"]>;

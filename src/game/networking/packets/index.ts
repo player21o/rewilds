@@ -73,6 +73,7 @@ export default {
 
       game.entities.add(entity);
       if (game.me.potential_sid != undefined) {
+        console.log("exists potential");
         game.me.citizen = game.entities.sid_map[
           game.me.potential_sid
         ] as Citizen;
@@ -83,6 +84,7 @@ export default {
   },
   your_sid(_, { me, entities }, sid) {
     if (sid in entities.sid_map) {
+      console.log("exists yoursid");
       me.citizen = entities.sid_map[sid] as Citizen;
       me.potential_sid = undefined;
     } else {

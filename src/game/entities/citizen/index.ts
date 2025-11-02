@@ -150,6 +150,7 @@ export class Citizen extends Entity<CitizenType> {
       loop: true,
     });
     shield.scale = 1;
+    shield.x = -2;
     shield.play();
 
     const palette_container = new Container({ sortableChildren: false });

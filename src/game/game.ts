@@ -48,6 +48,7 @@ export class GameManager {
     // @ts-ignore
     const stats = new Stats(app.renderer);
     this.app = app;
+    (globalThis as any).__PIXI_APP__ = this.app;
 
     const viewport = new Viewport({
       worldWidth: 1000,

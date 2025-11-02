@@ -120,8 +120,9 @@ export class MyPlayer {
   set citizen(value: Citizen | null) {
     this._citizen = value;
     this.update_private_data();
+    console.log(value);
 
-    this.citizen!.bar_params.enemy = false;
+    this._citizen!.bar_params.enemy = false;
 
     this.entities.entities.forEach((e) => {
       if (e instanceof Citizen && e.sid != this.citizen!.sid) {

@@ -2,7 +2,7 @@ import { Sprite, Texture, Ticker } from "pixi.js";
 
 type Anims = { [anim: string]: Texture<any>[] };
 
-type GameSpriteOptions = {
+export type GameSpriteOptions = {
   animations: Anims;
   duration: number;
   autoUpdate: boolean;
@@ -10,7 +10,7 @@ type GameSpriteOptions = {
 };
 
 export class GameSprite<
-  T extends GameSpriteOptions["animations"] = any
+  T extends GameSpriteOptions["animations"] = any,
 > extends Sprite {
   private _animations: T;
   private _anim!: keyof T;
@@ -69,8 +69,8 @@ export class GameSprite<
             ? this._start_frame
             : this._frame + 1
           : this._frame == this._last_frame
-          ? this._last_frame
-          : this._frame + 1;
+            ? this._last_frame
+            : this._frame + 1;
 
         this.updateTexture();
       }

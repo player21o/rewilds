@@ -289,6 +289,10 @@ export const manifest = {
           alias: "shield_wooden_stunned",
           src: "/assets/sprites/grunt/shield_wooden_stunned.json",
         },
+        {
+          alias: "dizzy",
+          src: "/assets/sprites/fx/dizzy.json",
+        },
       ],
     },
   ],
