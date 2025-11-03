@@ -48,11 +48,15 @@ export class Citizen extends Entity<CitizenType> {
     stamina: number;
     hide_stamina: boolean;
     current_stamina: number;
+    charge: number;
+    charging: boolean;
   } = {
     enemy: false,
     stamina: 1,
     hide_stamina: true,
     current_stamina: 1,
+    charge: 0,
+    charging: false,
   };
 
   public sounds = {
@@ -201,6 +205,12 @@ export class Citizen extends Entity<CitizenType> {
     dp: GameDependencies,
     { elapsedMS, deltaTime }: Ticker
   ) {
+    if (this.bar_params.charging) {
+      this.bar_params.charge += elapsedMS / 1000;
+    } else {
+      this.bar_params.charge = 0;
+    }
+
     this.state.set(this.shared.state, dp);
     this.timer.update(elapsedMS);
 
@@ -280,11 +290,11 @@ export class Citizen extends Entity<CitizenType> {
       this.bar_params,
       "current_stamina"
     )[0];
-    const st = this.timer.on_key_change(this.bar_params, "stamina")[0];
+    const c = this.timer.on_key_change(this.bar_params, "charge")[0];
     const h = this.timer.on_key_change(this.shared, "health")[0];
 
     const bar_needs_to_be_updated =
-      (!this.bar_params.hide_stamina && (crst || st)) || h;
+      (!this.bar_params.hide_stamina && crst) || h || c;
 
     if (bar_needs_to_be_updated) this.update_bars(deltaTime);
 
@@ -381,6 +391,14 @@ export class Citizen extends Entity<CitizenType> {
         color: health_bar_looks.color,
         width: health_bar_looks.line_thickness,
       });
+
+    console.log(this.bar_params.charge);
+
+    bars
+      .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 12 * this.bar_params.charge)
+      .fill({ alpha: 1, color: "yellow" })
+      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+      .closePath();
   }
 
   private update_anims(elapsed: number) {

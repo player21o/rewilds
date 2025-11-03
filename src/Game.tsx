@@ -24,6 +24,7 @@ const Game = ({ url }: Props) => {
         //resizeTo: canvas.current as any,
         width: window.innerWidth / 2,
         height: window.innerHeight / 2,
+        preference: "webgl",
       })
       .then(() => {
         game = new GameManager(app, url);

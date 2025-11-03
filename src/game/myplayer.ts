@@ -15,6 +15,7 @@ export class MyPlayer {
 
   public private_data: ConstructorsObject["CitizenPrivateData"] = {
     stamina: 0,
+    charging: false,
   };
 
   constructor(
@@ -33,6 +34,7 @@ export class MyPlayer {
     inputs.on_right_button_pressed(this.right_mouse_down_callback());
     inputs.on_right_button_released(this.right_mouse_up_callback());
     inputs.on_left_button_pressed(this.left_mouse_down_callback());
+    inputs.on_left_button_released(this.left_mouse_up_callback());
     inputs.onwheel = (d) => (d > 0 ? this.send("action", "block") : null);
 
     entities.on_entity_created(this.on_entity_created_cb(this.test_if_enemy));
@@ -43,7 +45,10 @@ export class MyPlayer {
     if (this.citizen == null) return;
 
     this.citizen.bar_params.stamina = this.private_data.stamina;
+    this.citizen.bar_params.charging = this.private_data.charging;
     this.citizen.bar_params.hide_stamina = false;
+
+    console.log(this.private_data.charging);
 
     this.citizen.update_bars(1);
   }
@@ -67,7 +72,13 @@ export class MyPlayer {
 
   private left_mouse_down_callback(): (arg0: InputsManager) => void {
     return () => {
-      this.send("action", "attack");
+      this.send("action", "left_button_start");
+    };
+  }
+
+  private left_mouse_up_callback(): (arg0: InputsManager) => void {
+    return () => {
+      this.send("action", "left_button_finish");
     };
   }
 
