@@ -100,7 +100,7 @@ export default {
           //@ts-ignore
           constructors_object["CitizenPrivateData"][prop][1](networked_prop);
 
-        me.private_data[prop] = formatted_prop;
+        (me.private_data[prop] as any) = formatted_prop;
         prop_pointer += 1;
       }
     });

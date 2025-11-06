@@ -325,4 +325,11 @@ export default {
       );
     },
   },
+  spin: {
+    enter(entity, manager, assets, dp) {
+      //entity.sprites.body.duration = 0.1;
+      entity.set_sprites("spin", 0.5, true, assets, true);
+      handle_direction(entity, 1);
+    },
+  },
 } as States<Citizen, Citizen["shared"]["state"]>;

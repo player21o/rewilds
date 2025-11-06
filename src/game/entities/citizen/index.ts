@@ -392,8 +392,6 @@ export class Citizen extends Entity<CitizenType> {
         width: health_bar_looks.line_thickness,
       });
 
-    console.log(this.bar_params.charge);
-
     bars
       .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 12 * this.bar_params.charge)
       .fill({ alpha: 1, color: "yellow" })

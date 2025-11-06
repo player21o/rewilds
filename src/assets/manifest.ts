@@ -290,6 +290,22 @@ export const manifest = {
           src: "/assets/sprites/grunt/shield_wooden_stunned.json",
         },
         {
+          alias: "shield_wooden_spin",
+          src: "/assets/sprites/grunt/shield_wooden_spin.json",
+        },
+        {
+          alias: "axe_spin",
+          src: "/assets/sprites/grunt/axe_spin.json",
+        },
+        {
+          alias: "male_spin",
+          src: "/assets/sprites/grunt/male/spin.json",
+        },
+        {
+          alias: "female_spin",
+          src: "/assets/sprites/grunt/female/spin.json",
+        },
+        {
           alias: "dizzy",
           src: "/assets/sprites/fx/dizzy.json",
         },
