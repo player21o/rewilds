@@ -66,8 +66,8 @@ export class SimpleGameObject extends GameObject {
   }
 
   public init(
-    assets: ObjectManifest["bundles"]["game"],
-    layers_collection: typeof layers
+    _assets: ObjectManifest["bundles"]["game"],
+    _layers_collection: typeof layers
   ): undefined | Container<any> {
     return this.container;
   }
