@@ -6,7 +6,7 @@ import constants from "../../common/constants";
 import type { Citizen } from "../entities/citizen";
 import { Ticker } from "pixi.js";
 import type { GameDependencies } from "../game_deps";
-import { groundAngle } from "../utils";
+import { direction_to_row, groundAngle } from "../utils";
 
 const slashRotation = {
   slash_horizontal: 0.5,
@@ -28,11 +28,18 @@ export default class Slash extends GameObject {
   private offsetX = 0;
   private offsetY = 0;
   private delay = 0;
+  private direction;
 
   public x;
   public y;
 
-  constructor(entity: Citizen, slash: string, duration = 0.5) {
+  constructor(
+    entity: Citizen,
+    slash: string,
+    duration = 0.5,
+    delay = 0.25,
+    direction?: number
+  ) {
     super();
 
     this.entity = entity;
@@ -41,7 +48,10 @@ export default class Slash extends GameObject {
 
     this.x = entity.x;
     this.y = entity.y;
-    this.delay = duration / 2;
+    this.delay = delay;
+
+    this.direction =
+      direction == undefined ? entity.shared.direction : direction;
   }
 
   public init(
@@ -49,6 +59,7 @@ export default class Slash extends GameObject {
     { entities }: typeof layers
   ) {
     const weapon_data = constants.weapons[this.entity.shared.weapon];
+    const row = direction_to_row(this.direction, 8);
 
     const container = new GameSprite({
       animations: (assets[this.slash as any as keyof typeof assets] as any)
@@ -62,7 +73,7 @@ export default class Slash extends GameObject {
         (assets[this.slash as any as keyof typeof assets] as any).animations
       ).length == 1
         ? "default"
-        : "frame_row_" + this.entity.rows.body;
+        : "frame_row_" + row;
     container.play();
     container.zIndex = 999;
     this.container = container;
@@ -75,17 +86,15 @@ export default class Slash extends GameObject {
         (assets[this.slash as any as keyof typeof assets] as any).animations
       ).length == 1
         ? groundAngle(
-            this.entity.shared.direction +
+            this.direction +
               slashRotation[this.slash as keyof typeof slashRotation],
             16
           )
         : 0;
     this.container.visible = false;
 
-    this.offsetX =
-      Math.cos(this.entity.shared.direction) * weapon_data.meleeRange * 0.5;
-    this.offsetY =
-      Math.sin(this.entity.shared.direction) * weapon_data.meleeRange * 0.5;
+    this.offsetX = Math.cos(this.direction) * weapon_data.meleeRange * 0.5;
+    this.offsetY = Math.sin(this.direction) * weapon_data.meleeRange * 0.5;
     //slash.followOffsetZ = 20;
 
     entities.attach(container);

@@ -147,3 +147,8 @@ export function groundAngle(direction: number, angles: number = 8): number {
 
 // Convert degrees to radians for easier testing
 export const toRad = (deg: number) => deg * (Math.PI / 180);
+
+export function direction_to_row(direction: number, total_animations: number) {
+  const fo = (-0.5 * Math.PI * 2) / total_animations;
+  return ((circWrap(direction - fo) / (Math.PI * 2)) * total_animations) | 0;
+}

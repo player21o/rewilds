@@ -326,10 +326,24 @@ export default {
     },
   },
   spin: {
-    enter(entity, manager, assets, dp) {
+    enter(entity, manager, assets, { entities }) {
       //entity.sprites.body.duration = 0.1;
-      entity.set_sprites("spin", 0.5, true, assets, true);
+      entity.set_sprites("spin", 0.5, false, assets, true);
       handle_direction(entity, 1);
+
+      const angleStep = (Math.PI * 2) / 5;
+
+      for (let i = 0; i < 5; i++) {
+        const direction = entity.direction - angleStep * i;
+        entities.add(
+          new Slash(entity, "slash_horizontal", 0.25, 0.1 * i, direction)
+        );
+      }
     },
+    /*
+    step(dt, entity, { entities }, manager, assets) {
+      handle_basic(entity, dt, assets, entities);
+    },
+    */
   },
 } as States<Citizen, Citizen["shared"]["state"]>;
