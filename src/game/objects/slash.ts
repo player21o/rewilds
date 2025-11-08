@@ -59,7 +59,12 @@ export default class Slash extends GameObject {
     { entities }: typeof layers
   ) {
     const weapon_data = constants.weapons[this.entity.shared.weapon];
-    const row = direction_to_row(this.direction, 8);
+    const row = direction_to_row(
+      this.direction,
+      Object.keys(
+        (assets[this.slash as any as keyof typeof assets] as any).animations
+      ).length
+    );
 
     const container = new GameSprite({
       animations: (assets[this.slash as any as keyof typeof assets] as any)

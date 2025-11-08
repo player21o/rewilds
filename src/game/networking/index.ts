@@ -36,13 +36,13 @@ export class WS {
           const propName = props[i] as keyof typeof constructor;
           const converterPair = constructor[propName] as readonly [
             (val: any) => any,
-            (val: any) => any
+            (val: any) => any,
           ];
 
           formatted.push(converterPair[1](sliced[i]));
         }
 
-        //console.log(this.bytes / 1048576);
+        console.log(this.bytes / 1048576);
 
         // @ts-ignore
         packets[constructor_name](this.send, this.game, ...(formatted as any));
@@ -60,7 +60,7 @@ export class WS {
       const propName = prop as keyof typeof constructor;
       const converterPair = constructor[propName] as readonly [
         (val: any) => any,
-        (val: any) => any
+        (val: any) => any,
       ];
 
       return converterPair[0](args[i]);
