@@ -93,7 +93,9 @@ export class SimpleGameObject extends GameObject {
     ___: ObjectManifest["bundles"]["game"],
     { elapsedMS }: Ticker
   ): void {
-    this.container.position = { x: this.x, y: this.y };
-    this.container.update(elapsedMS);
+    if (!this.rip) {
+      this.container.position = { x: this.x, y: this.y };
+      this.container.update(elapsedMS);
+    }
   }
 }

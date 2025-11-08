@@ -326,7 +326,7 @@ export default {
     },
   },
   spin: {
-    enter(entity, manager, assets, { entities }) {
+    enter(entity, _manager, assets, { entities }) {
       //entity.sprites.body.duration = 0.1;
       entity.set_sprites("spin", 0.5, false, assets, true);
       handle_direction(entity, 1);

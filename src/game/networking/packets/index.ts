@@ -23,25 +23,25 @@ export default {
         : new entityClasses[
             constructors_keys[props[0]] as keyof typeof entityClasses
             //@ts-ignore
-          ]({ sid });
+          ]({ sid }, constructors_keys[props[0]] as keyof typeof entityClasses);
 
       const new_one =
         props.length >
         constructors_inner_keys[
-          entity.constructor.name as keyof typeof constructors_inner_keys
+          entity.constructor_name as keyof typeof constructors_inner_keys
         ].length;
       if (!entity_exists || new_one) props.shift();
 
       let prop_pointer = 0;
       constructors_inner_keys[
-        entity.constructor.name as keyof typeof constructors_inner_keys
+        entity.constructor_name as keyof typeof constructors_inner_keys
       ].forEach((prop, i) => {
         if ((bits >> i) % 2 != 0) {
           const networked_prop = props[prop_pointer];
           const formatted_prop =
             //@ts-ignore
             constructors_object[
-              entity.constructor.name as keyof typeof constructors_object
+              entity.constructor_name as keyof typeof constructors_object
             ][prop][1](networked_prop);
 
           entity.shared[prop] = formatted_prop;
@@ -68,7 +68,8 @@ export default {
               constructorName as keyof typeof constructors_object
             ][prop][1](props[i]),
           ])
-        )
+        ),
+        constructorName as keyof typeof entityClasses
       );
 
       game.entities.add(entity);

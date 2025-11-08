@@ -48,8 +48,6 @@ export class MyPlayer {
     this.citizen.bar_params.charging = this.private_data.charging;
     this.citizen.bar_params.hide_stamina = false;
 
-    console.log(this.private_data.charging);
-
     this.citizen.update_bars(1);
   }
 
@@ -78,6 +76,8 @@ export class MyPlayer {
 
   private left_mouse_up_callback(): (arg0: InputsManager) => void {
     return () => {
+      this.private_data.charging = false;
+      this.update_private_data();
       this.send("action", "left_button_finish");
     };
   }
