@@ -21,7 +21,7 @@ function handle_growling(
     if (entity.shared.growling) {
       if (animate_body) {
         entity.sprites.body.animations =
-          entity.shared.gender == "male"
+          entity.shared.kind == "male"
             ? assets.male_growl.animations
             : assets.female_growl.animations;
         entity.sprites.body.first_frame = 2;
@@ -44,7 +44,7 @@ function handle_growling(
       entity.sprites.legs.animations = assets.legs_run.animations;
 
       const growl_sound =
-        entity.shared.gender == "male"
+        entity.shared.kind == "male"
           ? entity.sounds.male_growl
           : entity.sounds.female_growl;
 
@@ -243,7 +243,7 @@ export default {
       if (manager.prev_state == null)
         entity.sprites.body.animations = (
           assets[
-            (entity.shared.gender +
+            (entity.shared.kind +
               "_" +
               ["fall_back", "fall_front"][
                 (Math.random() * 2) | 0
@@ -269,7 +269,7 @@ export default {
 
       entity.sprites.body.animations = (
         assets[
-          (entity.shared.gender +
+          (entity.shared.kind +
             "_" +
             ["fall_back", "fall_front"][
               (Math.random() * 2) | 0

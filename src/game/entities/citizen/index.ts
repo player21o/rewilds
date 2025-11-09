@@ -394,7 +394,7 @@ export class Citizen extends Entity<CitizenType> {
 
     bars
       .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 12 * this.bar_params.charge)
-      .fill({ alpha: 1, color: "yellow" })
+      .fill({ alpha: 0.75, color: 0xffffaa })
       .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
       .closePath();
   }
@@ -430,7 +430,7 @@ export class Citizen extends Entity<CitizenType> {
   ) {
     this.sprites.body.animations = (
       assets[
-        (this.shared.gender +
+        (this.shared.kind +
           "_" +
           animation +
           (this.shared.shield == "no_shield"
