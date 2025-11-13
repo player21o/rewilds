@@ -118,6 +118,7 @@ function idle_enter(
 
   entity.sprites.legs.animations = assets.legs_run.animations;
   entity.sprites.legs.duration = 150 / entity.data.speed;
+  entity.sprites.legs.visible = true;
 }
 
 function handle_body_bobbing(entity: Citizen) {
@@ -345,5 +346,12 @@ export default {
       handle_basic(entity, dt, assets, entities);
     },
     */
+  },
+  roll: {
+    enter(entity, manager, assets, dp) {
+      entity.set_sprites("roll", 0.8, true, assets, false);
+      entity.sprites.legs.visible = false;
+      handle_direction(entity, 1);
+    },
   },
 } as States<Citizen, Citizen["shared"]["state"]>;

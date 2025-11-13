@@ -309,6 +309,22 @@ export const manifest = {
           alias: "dizzy",
           src: "/assets/sprites/fx/dizzy.json",
         },
+        {
+          alias: "male_roll",
+          src: "/assets/sprites/grunt/male/roll.json",
+        },
+        {
+          alias: "female_roll",
+          src: "/assets/sprites/grunt/female/roll.json",
+        },
+        {
+          alias: "axe_roll",
+          src: "/assets/sprites/grunt/axe_roll.json",
+        },
+        {
+          alias: "shield_wooden_roll",
+          src: "/assets/sprites/grunt/shield_wooden_roll.json",
+        },
       ],
     },
   ],

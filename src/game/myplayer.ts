@@ -70,7 +70,7 @@ export class MyPlayer {
 
   private left_mouse_down_callback(): (arg0: InputsManager) => void {
     return () => {
-      this.send("action", "left_button_start");
+      this.send("action", "roll");
     };
   }
 

@@ -206,7 +206,8 @@ export class Citizen extends Entity<CitizenType> {
     { elapsedMS, deltaTime }: Ticker
   ) {
     if (this.bar_params.charging) {
-      this.bar_params.charge += elapsedMS / 1000;
+      const weapon = constants.weapons[this.shared.weapon];
+      this.bar_params.charge += elapsedMS / 1000 / weapon.chargeTime;
     } else {
       this.bar_params.charge = 0;
     }
@@ -394,7 +395,7 @@ export class Citizen extends Entity<CitizenType> {
 
     bars
       .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 12 * this.bar_params.charge)
-      .fill({ alpha: 0.75, color: 0xffffaa })
+      .fill({ alpha: 1, color: 0xffffaa })
       .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
       .closePath();
   }
