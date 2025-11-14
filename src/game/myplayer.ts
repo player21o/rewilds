@@ -35,7 +35,8 @@ export class MyPlayer {
     inputs.on_right_button_released(this.right_mouse_up_callback());
     inputs.on_left_button_pressed(this.left_mouse_down_callback());
     inputs.on_left_button_released(this.left_mouse_up_callback());
-    inputs.onwheel = (d) => (d > 0 ? this.send("action", "block") : null);
+    inputs.onwheel = (d) =>
+      d > 0 ? this.send("action", "block") : this.send("action", "roll");
 
     entities.on_entity_created(this.on_entity_created_cb(this.test_if_enemy));
     this.entities = entities;
@@ -70,7 +71,7 @@ export class MyPlayer {
 
   private left_mouse_down_callback(): (arg0: InputsManager) => void {
     return () => {
-      this.send("action", "roll");
+      this.send("action", "left_button_start");
     };
   }
 
