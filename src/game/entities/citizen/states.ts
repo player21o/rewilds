@@ -114,6 +114,7 @@ function idle_enter(
   entity: Citizen,
   assets: ObjectManifest["bundles"]["game"]
 ) {
+  entity.z = 0;
   entity.set_sprites("run", 150 / entity.data.speed, true, assets);
 
   entity.sprites.legs.animations = assets.legs_run.animations;
@@ -352,6 +353,7 @@ export default {
       entity.set_sprites("roll", 0.8, true, assets, false);
       entity.sprites.legs.visible = false;
       handle_direction(entity, 1);
+      entity.z = -5;
     },
   },
 } as States<Citizen, Citizen["shared"]["state"]>;
