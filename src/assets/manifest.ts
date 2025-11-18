@@ -325,6 +325,22 @@ export const manifest = {
           alias: "shield_wooden_roll",
           src: "/assets/sprites/grunt/shield_wooden_roll.json",
         },
+        {
+          alias: "male_kick",
+          src: "/assets/sprites/grunt/male/kick.json",
+        },
+        {
+          alias: "female_kick",
+          src: "/assets/sprites/grunt/female/kick.json",
+        },
+        {
+          alias: "axe_kick",
+          src: "/assets/sprites/grunt/axe_kick.json",
+        },
+        {
+          alias: "shield_wooden_kick",
+          src: "/assets/sprites/grunt/shield_wooden_kick.json",
+        },
       ],
     },
   ],
