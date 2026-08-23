@@ -90,7 +90,7 @@ export class Citizen extends Entity<CitizenType> {
 
   public init(
     assets: ObjectManifest["bundles"]["game"],
-    { entities, ground }: typeof layers
+    { entities, ground }: typeof layers,
   ) {
     this.data = {
       ...constants.minions["default"],
@@ -203,7 +203,7 @@ export class Citizen extends Entity<CitizenType> {
   public step(
     _: number,
     dp: GameDependencies,
-    { elapsedMS, deltaTime }: Ticker
+    { elapsedMS, deltaTime }: Ticker,
   ) {
     if (this.bar_params.charging) {
       const weapon = constants.weapons[this.shared.weapon];
@@ -246,7 +246,7 @@ export class Citizen extends Entity<CitizenType> {
         () =>
           (this.palette_container.filters =
             this.palette_container.filters.filter((f) => f != filter)),
-        200
+        200,
       );
     }
   }
@@ -255,7 +255,7 @@ export class Citizen extends Entity<CitizenType> {
     __: number,
     dp: GameDependencies,
     assets: ObjectManifest["bundles"]["game"],
-    { elapsedMS, deltaTime }: Ticker
+    { elapsedMS, deltaTime }: Ticker,
   ) {
     if (this.shared.shield == "no_shield") this.sprites.shield.visible = false;
     if (this.shared.weapon == "no_weapon") this.sprites.weapon.visible = false;
@@ -289,7 +289,7 @@ export class Citizen extends Entity<CitizenType> {
 
     const crst = this.timer.on_key_change(
       this.bar_params,
-      "current_stamina"
+      "current_stamina",
     )[0];
     const c = this.timer.on_key_change(this.bar_params, "charge")[0];
     const h = this.timer.on_key_change(this.shared, "health")[0];
@@ -317,7 +317,7 @@ export class Citizen extends Entity<CitizenType> {
       this.bar_params.stamina,
       Math.abs(this.bar_params.current_stamina - this.bar_params.stamina) *
         (dt / 50) *
-        2.0
+        2.0,
     );
 
     const stamina_bar_looks = { line_thickness: 3, radius: 10.5 };
@@ -339,33 +339,33 @@ export class Citizen extends Entity<CitizenType> {
       bars
         .arc(
           250 / 4 - 3,
-          250 / 4 + 62 - 2,
+          250 / 4 + 62 - 1,
           stamina_bar_looks.radius,
           0,
           Math.PI,
-          false
+          false,
         )
         .stroke({ color: 0x555555, width: stamina_bar_looks.line_thickness })
-        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + stamina_bar_looks.radius)
         .arc(
           250 / 4 - 3,
-          250 / 4 + 62 - 2,
+          250 / 4 + 62 - 1,
           stamina_bar_looks.radius,
           Math.PI / 2,
           lerp(Math.PI / 2, 0, params.current_stamina / 1),
-          true
+          true,
         )
-        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + stamina_bar_looks.radius)
         .arc(
           250 / 4 - 3,
-          250 / 4 + 62 - 2,
+          250 / 4 + 62 - 1,
           stamina_bar_looks.radius,
           Math.PI / 2,
           lerp(Math.PI / 2, Math.PI, params.current_stamina / 1),
-          false
+          false,
         )
         .stroke({ color: 0xffffff, width: stamina_bar_looks.line_thickness })
-        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + health_bar_looks.radius)
+        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + health_bar_looks.radius)
 
         .closePath();
     }
@@ -377,7 +377,7 @@ export class Citizen extends Entity<CitizenType> {
         health_bar_looks.radius,
         Math.PI / 2,
         lerp(Math.PI / 2, 0, this.shared.health / this.shared.maxHealth),
-        true
+        true,
       )
       .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + health_bar_looks.radius)
       .arc(
@@ -386,7 +386,7 @@ export class Citizen extends Entity<CitizenType> {
         health_bar_looks.radius,
         Math.PI / 2,
         lerp(Math.PI / 2, Math.PI, this.shared.health / this.shared.maxHealth),
-        false
+        false,
       )
       .stroke({
         color: health_bar_looks.color,
@@ -416,8 +416,8 @@ export class Citizen extends Entity<CitizenType> {
       entities.add(
         new Footstep(
           this.x + Math.random() * 8 - 4,
-          this.y + Math.random() * 8 - 4
-        )
+          this.y + Math.random() * 8 - 4,
+        ),
       );
     }
   }
@@ -427,7 +427,7 @@ export class Citizen extends Entity<CitizenType> {
     duration: number,
     loop: boolean,
     assets: ObjectManifest["bundles"]["game"],
-    check_shield?: boolean
+    check_shield?: boolean,
   ) {
     this.sprites.body.animations = (
       assets[
