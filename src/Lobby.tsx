@@ -1,3 +1,5 @@
+import { createSignal, onSettled } from "solid-js";
+
 interface Props {
   url: string;
   onPlay: (arg0: string) => void;
@@ -6,27 +8,51 @@ interface Props {
 type Packet = ["game_ready", { url: string }];
 type SendPacket = ["play"];
 
-const Lobby = ({ url, onPlay }: Props) => {
-  const ws = new WebSocket(url);
+const Lobby = (props: Props) => {
+  let ws: WebSocket | null = null;
+  const [isOpen, setIsOpen] = createSignal(false);
 
-  ws.onmessage = ({ data }) => {
-    const msg = JSON.parse(data) as Packet;
+  onSettled(() => {
+    const socket = new WebSocket(props.url);
+    ws = socket;
 
-    switch (msg[0]) {
-      case "game_ready":
-        ws.close();
-        onPlay(msg[1].url);
-        break;
+    socket.onopen = () => {
+      console.log("opened");
+      setIsOpen(true);
+    };
+
+    socket.onclose = () => {
+      setIsOpen(false);
+    };
+
+    socket.onmessage = ({ data }) => {
+      const msg = JSON.parse(data) as Packet;
+      switch (msg[0]) {
+        case "game_ready":
+          socket.close();
+          props.onPlay(msg[1].url);
+          break;
+      }
+    };
+
+    // Return cleanup callback for disposal on unmount
+    return () => {
+      socket.close();
+    };
+  });
+
+  const send = (packet: SendPacket) => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(packet));
     }
   };
-  ws.onopen = () => console.log("opened");
-
-  const send = (packet: SendPacket) => ws.send(JSON.stringify(packet));
 
   return (
     <>
       <h1>Lobby</h1>
-      <button onClick={() => send(["play"])}>Play</button>
+      <button disabled={!isOpen()} onClick={() => send(["play"])}>
+        Play
+      </button>
     </>
   );
 };

@@ -67,14 +67,14 @@ export default {
             constructors_object[
               constructorName as keyof typeof constructors_object
             ][prop][1](props[i]),
-          ])
+          ]),
         ),
-        constructorName as keyof typeof entityClasses
+        constructorName as keyof typeof entityClasses,
       );
 
       game.entities.add(entity);
       if (game.me.potential_sid != undefined) {
-        console.log("exists potential");
+        //console.log("exists potential");
         game.me.citizen = game.entities.sid_map[
           game.me.potential_sid
         ] as Citizen;
@@ -85,7 +85,7 @@ export default {
   },
   your_sid(_, { me, entities }, sid) {
     if (sid in entities.sid_map) {
-      console.log("exists yoursid");
+      //console.log("exists yoursid");
       me.citizen = entities.sid_map[sid] as Citizen;
       me.potential_sid = undefined;
     } else {
@@ -122,7 +122,7 @@ export default {
 
     setTimeout(
       () => (shield.filters = shield.filters.filter((f) => f != filter)),
-      200
+      200,
     );
   },
 } as Packets;

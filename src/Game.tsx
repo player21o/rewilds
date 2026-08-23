@@ -1,4 +1,4 @@
-import { Application } from "pixi.js";
+import { Application, Assets } from "pixi.js";
 import { GameManager } from "./game/game";
 import { onSettled } from "solid-js";
 
@@ -6,13 +6,18 @@ interface Props {
   url: string;
 }
 
-const Game = ({ url }: Props) => {
-  let div!: HTMLDivElement;
-  let canvas!: HTMLCanvasElement;
+const Game = (props: Props) => {
+  let container!: HTMLDivElement;
 
   onSettled(() => {
+    const canvas = document.createElement("canvas");
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.imageRendering = "pixelated";
+    container.appendChild(canvas);
+
     const app = new Application();
-    let game!: GameManager;
+    let game: GameManager | undefined;
     //app.resize();
     app
       .init({
@@ -27,27 +32,25 @@ const Game = ({ url }: Props) => {
         preference: "webgl",
       })
       .then(() => {
-        game = new GameManager(app, url);
+        if (!app.renderer) return;
+        game = new GameManager(app, props.url);
       });
 
     return () => {
-      game.stop();
+      console.log("cleanup");
+      game?.stop();
+      Assets.unloadBundle("game").then(() => {
+        app.destroy(true, {
+          children: true,
+          texture: true,
+          textureSource: true,
+          context: true,
+        });
+      });
     };
   });
 
-  return (
-    <div ref={div}>
-      <canvas
-        ref={canvas}
-        style={{
-          width: "100vw",
-          height: "100vh",
-          "image-rendering": "pixelated",
-          //scale: 2,
-        }}
-      />
-    </div>
-  );
+  return <div ref={container} />;
 };
 
 export default Game;

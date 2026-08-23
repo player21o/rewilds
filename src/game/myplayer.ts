@@ -21,7 +21,7 @@ export class MyPlayer {
   constructor(
     send: SendFunction,
     inputs: InputsManager,
-    entities: EntitiesManager
+    entities: EntitiesManager,
   ) {
     this.send = send;
 
@@ -132,7 +132,7 @@ export class MyPlayer {
   set citizen(value: Citizen | null) {
     this._citizen = value;
     this.update_private_data();
-    console.log(value);
+    //console.log(value);
 
     this._citizen!.bar_params.enemy = false;
 
