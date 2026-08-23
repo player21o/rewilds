@@ -1,19 +1,20 @@
-import { Viewport } from "pixi-viewport";
-import { EntitiesManager } from "./entities";
-import { InputsManager } from "./input";
-import { MyPlayer } from "./myplayer";
-import { SendFunction } from "./networking/types";
+import {Viewport} from 'pixi-viewport';
+
+import {EntitiesManager} from './entities';
+import {InputsManager} from './input';
+import {MyPlayer} from './myplayer';
+import {SendFunction} from './networking/types';
 
 export class GameDependencies {
   public entities: EntitiesManager;
-  //public ws: WS;
+  // public ws: WS;
   public inputs: InputsManager;
   public me!: MyPlayer;
   public viewport: Viewport;
   public snapshotted = false;
 
   constructor(viewport: Viewport, send?: SendFunction) {
-    //this.ws = new WS(this, socket);
+    // this.ws = new WS(this, socket);
     this.entities = new EntitiesManager(viewport);
     this.inputs = new InputsManager(viewport);
     this.viewport = viewport;

@@ -1,16 +1,16 @@
 import { Application } from "pixi.js";
 import { GameManager } from "./game/game";
-import { useEffect, useRef } from "preact/hooks";
+import { onSettled } from "solid-js";
 
 interface Props {
   url: string;
 }
 
 const Game = ({ url }: Props) => {
-  const div = useRef(null);
-  const canvas = useRef(null);
+  let div!: HTMLDivElement;
+  let canvas!: HTMLCanvasElement;
 
-  useEffect(() => {
+  onSettled(() => {
     const app = new Application();
     let game!: GameManager;
     //app.resize();
@@ -20,7 +20,7 @@ const Game = ({ url }: Props) => {
         background: "white",
         roundPixels: false,
         //resolution: 0.5,
-        canvas: canvas.current as any,
+        canvas: canvas,
         //resizeTo: canvas.current as any,
         width: window.innerWidth / 2,
         height: window.innerHeight / 2,
@@ -33,7 +33,7 @@ const Game = ({ url }: Props) => {
     return () => {
       game.stop();
     };
-  }, []);
+  });
 
   return (
     <div ref={div}>
@@ -42,7 +42,7 @@ const Game = ({ url }: Props) => {
         style={{
           width: "100vw",
           height: "100vh",
-          imageRendering: "pixelated",
+          "image-rendering": "pixelated",
           //scale: 2,
         }}
       />

@@ -1,5 +1,3 @@
-import { useRef } from "preact/hooks";
-
 interface Props {
   url: string;
   onPlay: (arg0: string) => void;
@@ -9,21 +7,21 @@ type Packet = ["game_ready", { url: string }];
 type SendPacket = ["play"];
 
 const Lobby = ({ url, onPlay }: Props) => {
-  const ws = useRef(new WebSocket(url));
+  const ws = new WebSocket(url);
 
-  ws.current.onmessage = ({ data }) => {
+  ws.onmessage = ({ data }) => {
     const msg = JSON.parse(data) as Packet;
 
     switch (msg[0]) {
       case "game_ready":
-        ws.current.close();
+        ws.close();
         onPlay(msg[1].url);
         break;
     }
   };
-  ws.current.onopen = () => console.log("opened");
+  ws.onopen = () => console.log("opened");
 
-  const send = (packet: SendPacket) => ws.current.send(JSON.stringify(packet));
+  const send = (packet: SendPacket) => ws.send(JSON.stringify(packet));
 
   return (
     <>

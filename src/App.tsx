@@ -1,12 +1,12 @@
 import Lobby from "./Lobby";
 import Game from "./Game";
-import { useEffect, useState } from "preact/hooks";
+import { createSignal, Show, onSettled } from "solid-js";
 
 const App = () => {
-  const [gameUrl, setGameUrl] = useState<null | string>(null);
-  const [lobbyUrl, setLobbyUrl] = useState<null | string>(null);
+  const [gameUrl, setGameUrl] = createSignal<null | string>(null);
+  const [lobbyUrl, setLobbyUrl] = createSignal<null | string>(null);
 
-  useEffect(() => {
+  onSettled(() => {
     fetch("/env.json").then((r) => {
       r.json().then((j) => {
         setLobbyUrl(j.lobby_url);
@@ -14,13 +14,13 @@ const App = () => {
     });
   });
 
-  return lobbyUrl != null ? (
-    gameUrl == null ? (
-      <Lobby url={lobbyUrl} onPlay={(url) => setGameUrl(url)}></Lobby>
-    ) : (
-      <Game url={gameUrl}></Game>
-    )
-  ) : null;
+  return (
+    <Show when={lobbyUrl() != null} fallback={null}>
+      <Show when={gameUrl() == null} fallback={<Game url={gameUrl()!} />}>
+        <Lobby url={lobbyUrl()!} onPlay={(url) => setGameUrl(url)} />
+      </Show>
+    </Show>
+  );
 };
 
 export default App;

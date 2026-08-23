@@ -1,8 +1,7 @@
-import { defineConfig } from "vite";
-import tailwindcss from "@tailwindcss/vite";
-import preact from "@preact/preset-vite";
+import solidPlugin from '@solidjs/vite-plugin';
+import {defineConfig} from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [preact(), tailwindcss()],
+  plugins: [solidPlugin()],
 });

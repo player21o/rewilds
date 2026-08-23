@@ -1,5 +1,6 @@
-import { render } from "preact";
 import "./index.css";
 import App from "./App.tsx";
 
-render(<App />, document.getElementById("app") as HTMLDivElement);
+import { render } from "@solidjs/web";
+
+render(() => <App />, document.getElementById("app")!);
