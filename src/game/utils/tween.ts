@@ -16,7 +16,7 @@ function ease(easing: Easing, x: number) {
 type Frame<T extends GameObject = any> = [
   props: Partial<T>,
   duration: number,
-  ease: Easing
+  ease: Easing,
 ];
 
 class Tween<T extends GameObject = any> {
@@ -31,8 +31,8 @@ class Tween<T extends GameObject = any> {
     this.obj = obj;
   }
 
-  public step(dt: number) {
-    this.duration += dt / 1000;
+  public step(elapsedMS: number) {
+    this.duration += elapsedMS / 1000;
 
     if (this.prev_frame == undefined) {
       const keys: { [A in keyof T]?: any } = {};
@@ -40,6 +40,7 @@ class Tween<T extends GameObject = any> {
       this.mentioned_props.forEach((k) => (keys[k] = this.obj[k]));
 
       this.prev_frame = [keys, 0, "linear"];
+      console.log(this.prev_frame);
     }
 
     if (this.frames.length == 0) {
@@ -49,6 +50,7 @@ class Tween<T extends GameObject = any> {
       if (this.duration >= this.frames[0][1]) {
         this.prev_frame = this.frames.shift()!;
         this.duration = 0;
+        console.log(this.frames);
       }
 
       if (this.frames.length == 0) {
@@ -57,6 +59,7 @@ class Tween<T extends GameObject = any> {
       } else {
         const [frame_props, frame_duration, frame_easing] = this.frames[0];
         const progress = this.duration / frame_duration;
+        console.log(progress, this.duration);
         const coeff = ease(frame_easing, progress);
 
         Object.keys(frame_props).forEach((k) => {

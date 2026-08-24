@@ -263,7 +263,7 @@ export default {
   },
   dying: {
     enter(entity, _manager, assets, _dp) {
-      const duration = 0.5;
+      const duration = 1;
       tween
         .tween(entity)
         .to({ z: 30 }, duration * 0.6, "outQuad")
@@ -341,12 +341,14 @@ export default {
           new Slash(entity, "slash_horizontal", 0.25, 0.1 * i, direction),
         );
       }
+
+      entity.z = 8;
     },
-    /*
+
     step(dt, entity, { entities }, manager, assets) {
-      handle_basic(entity, dt, assets, entities);
+      entity.z -= 0.25 * dt;
+      console.log(entity.z);
     },
-    */
   },
   roll: {
     enter(entity, manager, assets, dp) {
@@ -358,17 +360,19 @@ export default {
   },
   kick: {
     enter(entity, manager, assets, dp) {
-      entity.set_sprites("kick", 7, false, assets, false);
+      entity.set_sprites("kick", 0.7, false, assets, false);
       entity.sprites.legs.visible = false;
       handle_direction(entity, 1);
       entity.sounds.female_growl.stop();
       entity.sounds.male_growl.stop();
       entity.z = -5;
+
+      tween.tween(entity).to({ z: 0 }, 0.7, "linear");
     },
 
     step(dt, entity, dp, manager, assets) {
-      entity.z += 0.12 * dt;
-      console.log(entity.z);
+      //entity.z += 0.12 * dt;
+      //console.log(entity.z);
     },
   },
 } as States<Citizen, Citizen["shared"]["state"]>;

@@ -111,6 +111,7 @@ export class Citizen extends Entity<CitizenType> {
       blendMode: "normal-npm",
       scale: { x: 1, y: 0.6 },
       zIndex: 0,
+      roundPixels: true,
     });
 
     const legs = new GameSprite<

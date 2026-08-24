@@ -156,7 +156,7 @@ export class GameManager {
           e.culled = false;
         }
 
-        tween.step(ticker.deltaTime);
+        tween.step(ticker.elapsedMS);
       });
 
       if (this.deps.me.citizen != null) {
