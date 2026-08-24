@@ -1,31 +1,31 @@
-import { CitizenType } from "../../../common/interfaces";
-import { Entity } from "../entity";
-import { StateManager, States } from "../state";
-import constants from "../../../common/constants";
-import { Circle, CollisionResponse } from "../collisions";
-import { EntitiesManager } from "..";
-import states from "./states";
-import { GameNetworking } from "../../networking";
-import { GameObject } from "../../objects/object";
+import {EntitiesManager} from '..';
+import constants from '../../../common/constants';
+import {CitizenType} from '../../../common/interfaces';
+import {GameNetworking} from '../../networking';
+import {GameObject} from '../../objects/object';
+import {Circle, CollisionResponse} from '../collisions';
+import {Entity} from '../entity';
+import {StateManager, States} from '../state';
+
+import states from './states';
 
 type CitizenInputs = {
-  movement_vector: [x: number, y: number];
-  look: [x: number, y: number];
+  movement_vector: [x: number, y: number]; look: [x: number, y: number];
 };
 
-export class Citizen extends Entity<"Citizen"> implements CitizenType {
+export class Citizen extends Entity<'Citizen'> implements CitizenType {
   public name: string;
   public x: number;
   public y: number;
   public direction = 0;
   public health;
   public maxHealth;
-  public weapon: CitizenType["weapon"];
-  public shield: CitizenType["shield"];
-  public team: CitizenType["team"] = 0;
-  public state: CitizenType["state"] = "idle";
-  public kind: CitizenType["kind"];
-  public type: CitizenType["type"];
+  public weapon: CitizenType['weapon'];
+  public shield: CitizenType['shield'];
+  public team: CitizenType['team'] = 0;
+  public state: CitizenType['state'] = 'idle';
+  public kind: CitizenType['kind'];
+  public type: CitizenType['type'];
   public growling = false;
   public maxArmor: number;
 
@@ -43,26 +43,16 @@ export class Citizen extends Entity<"Citizen"> implements CitizenType {
   public hit_sid: number[] = [];
 
   public constructor(
-    type: CitizenType["type"],
-    kind: CitizenType["kind"],
-    name: string,
-    x: number,
-    y: number,
-    e: EntitiesManager,
-    st?: States<any>
-  ) {
-    super("Citizen");
-    this.state_manager = new StateManager<CitizenType["state"]>(
-      st == undefined ? states : st,
-      this,
-      this.state,
-      e
-    );
+      type: CitizenType['type'], kind: CitizenType['kind'], name: string,
+      x: number, y: number, e: EntitiesManager, st?: States<any>) {
+    super('Citizen');
+    this.state_manager = new StateManager<CitizenType['state']>(
+        st == undefined ? states : st, this, this.state, e);
 
     this.type = type;
 
     const data = {
-      ...constants.minions["default"],
+      ...constants.minions['default'],
       ...constants.minions[type],
     };
 
@@ -93,20 +83,15 @@ export class Citizen extends Entity<"Citizen"> implements CitizenType {
 
   public die() {
     this.died = true;
-    this.state_manager.set("dying", true);
+    this.state_manager.set('dying', true);
   }
 
   public on_collision(
-    other: GameObject,
-    _response: CollisionResponse,
-    _network?: GameNetworking
-  ): void {
-    if (
-      other instanceof Citizen &&
-      this.state == "roll" &&
-      !this.hit_sid.includes(other.sid)
-    ) {
-      other.set("health", (hp) => hp - 1);
+      other: GameObject, _response: CollisionResponse,
+      _network?: GameNetworking): void {
+    if (other instanceof Citizen && this.state == 'roll' &&
+        other.team != this.team && !this.hit_sid.includes(other.sid)) {
+      other.set('health', (hp) => hp - 1);
       this.hit_sid.push(other.sid);
     }
   }

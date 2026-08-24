@@ -1,23 +1,18 @@
-import type { Citizen } from ".";
-import constants from "../../../common/constants";
-import { Slash } from "../../objects/slash";
-import { lookAt } from "../../utils";
-import { States } from "../state";
+import constants from '../../../common/constants';
+import {Slash} from '../../objects/slash';
+import {lookAt} from '../../utils';
+import {States} from '../state';
+
+import type {Citizen} from '.';
 
 export function handle_movement(
-  entity: Citizen,
-  dt: number,
-  allow_growling = true,
-  custom?: (entity: any) => void
-) {
-  const speed =
-    entity.growling && allow_growling
-      ? entity.data.speed * 1.333
-      : entity.data.speed;
+    entity: Citizen, dt: number, allow_growling = true,
+    custom?: (entity: any) => void) {
+  const speed = entity.growling && allow_growling ? entity.data.speed * 1.333 :
+                                                    entity.data.speed;
 
-  entity.moving =
-    entity.inputs.movement_vector[0] != 0 ||
-    entity.inputs.movement_vector[1] != 0;
+  entity.moving = entity.inputs.movement_vector[0] != 0 ||
+      entity.inputs.movement_vector[1] != 0;
 
   entity.x += speed * entity.inputs.movement_vector[0] * dt;
   entity.y += speed * entity.inputs.movement_vector[1] * dt;
@@ -26,17 +21,13 @@ export function handle_movement(
 }
 
 export function handle_pointer(entity: Citizen) {
-  entity.direction = lookAt(
-    entity.x,
-    entity.y,
-    entity.inputs.look[0],
-    entity.inputs.look[1]
-  );
+  entity.direction =
+      lookAt(entity.x, entity.y, entity.inputs.look[0], entity.inputs.look[1]);
 }
 
 export default {
   idle: {
-    flow: ["attack", "charge", "block", "spin", "roll", "kick"],
+    flow: ['attack', 'charge', 'block', 'spin', 'roll', 'kick'],
     enter(entity) {
       entity.move_out_collision = true;
       entity.hit_sid = [];
@@ -48,13 +39,13 @@ export default {
     },
   },
   roll: {
-    flow: ["idle"],
+    flow: ['idle'],
     enter(entity) {
       entity.move_out_collision = false;
     },
     step(dt, entity, manager) {
       const duration = 0.8;
-      if (manager.duration >= duration) manager.set("idle");
+      if (manager.duration >= duration) manager.set('idle');
       const direction = [
         Math.cos(entity.direction),
         Math.sin(entity.direction),
@@ -64,30 +55,24 @@ export default {
     },
   },
   attack: {
-    flow: ["idle"],
+    flow: ['idle'],
     enter(entity, _manager, entities) {
       const weapon = constants.weapons[entity.weapon];
 
-      entities.add(
-        new Slash(
-          entity,
-          weapon.meleeRange,
-          weapon.meleeArc,
-          weapon.attackDuration,
-          weapon.meleeDamage
-        )
-      );
+      entities.add(new Slash(
+          entity, weapon.meleeRange, weapon.meleeArc, weapon.attackDuration,
+          weapon.meleeDamage));
     },
     step(dt, entity, manager) {
       handle_movement(entity, dt);
       handle_pointer(entity);
 
       if (manager.duration >= constants.weapons[entity.weapon].attackDuration)
-        entity.state_manager.set("idle");
+        entity.state_manager.set('idle');
     },
   },
   dying: {
-    flow: ["dead"],
+    flow: ['dead'],
     enter(entity, _manager, entities) {
       entity.collision.destroy(entities.collision_system);
     },
@@ -101,46 +86,38 @@ export default {
       entity.x = entity.x - (duration - manager.duration) * vec[0] * dt;
       entity.y = entity.y - (duration - manager.duration) * vec[1] * dt;
 
-      if (manager.duration >= duration) manager.set("dead");
+      if (manager.duration >= duration) manager.set('dead');
     },
   },
   block: {
-    flow: ["idle"],
+    flow: ['idle'],
     step(dt, entity, manager) {
       handle_movement(entity, dt);
       handle_pointer(entity);
 
       const duration = 1;
 
-      if (manager.duration >= duration) manager.set("idle");
+      if (manager.duration >= duration) manager.set('idle');
     },
   },
   stunned: {
-    flow: ["idle"],
+    flow: ['idle'],
     step(_dt, _entity, manager) {
-      if (manager.duration >= 1) manager.set("idle");
+      if (manager.duration >= 1) manager.set('idle');
     },
   },
   dead: {},
   spin: {
-    flow: ["idle"],
+    flow: ['idle'],
     enter(entity, _manager, entities) {
       const weapon = constants.weapons[entity.weapon];
 
-      entities.add(
-        new Slash(
-          entity,
-          weapon.meleeRange,
-          Math.PI * 2,
-          0.6,
-          weapon.meleeDamage,
-          0
-        )
-      );
+      entities.add(new Slash(
+          entity, weapon.meleeRange, Math.PI * 2, 0.6, weapon.meleeDamage, 0));
     },
     step(dt, entity, manager) {
       const duration = 0.6;
-      if (manager.duration >= duration) manager.set("idle");
+      if (manager.duration >= duration) manager.set('idle');
       const direction = [
         Math.cos(entity.direction),
         Math.sin(entity.direction),
@@ -151,10 +128,10 @@ export default {
     },
   },
   kick: {
-    flow: ["idle"],
+    flow: ['idle'],
     step(dt, entity, manager) {
       const duration = 0.7;
-      if (manager.duration >= duration) manager.set("idle");
+      if (manager.duration >= duration) manager.set('idle');
 
       const direction = [
         Math.cos(entity.direction),
@@ -164,4 +141,4 @@ export default {
       entity.y += direction[1] * 150 * (duration - manager.duration) * 2 * dt;
     },
   },
-} as States<Citizen, Citizen["state"]>;
+} as States<Citizen, Citizen['state']>;
