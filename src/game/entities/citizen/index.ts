@@ -412,7 +412,7 @@ export class Citizen extends Entity<CitizenType> {
       });
 
     bars
-      .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 12 * this.bar_params.charge)
+      .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 14 * this.bar_params.charge)
       .fill({ alpha: 1, color: 0xffffaa })
       .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
       .closePath();
