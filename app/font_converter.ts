@@ -1,7 +1,7 @@
-import * as fs from "fs";
-import * as path from "path";
-import { argv } from "process";
-import { createCanvas, loadImage, CanvasRenderingContext2D } from "canvas";
+import {CanvasRenderingContext2D, createCanvas, loadImage} from '@napi-rs/canvas';
+import * as fs from 'fs';
+import * as path from 'path';
+import {argv} from 'process';
 
 // --- Interfaces ---
 interface FontDef {
@@ -20,24 +20,17 @@ interface CharMetrics {
   xoffset: number;
   yoffset: number;
   xadvance: number;
-  glyphTop: number; // Temporary property
-  glyphBottom: number; // Temporary property
+  glyphTop: number;     // Temporary property
+  glyphBottom: number;  // Temporary property
 }
 
 // --- NEW HELPER: Analyze a character's pixel data for top AND bottom ---
 function analyzeCharMetrics(
-  ctx: CanvasRenderingContext2D,
-  charData: Omit<
-    CharMetrics,
-    "xoffset" | "yoffset" | "glyphTop" | "glyphBottom"
-  >
-): Omit<CharMetrics, "xoffset" | "yoffset"> {
-  const imageData = ctx.getImageData(
-    charData.x,
-    charData.y,
-    charData.width,
-    charData.height
-  );
+    ctx: CanvasRenderingContext2D,
+    charData: Omit<CharMetrics, 'xoffset'|'yoffset'|'glyphTop'|'glyphBottom'>):
+    Omit<CharMetrics, 'xoffset'|'yoffset'> {
+  const imageData =
+      ctx.getImageData(charData.x, charData.y, charData.width, charData.height);
   const pixels = imageData.data;
   let glyphTop = charData.height;
   let glyphBottom = 0;
@@ -56,26 +49,24 @@ function analyzeCharMetrics(
     }
   }
 
-  return { ...charData, glyphTop, glyphBottom };
+  return {...charData, glyphTop, glyphBottom};
 }
 
 // --- The Main Conversion Logic ---
 async function convertWildsFontToFnt(
-  fontDefPath: string,
-  outputFntPath: string
-) {
+    fontDefPath: string, outputFntPath: string) {
   console.log(`Reading font definition from: ${fontDefPath}`);
-  const fontDef: FontDef = JSON.parse(fs.readFileSync(fontDefPath, "utf-8"));
+  const fontDef: FontDef = JSON.parse(fs.readFileSync(fontDefPath, 'utf-8'));
 
   const imagePath = path.resolve(path.dirname(fontDefPath), fontDef.imagePath);
   console.log(`Loading image: ${imagePath}`);
   const image = await loadImage(imagePath);
 
   const canvas = createCanvas(image.width, image.height);
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
   ctx.drawImage(image, 0, 0);
 
-  const allChars = new Map<number, Omit<CharMetrics, "xoffset" | "yoffset">>();
+  const allChars = new Map<number, Omit<CharMetrics, 'xoffset'|'yoffset'>>();
   let maxLineHeight = 0;
 
   // 1. Parse all character boundaries and basic metrics
@@ -129,13 +120,11 @@ async function convertWildsFontToFnt(
 
   if (baseline === 0) {
     console.warn(
-      "Could not determine baseline from baselineChars, using maxLineHeight."
-    );
+        'Could not determine baseline from baselineChars, using maxLineHeight.');
     baseline = maxLineHeight;
   } else {
-    console.log(
-      `Determined font baseline to be at: ${baseline}px from the top of the line.`
-    );
+    console.log(`Determined font baseline to be at: ${
+        baseline}px from the top of the line.`);
   }
   console.log(`Determined font-wide minimum top offset to be: ${fontMinTop}px`);
 
@@ -155,36 +144,36 @@ async function convertWildsFontToFnt(
     });
   }
 
-  // 3. Finalize all character data with correct yoffset RELATIVE to the font's minimum top
+  // 3. Finalize all character data with correct yoffset RELATIVE to the font's
+  // minimum top
   const finalChars = new Map<number, CharMetrics>();
   for (const [charCode, charData] of allChars.entries()) {
     finalChars.set(charCode, {
       ...charData,
-      yoffset: charData.glyphTop - fontMinTop, // <-- The key fix is here!
+      yoffset: charData.glyphTop - fontMinTop,  // <-- The key fix is here!
       xoffset: 0,
     });
   }
 
   // 4. Build the .fnt file content
   const imageName = path.basename(imagePath);
-  let fntContent = "";
-  fntContent += `info face="${fontDef.fontName}" size=${maxLineHeight} bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=1,1 outline=0\n`;
+  let fntContent = '';
+  fntContent += `info face="${fontDef.fontName}" size=${
+      maxLineHeight} bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=1,1 outline=0\n`;
   // The 'base' value is now adjusted by the fontMinTop as well
   fntContent += `common lineHeight=${maxLineHeight} base=${
-    baseline - fontMinTop
-  } scaleW=${image.width} scaleH=${
-    image.height
-  } pages=1 packed=0 alphaChnl=1 redChnl=4 greenChnl=4 blueChnl=4\n`;
+      baseline - fontMinTop} scaleW=${image.width} scaleH=${
+      image
+          .height} pages=1 packed=0 alphaChnl=1 redChnl=4 greenChnl=4 blueChnl=4\n`;
   fntContent += `page id=0 file="${imageName}"\n`;
   fntContent += `chars count=${finalChars.size}\n`;
 
-  const sortedChars = Array.from(finalChars.values()).sort(
-    (a, b) => a.id - b.id
-  );
+  const sortedChars =
+      Array.from(finalChars.values()).sort((a, b) => a.id - b.id);
 
   for (const charData of sortedChars) {
-    const { glyphTop, glyphBottom, ...dataToWrite } = charData;
-    let line = "char";
+    const {glyphTop, glyphBottom, ...dataToWrite} = charData;
+    let line = 'char';
     for (const key in dataToWrite) {
       line += ` ${key}=${(dataToWrite as any)[key]}`;
     }
@@ -192,7 +181,7 @@ async function convertWildsFontToFnt(
     fntContent += line;
   }
 
-  fs.writeFileSync(outputFntPath, fntContent, "utf-8");
+  fs.writeFileSync(outputFntPath, fntContent, 'utf-8');
   console.log(`✅ Successfully created stable .fnt file at: ${outputFntPath}`);
 }
 
@@ -201,8 +190,7 @@ function run() {
   const args = argv.slice(2);
   if (args.length !== 2) {
     console.error(
-      "Usage: ts-node convertFont.ts <path/to/font-def.json> <path/to/output.fnt>"
-    );
+        'Usage: ts-node convertFont.ts <path/to/font-def.json> <path/to/output.fnt>');
     process.exit(1);
   }
   convertWildsFontToFnt(args[0], args[1]).catch((err) => console.error(err));
