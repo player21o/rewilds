@@ -1,3 +1,0 @@
-[submodule "app/common"]
-	path = server/app/common
-	url = https://github.com/player21o/rewilds-common.git
