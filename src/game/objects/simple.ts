@@ -1,4 +1,4 @@
-import { Container, IRenderLayer, SpriteOptions, Ticker } from "pixi.js";
+import { Container, RenderLayer, SpriteOptions, Ticker } from "pixi.js";
 import type { GameDependencies } from "../game_deps";
 import { GameSprite, GameSpriteOptions } from "../render/anim";
 import { GameObject } from "./object";
@@ -11,7 +11,7 @@ type SimpleGameObjectOptions = GameSpriteOptions & {
   y?: number;
   play?: boolean;
   animation?: string;
-  layers: IRenderLayer[];
+  layers: RenderLayer[];
   sprite?: SpriteOptions;
   follow?: {
     obj: GameObject;
@@ -67,7 +67,7 @@ export class SimpleGameObject extends GameObject {
 
   public init(
     _assets: ObjectManifest["bundles"]["game"],
-    _layers_collection: typeof layers
+    _layers_collection: typeof layers,
   ): undefined | Container<any> {
     return this.container;
   }
@@ -91,7 +91,7 @@ export class SimpleGameObject extends GameObject {
     _____: number,
     _: GameDependencies,
     ___: ObjectManifest["bundles"]["game"],
-    { elapsedMS }: Ticker
+    { elapsedMS }: Ticker,
   ): void {
     if (!this.rip) {
       this.container.position = { x: this.x, y: this.y };

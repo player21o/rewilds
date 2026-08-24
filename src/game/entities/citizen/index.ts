@@ -183,13 +183,23 @@ export class Citizen extends Entity<CitizenType> {
     damage_text.tint = 0xcc0000;
     */
 
-    container.addChild(palette_container, weapon, bars, name);
+    container.addChild(
+      palette_container,
+      weapon,
+      //shield,
+      bars,
+      name,
+    );
     shield.zIndex = 1;
 
     palette.apply_palette(palette_container, this.shared.team);
     palette.apply_palette(weapon, 0);
 
-    entities.attach(palette_container, weapon);
+    entities.attach(
+      palette_container,
+      //shield,
+      weapon,
+    );
     ground.attach(bars, name);
 
     this.sprites = { shield, body, legs, bars, weapon };

@@ -15,7 +15,7 @@ function handle_growling(
   assets: ObjectManifest["bundles"]["game"],
   entities: EntitiesManager,
   animate_body = true,
-  force = false
+  force = false,
 ) {
   if (force || entity.timer.on_key_change(entity.shared, "growling")[0]) {
     if (entity.shared.growling) {
@@ -67,8 +67,8 @@ function handle_growling(
     entities.add(
       new Dust(
         entity.x + (Math.random() * 6 - 3),
-        entity.y + (Math.random() * 6 - 3)
-      )
+        entity.y + (Math.random() * 6 - 3),
+      ),
     );
 }
 
@@ -76,14 +76,14 @@ function handle_direction(entity: Citizen, dt: number) {
   entity.direction = circWrapTo(
     entity.direction,
     entity.shared.direction,
-    0.2 * dt
+    0.2 * dt,
   );
   const fo = (-0.5 * Math.PI * 2) / entity.sprites.body.total_animations;
   const direction = lookAt(
     0,
     0,
     Math.cos(entity.direction) * 16,
-    1.4 * Math.sin(entity.direction) * 16
+    1.4 * Math.sin(entity.direction) * 16,
   );
 
   const dirrow =
@@ -112,7 +112,7 @@ function handle_direction(entity: Citizen, dt: number) {
 
 function idle_enter(
   entity: Citizen,
-  assets: ObjectManifest["bundles"]["game"]
+  assets: ObjectManifest["bundles"]["game"],
 ) {
   entity.z = 0;
   entity.set_sprites("run", 150 / entity.data.speed, true, assets);
@@ -148,7 +148,7 @@ function handle_body_bobbing(entity: Citizen) {
   entity.sprites.legs.y = finalLegRelativeY;
 
   const finalBodyRelativeY = Math.floor(
-    finalLegRelativeY + bodyOffsetYFromLegBase
+    finalLegRelativeY + bodyOffsetYFromLegBase,
   );
   entity.sprites.body.y = finalBodyRelativeY;
   entity.sprites.shield.y = finalBodyRelativeY;
@@ -158,7 +158,7 @@ function handle_body_bobbing(entity: Citizen) {
 function handle_run_moving_animation(
   entity: Citizen,
   duration?: number,
-  multiplier: number = 2.5
+  multiplier: number = 2.5,
 ) {
   const speed = duration != undefined ? duration : 150 / entity.data.speed;
 
@@ -186,7 +186,7 @@ function handle_basic(
   entities: EntitiesManager,
   duration?: number,
   multiplier?: number,
-  animate_body?: boolean
+  animate_body?: boolean,
 ) {
   handle_growling(entity, assets, entities, animate_body);
 
@@ -219,7 +219,7 @@ export default {
       //entity.last_turn_row = -1;
 
       entities.add(
-        new Slash(entity, weapon.meleeSlash[animationIndex], duration)
+        new Slash(entity, weapon.meleeSlash[animationIndex], duration),
       );
     },
     step(dt, entity, dp, manager, assets) {
@@ -230,7 +230,7 @@ export default {
         dp.entities,
         constants.weapons[entity.shared.weapon].attackDuration *
           entity.data.attackDuration,
-        1
+        1,
       );
 
       if (
@@ -323,7 +323,7 @@ export default {
             obj: entity,
             yOffset: -15,
           },
-        })
+        }),
       );
     },
   },
@@ -338,7 +338,7 @@ export default {
       for (let i = 0; i < 5; i++) {
         const direction = entity.direction - angleStep * i;
         entities.add(
-          new Slash(entity, "slash_horizontal", 0.25, 0.1 * i, direction)
+          new Slash(entity, "slash_horizontal", 0.25, 0.1 * i, direction),
         );
       }
     },

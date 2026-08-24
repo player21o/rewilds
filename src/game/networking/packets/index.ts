@@ -113,8 +113,28 @@ export default {
     const shield = entity.sprites.shield;
 
     const filter = new ColorMatrixFilter();
-    filter.brightness(100, true);
-    filter.tint("rgba(61, 0, 0, 1)", true);
+    filter.matrix = [
+      0,
+      0,
+      0,
+      0,
+      0.68, // Red multiplier and offset (1 = max red)
+      0,
+      0,
+      0,
+      0,
+      0, // Green multiplier and offset
+      0,
+      0,
+      0,
+      0,
+      0, // Blue multiplier and offset
+      0,
+      0,
+      0,
+      1,
+      0, // Alpha multiplier and offset (keeps original transparency)
+    ];
 
     shield.filters != undefined
       ? (shield.filters = [...shield.filters, filter])
@@ -122,7 +142,7 @@ export default {
 
     setTimeout(
       () => (shield.filters = shield.filters.filter((f) => f != filter)),
-      200,
+      500,
     );
   },
 } as Packets;
