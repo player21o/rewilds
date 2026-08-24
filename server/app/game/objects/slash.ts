@@ -1,0 +1,112 @@
+import {
+  Arc,
+  CollisionObject,
+  CollisionResponse,
+  Collisions,
+} from "../entities/collisions";
+import { Citizen } from "../entities/citizen";
+import { GameObject } from "./object";
+import { lookAt } from "../utils";
+import { GameNetworking } from "../networking";
+
+export class Slash extends GameObject {
+  private entity: Citizen;
+  public collision: CollisionObject | null;
+  private duration: number;
+  private timer = 0;
+  private hits: number[] = [];
+  public move_out_collision = false;
+  private damage: number;
+  private delay: number;
+
+  constructor(
+    e: Citizen,
+    range: number,
+    arc: number,
+    duration: number,
+    damage: number,
+    delay = 0.25
+  ) {
+    super();
+    this.entity = e;
+
+    this.x = e.x;
+    this.y = e.y;
+    this.duration = duration;
+    this.damage = damage;
+    this.delay = delay;
+
+    this.collision = new Arc(
+      0,
+      this.x,
+      this.y,
+      e.collision.radius,
+      range,
+      e.direction,
+      arc
+    );
+    this.collision.disabled = true;
+  }
+
+  public step(dt: number, _n: GameNetworking, c?: Collisions): void {
+    this.x = this.entity.x;
+    this.y = this.entity.y;
+
+    this.delay -= dt;
+
+    this.timer += dt;
+    if (this.timer >= this.duration) {
+      this.destroy();
+    }
+
+    if (c != undefined) this.update_collision_pos(c);
+  }
+
+  public on_collision(
+    other: GameObject,
+    _resp: CollisionResponse,
+    n: GameNetworking
+  ): void {
+    if (
+      this.delay <= 0 &&
+      other instanceof Citizen &&
+      this.entity.team != other.team &&
+      other.sid != this.entity.sid &&
+      other.state != "dead" &&
+      other.state != "dying" &&
+      !this.hits.includes(other.sid)
+    ) {
+      if (other.state == "block") {
+        if (this.entity.state_manager.duration >= 0.25) {
+          this.entity.state_manager.set("stunned", true);
+          this.rip = true;
+
+          //broadcast a clash event
+          n.broadcast("clash_shield", other.sid);
+
+          return;
+        }
+      } else if (other.state == "attack") {
+        this.destroy();
+      } else {
+        this.hits.push(other.sid);
+
+        other.set("health", (hp) => {
+          const new_hp = hp - this.damage;
+
+          if (new_hp <= 0) {
+            //if the hit is fatal
+            other.direction = lookAt(
+              other.x,
+              other.y,
+              this.entity.x,
+              this.entity.y
+            );
+          }
+
+          return new_hp;
+        });
+      }
+    }
+  }
+}
