@@ -27,6 +27,8 @@ export class EntitiesManager {
       if (this.assets != undefined) {
         const rendered_entity = entity.init(this.assets, layers);
         if (rendered_entity != undefined) this.stage.addChild(rendered_entity);
+        //if (rendered_entity != undefined)
+        //  layers.invisible.attach(rendered_entity);
       }
 
       this.entities.push(entity);
@@ -38,6 +40,8 @@ export class EntitiesManager {
       if (this.assets != undefined) {
         const rendered_object = entity.init(this.assets, layers);
         if (rendered_object != undefined) this.stage.addChild(rendered_object);
+        //if (rendered_object != undefined)
+        //  layers.invisible.attach(rendered_object);
       }
     }
 

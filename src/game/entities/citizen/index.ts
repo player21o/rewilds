@@ -90,7 +90,7 @@ export class Citizen extends Entity<CitizenType> {
 
   public init(
     assets: ObjectManifest["bundles"]["game"],
-    { entities, ground }: typeof layers,
+    { entities, ground, entities2 }: typeof layers,
   ) {
     this.data = {
       ...constants.minions["default"],
@@ -144,6 +144,7 @@ export class Citizen extends Entity<CitizenType> {
       loop: true,
     });
     weapon.scale = 1;
+    weapon.x = -2;
     weapon.play();
 
     const shield = new GameSprite({
@@ -154,7 +155,7 @@ export class Citizen extends Entity<CitizenType> {
       loop: true,
     });
     shield.scale = 1;
-    shield.x = -2;
+    shield.x = -1;
     shield.play();
 
     const palette_container = new Container({ sortableChildren: false });
@@ -184,8 +185,8 @@ export class Citizen extends Entity<CitizenType> {
     */
 
     container.addChild(
-      palette_container,
       weapon,
+      palette_container,
       //shield,
       bars,
       name,
@@ -197,9 +198,12 @@ export class Citizen extends Entity<CitizenType> {
 
     entities.attach(
       palette_container,
+      //weapon,
       //shield,
-      weapon,
     );
+
+    entities2.attach(weapon);
+
     ground.attach(bars, name);
 
     this.sprites = { shield, body, legs, bars, weapon };
@@ -272,9 +276,11 @@ export class Citizen extends Entity<CitizenType> {
 
     this.container.position.set(this.x, this.y);
     this.palette_container.position.y = -this.z;
+    this.sprites.weapon.y = -this.z;
 
     this.state.step(deltaTime, dp, assets);
 
+    /*
     if (
       this.sprites.body.animation_index >
         (this.sprites.body.total_animations - 1) * 0.75 ||
@@ -288,6 +294,7 @@ export class Citizen extends Entity<CitizenType> {
       // The torso is drawn BEFORE the shield.
       this.sprites.shield.zIndex = 1;
     }
+      */
 
     //if (this.direction > Math.PI + Math.PI / 2) {
     //  this.sprites.shield.zIndex = -1;
