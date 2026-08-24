@@ -1,6 +1,6 @@
 import {EntitiesManager} from '..';
-import constants from '../../../common/constants';
-import {CitizenType} from '../../../common/interfaces';
+import {constants} from '../../../../../common/constants';
+import {CitizenType} from '../../../../../common/interfaces';
 import {GameNetworking} from '../../networking';
 import {GameObject} from '../../objects/object';
 import {Circle, CollisionResponse} from '../collisions';
@@ -51,10 +51,9 @@ export class Citizen extends Entity<'Citizen'> implements CitizenType {
 
     this.type = type;
 
-    const data = {
-      ...constants.minions['default'],
-      ...constants.minions[type],
-    };
+    // console.log(constants.default)
+
+    const data = {...constants.minions['default'], ...constants.minions[type]};
 
     this.weapon = data.weapon;
     this.shield = data.shield;
@@ -91,7 +90,7 @@ export class Citizen extends Entity<'Citizen'> implements CitizenType {
       _network?: GameNetworking): void {
     if (other instanceof Citizen && this.state == 'roll' &&
         other.team != this.team && !this.hit_sid.includes(other.sid)) {
-      other.set('health', (hp) => hp - 1);
+      other.set('health', (hp: any) => hp - 1);
       this.hit_sid.push(other.sid);
     }
   }

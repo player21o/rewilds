@@ -1,14 +1,10 @@
-import {
-  constructors_inner_keys,
-  constructors_keys,
-  constructors_object,
-  ConstructorsInnerTypes,
-  ConstructorsObject,
-} from "../../common/constructors";
-import packets from "./packets";
-import { GameDependencies } from "../game_deps";
-import { SendFunction } from "./types";
-import { pack, unpack } from "msgpackr";
+import {pack, unpack} from 'msgpackr';
+
+import {constructors_inner_keys, constructors_keys, constructors_object, ConstructorsInnerTypes, ConstructorsObject,} from '../../../../common/constructors';
+import {GameDependencies} from '../game_deps';
+
+import packets from './packets';
+import {SendFunction} from './types';
 
 export class WS {
   private ws: WebSocket;
@@ -19,9 +15,9 @@ export class WS {
     this.ws = ws;
     this.game = game;
 
-    ws.onopen = () => this.send("hello");
+    ws.onopen = () => this.send('hello');
 
-    ws.onmessage = ({ data }) => {
+    ws.onmessage = ({data}) => {
       (data as Blob).arrayBuffer().then((buffer) => {
         const packet: [packet: number, ...args: any[]] = unpack(buffer) as any;
         this.bytes += buffer.byteLength;
@@ -34,15 +30,15 @@ export class WS {
 
         for (let i = 0, n = sliced.length; i < n; ++i) {
           const propName = props[i] as keyof typeof constructor;
-          const converterPair = constructor[propName] as readonly [
-            (val: any) => any,
-            (val: any) => any,
+          const converterPair = constructor[propName] as
+              readonly[(val: any) => any,
+                       (val: any) => any,
           ];
 
           formatted.push(converterPair[1](sliced[i]));
         }
 
-        //console.log(this.bytes / 1048576);
+        // console.log(this.bytes / 1048576);
 
         // @ts-ignore
         packets[constructor_name](this.send, this.game, ...(formatted as any));
@@ -51,16 +47,14 @@ export class WS {
   }
 
   public send: SendFunction = <T extends keyof ConstructorsObject>(
-    msg: T,
-    ...args: ConstructorsInnerTypes[T]
-  ) => {
+      msg: T, ...args: ConstructorsInnerTypes[T]) => {
     const constructor = constructors_object[msg];
 
     const data = constructors_inner_keys[msg].map((prop, i) => {
       const propName = prop as keyof typeof constructor;
-      const converterPair = constructor[propName] as readonly [
-        (val: any) => any,
-        (val: any) => any,
+      const converterPair = constructor[propName] as
+          readonly[(val: any) => any,
+                   (val: any) => any,
       ];
 
       return converterPair[0](args[i]);

@@ -1,42 +1,35 @@
-import { EntitiesManager } from "..";
-import constants from "../../../common/constants";
-import {
-  constructors_inner_keys,
-  constructors_object,
-} from "../../../common/constructors";
-import { CitizenType } from "../../../common/interfaces";
-import { Citizen } from "../citizen";
-import states from "./states";
+import {EntitiesManager} from '..';
+import {constants} from '../../../../../common/constants';
+import {constructors_inner_keys, constructors_object,} from '../../../../../common/constructors';
+import {CitizenType} from '../../../../../common/interfaces';
+import {Citizen} from '../citizen';
+
+import states from './states';
 
 export class Player extends Citizen {
   public charging = false;
   public charge = 0;
-  public private_data_changes = { bits: 0b0, data: [] as any[] };
+  public private_data_changes = {bits: 0b0, data: [] as any[]};
   public stamina = 1;
   public pointerX = 0;
   public pointerY = 0;
   public growling_timer = 0;
 
   public constructor(
-    type: CitizenType["type"],
-    kind: CitizenType["kind"],
-    name: string,
-    x: number,
-    y: number,
-    e: EntitiesManager
-  ) {
+      type: CitizenType['type'], kind: CitizenType['kind'], name: string,
+      x: number, y: number, e: EntitiesManager) {
     super(type, kind, name, x, y, e, states);
   }
 
   public pre_step(_dt: number) {
-    const r: { prev_props: any } = { prev_props: null };
+    const r: {prev_props: any} = {prev_props: null};
 
-    r.prev_props = constructors_inner_keys["CitizenPrivateData"].map((prop) => {
+    r.prev_props = constructors_inner_keys['CitizenPrivateData'].map((prop) => {
       const propName =
-        prop as keyof (typeof constructors_object)["CitizenPrivateData"];
-      const converterPair = constructors_object["CitizenPrivateData"][
-        propName
-      ] as readonly [(val: any) => any, (val: any) => any];
+          prop as keyof(typeof constructors_object)['CitizenPrivateData'];
+      const converterPair =
+          constructors_object['CitizenPrivateData'][propName] as
+          readonly[(val: any) => any, (val: any) => any];
 
       return converterPair[0]((this as any)[prop]);
     });
@@ -44,12 +37,9 @@ export class Player extends Citizen {
     return r;
   }
 
-  public step(
-    dt: number,
-    _a: undefined,
-    _b: undefined,
-    { prev_props }: { prev_props: any }
-  ) {
+  public step(dt: number, _a: undefined, _b: undefined, {prev_props}: {
+    prev_props: any
+  }) {
     this.inputs.look[0] = this.x + this.pointerX;
     this.inputs.look[1] = this.y + this.pointerY;
 
@@ -62,17 +52,17 @@ export class Player extends Citizen {
       this.step_states(dt);
 
       const changed_props: any[] = [];
-      constructors_inner_keys["CitizenPrivateData"].forEach((prop, i) => {
+      constructors_inner_keys['CitizenPrivateData'].forEach((prop, i) => {
         const propName =
-          prop as keyof (typeof constructors_object)["CitizenPrivateData"];
-        const converterPair = constructors_object["CitizenPrivateData"][
-          propName
-        ] as readonly [(val: any) => any, (val: any) => any];
+            prop as keyof(typeof constructors_object)['CitizenPrivateData'];
+        const converterPair =
+            constructors_object['CitizenPrivateData'][propName] as
+            readonly[(val: any) => any, (val: any) => any];
 
         const formatted = converterPair[0]((this as any)[prop]);
 
         if ((prev_bits >> i) % 2 != 0 || prev_props[i] !== formatted) {
-          //changed!
+          // changed!
           changed_props.push(formatted);
           changed_bits |= 1 << i;
         }
@@ -82,11 +72,10 @@ export class Player extends Citizen {
       this.private_data_changes.data = changed_props;
     } else {
       const changed_props: any[] = [];
-      constructors_inner_keys["CitizenPrivateData"].forEach((prop, i) => {
-        prop as keyof (typeof constructors_object)["CitizenPrivateData"];
-        const converterPair = constructors_object["CitizenPrivateData"][
-          prop
-        ] as readonly [(val: any) => any, (val: any) => any];
+      constructors_inner_keys['CitizenPrivateData'].forEach((prop, i) => {
+        prop as keyof(typeof constructors_object)['CitizenPrivateData'];
+        const converterPair = constructors_object['CitizenPrivateData'][prop] as
+            readonly[(val: any) => any, (val: any) => any];
 
         const formatted = converterPair[0]((this as any)[prop]);
         changed_props.push(formatted);

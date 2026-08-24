@@ -1,7 +1,7 @@
 import {pack, unpack} from 'msgpackr';
 import {App, DISABLED, TemplatedApp} from 'uWebSockets.js';
 
-import {constructors_inner_keys, constructors_keys, constructors_object, ConstructorsInnerTypes, ConstructorsObject,} from '../common/constructors';
+import {constructors_inner_keys, constructors_keys, constructors_object, ConstructorsInnerTypes, ConstructorsObject,} from '../../../common/constructors';
 
 import packets, {Peer, Ws} from './packets/packets';
 

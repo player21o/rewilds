@@ -1,52 +1,43 @@
-import {
-  BitmapText,
-  ColorMatrixFilter,
-  Container,
-  Graphics,
-  Ticker,
-} from "pixi.js";
-import { CitizenType } from "../../../common/interfaces";
-import { Entity } from "../entity";
-import { audio_manifest, ObjectManifest } from "../../../assets/manifest";
-import { lerp, moveTo, palette } from "../../utils";
-import { GameSprite } from "../../render/anim";
-import { StateManager } from "../state";
-import states from "./states";
-import layers from "../../render/layers";
-import type { GameDependencies } from "../../game_deps";
-import { EntitiesManager } from "..";
-import Footstep from "../../objects/footstep";
-import constants from "../../../common/constants";
-import { DamageBubble } from "../../objects/damageBubble";
+import {BitmapText, ColorMatrixFilter, Container, Graphics, Ticker,} from 'pixi.js';
+
+import {EntitiesManager} from '..';
+import {constants} from '../../../../../common/constants';
+import {CitizenType} from '../../../../../common/interfaces';
+import {audio_manifest, ObjectManifest} from '../../../assets/manifest';
+import type {GameDependencies} from '../../game_deps';
+import {DamageBubble} from '../../objects/damageBubble';
+import Footstep from '../../objects/footstep';
+import {GameSprite} from '../../render/anim';
+import layers from '../../render/layers';
+import {lerp, moveTo, palette} from '../../utils';
+import {Entity} from '../entity';
+import {StateManager} from '../state';
+
+import states from './states';
 
 export class Citizen extends Entity<CitizenType> {
   public sprites!: {
-    legs: GameSprite;
-    body: GameSprite;
-    shield: GameSprite;
-    weapon: GameSprite;
+    legs: GameSprite; body: GameSprite; shield: GameSprite; weapon: GameSprite;
     bars: Graphics;
   };
   public container!: Container;
   public palette_container!: Container;
-  public rows = { body: 0, legs: 0 };
+  public rows = {body: 0, legs: 0};
 
   public health = 0;
 
   public last_turn_row = 0;
   public isMoving = false;
 
-  public data!: (typeof constants)["minions"]["default"] &
-    (typeof constants)["minions"][keyof (typeof constants)["minions"]];
+  public data!: (typeof constants)['minions']['default']&
+      (typeof constants)['minions'][keyof(typeof constants)['minions']];
 
   public direction = 0;
 
   public state = new StateManager<typeof this.shared.state>(states, this);
 
   public bar_params: {
-    enemy: boolean;
-    stamina: number;
-    hide_stamina: boolean;
+    enemy: boolean; stamina: number; hide_stamina: boolean;
     current_stamina: number;
     charge: number;
     charging: boolean;
@@ -89,11 +80,11 @@ export class Citizen extends Entity<CitizenType> {
   }
 
   public init(
-    assets: ObjectManifest["bundles"]["game"],
-    { entities, ground, entities2 }: typeof layers,
+      assets: ObjectManifest['bundles']['game'],
+      {entities, ground, entities2}: typeof layers,
   ) {
     this.data = {
-      ...constants.minions["default"],
+      ...constants.minions['default'],
       ...constants.minions[this.shared.type],
     } as any;
 
@@ -101,22 +92,21 @@ export class Citizen extends Entity<CitizenType> {
     this.x = this.shared.x;
     this.y = this.shared.y;
 
-    const container = new Container({ cullable: true, cullableChildren: true });
+    const container = new Container({cullable: true, cullableChildren: true});
     this.container = container;
 
     container.x = this.x;
     container.y = this.y;
 
     const bars = new Graphics({
-      blendMode: "normal-npm",
-      scale: { x: 1, y: 0.6 },
+      blendMode: 'normal-npm',
+      scale: {x: 1, y: 0.6},
       zIndex: 0,
       roundPixels: true,
     });
 
     const legs = new GameSprite<
-      ObjectManifest["bundles"]["game"]["legs_run"]["animations"]
-    >({
+        ObjectManifest['bundles']['game']['legs_run']['animations']>({
       animations: assets.legs_run.animations,
       duration: 150 / 3000,
       autoUpdate: false,
@@ -126,8 +116,7 @@ export class Citizen extends Entity<CitizenType> {
     legs.play();
 
     const body = new GameSprite<
-      ObjectManifest["bundles"]["game"]["male_run"]["animations"]
-    >({
+        ObjectManifest['bundles']['game']['male_run']['animations']>({
       animations: assets.male_run.animations,
       duration: 150 / 3000,
       autoUpdate: false,
@@ -137,9 +126,10 @@ export class Citizen extends Entity<CitizenType> {
     body.play();
 
     const weapon = new GameSprite({
-      animations: (
-        assets[("shield_wooden" + "_run") as keyof typeof assets] as any
-      ).animations,
+      animations: (assets
+                       [('shield_wooden' +
+                         '_run') as keyof typeof assets] as any)
+                      .animations,
       duration: 1,
       autoUpdate: false,
       loop: true,
@@ -149,8 +139,10 @@ export class Citizen extends Entity<CitizenType> {
     weapon.play();
 
     const shield = new GameSprite({
-      animations: (assets[("axe" + "_run") as keyof typeof assets] as any)
-        .animations,
+      animations: (assets
+                       [('axe' +
+                         '_run') as keyof typeof assets] as any)
+                      .animations,
       duration: 1,
       autoUpdate: false,
       loop: true,
@@ -159,15 +151,15 @@ export class Citizen extends Entity<CitizenType> {
     shield.x = -1;
     shield.play();
 
-    const palette_container = new Container({ sortableChildren: false });
+    const palette_container = new Container({sortableChildren: false});
     palette_container.addChild(legs, body, shield);
     this.palette_container = palette_container;
 
     const name = new BitmapText({
       text: this.shared.name.toUpperCase(),
       anchor: 0.5,
-      position: { x: 60, y: 100 },
-      style: { fontFamily: "game-font", fontSize: 8, align: "center" },
+      position: {x: 60, y: 100},
+      style: {fontFamily: 'game-font', fontSize: 8, align: 'center'},
     });
     name.tint = 0;
 
@@ -186,11 +178,11 @@ export class Citizen extends Entity<CitizenType> {
     */
 
     container.addChild(
-      weapon,
-      palette_container,
-      //shield,
-      bars,
-      name,
+        weapon,
+        palette_container,
+        // shield,
+        bars,
+        name,
     );
     shield.zIndex = 1;
 
@@ -198,16 +190,16 @@ export class Citizen extends Entity<CitizenType> {
     palette.apply_palette(weapon, 0);
 
     entities.attach(
-      palette_container,
-      //weapon,
-      //shield,
+        palette_container,
+        // weapon,
+        // shield,
     );
 
     entities2.attach(weapon);
 
     ground.attach(bars, name);
 
-    this.sprites = { shield, body, legs, bars, weapon };
+    this.sprites = {shield, body, legs, bars, weapon};
     this.update_bars(1);
 
     container.pivot.set(container.width / 2, container.height / 2);
@@ -216,9 +208,9 @@ export class Citizen extends Entity<CitizenType> {
   }
 
   public step(
-    _: number,
-    dp: GameDependencies,
-    { elapsedMS, deltaTime }: Ticker,
+      _: number,
+      dp: GameDependencies,
+      {elapsedMS, deltaTime}: Ticker,
   ) {
     if (this.bar_params.charging) {
       const weapon = constants.weapons[this.shared.weapon];
@@ -235,14 +227,14 @@ export class Citizen extends Entity<CitizenType> {
 
     this.isMoving = this.shared.moving;
 
-    if (this.isMoving && this.timer.every(0.5, "footstep")) {
+    if (this.isMoving && this.timer.every(0.5, 'footstep')) {
       this.sounds.footstep.rate(1 + (-1 + Math.random() * 2) * 0.2);
       this.sounds.footstep.play();
     }
 
     this.health = this.shared.health;
 
-    const hp = this.timer.on_key_change(this, "health");
+    const hp = this.timer.on_key_change(this, 'health');
 
     if (hp[0]) {
       const difference = hp[1] - this.shared.health;
@@ -250,7 +242,7 @@ export class Citizen extends Entity<CitizenType> {
 
       const filter = new ColorMatrixFilter();
       filter.brightness(10, true);
-      filter.tint("red", true);
+      filter.tint('red', true);
 
       this.palette_container.filters = [
         ...this.palette_container.filters,
@@ -258,22 +250,22 @@ export class Citizen extends Entity<CitizenType> {
       ];
 
       setTimeout(
-        () =>
-          (this.palette_container.filters =
-            this.palette_container.filters.filter((f) => f != filter)),
-        200,
+          () =>
+              (this.palette_container.filters =
+                   this.palette_container.filters.filter((f) => f != filter)),
+          200,
       );
     }
   }
 
   public render(
-    __: number,
-    dp: GameDependencies,
-    assets: ObjectManifest["bundles"]["game"],
-    { elapsedMS, deltaTime }: Ticker,
+      __: number,
+      dp: GameDependencies,
+      assets: ObjectManifest['bundles']['game'],
+      {elapsedMS, deltaTime}: Ticker,
   ) {
-    if (this.shared.shield == "no_shield") this.sprites.shield.visible = false;
-    if (this.shared.weapon == "no_weapon") this.sprites.weapon.visible = false;
+    if (this.shared.shield == 'no_shield') this.sprites.shield.visible = false;
+    if (this.shared.weapon == 'no_weapon') this.sprites.weapon.visible = false;
 
     this.container.position.set(this.x, this.y);
     this.palette_container.position.y = -this.z;
@@ -297,23 +289,23 @@ export class Citizen extends Entity<CitizenType> {
     }
       */
 
-    //if (this.direction > Math.PI + Math.PI / 2) {
-    //  this.sprites.shield.zIndex = -1;
-    //} else {
-    //  this.sprites.shield.zIndex = 1;
-    //}
+    // if (this.direction > Math.PI + Math.PI / 2) {
+    //   this.sprites.shield.zIndex = -1;
+    // } else {
+    //   this.sprites.shield.zIndex = 1;
+    // }
 
     this.update_anims(elapsedMS);
 
     const crst = this.timer.on_key_change(
-      this.bar_params,
-      "current_stamina",
-    )[0];
-    const c = this.timer.on_key_change(this.bar_params, "charge")[0];
-    const h = this.timer.on_key_change(this.shared, "health")[0];
+        this.bar_params,
+        'current_stamina',
+        )[0];
+    const c = this.timer.on_key_change(this.bar_params, 'charge')[0];
+    const h = this.timer.on_key_change(this.shared, 'health')[0];
 
     const bar_needs_to_be_updated =
-      (!this.bar_params.hide_stamina && crst) || h || c;
+        (!this.bar_params.hide_stamina && crst) || h || c;
 
     if (bar_needs_to_be_updated) this.update_bars(deltaTime);
 
@@ -323,7 +315,7 @@ export class Citizen extends Entity<CitizenType> {
   }
 
   public update_bar_params(params: Partial<typeof this.bar_params>) {
-    this.bar_params = { ...this.bar_params, ...params };
+    this.bar_params = {...this.bar_params, ...params};
   }
 
   public update_bars(dt: number) {
@@ -331,14 +323,13 @@ export class Citizen extends Entity<CitizenType> {
     const bars = this.sprites.bars;
 
     this.bar_params.current_stamina = moveTo(
-      this.bar_params.current_stamina,
-      this.bar_params.stamina,
-      Math.abs(this.bar_params.current_stamina - this.bar_params.stamina) *
-        (dt / 50) *
-        2.0,
+        this.bar_params.current_stamina,
+        this.bar_params.stamina,
+        Math.abs(this.bar_params.current_stamina - this.bar_params.stamina) *
+            (dt / 50) * 2.0,
     );
 
-    const stamina_bar_looks = { line_thickness: 3, radius: 10.5 };
+    const stamina_bar_looks = {line_thickness: 3, radius: 10.5};
     const health_bar_looks = {
       line_thickness: 3,
       radius: 15,
@@ -347,137 +338,128 @@ export class Citizen extends Entity<CitizenType> {
 
     bars.clear();
 
-    bars
-      .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 12)
-      .fill({ alpha: 0.25, color: 0x000000 })
-      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
-      .closePath();
+    bars.circle(250 / 4 - 3, 250 / 4 + 62 - 2, 12)
+        .fill({alpha: 0.25, color: 0x000000})
+        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+        .closePath();
 
     if (!params.hide_stamina) {
-      bars
-        .arc(
-          250 / 4 - 3,
-          250 / 4 + 62 - 1,
-          stamina_bar_looks.radius,
-          0,
-          Math.PI,
-          false,
-        )
-        .stroke({ color: 0x555555, width: stamina_bar_looks.line_thickness })
-        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + stamina_bar_looks.radius)
-        .arc(
-          250 / 4 - 3,
-          250 / 4 + 62 - 1,
-          stamina_bar_looks.radius,
-          Math.PI / 2,
-          lerp(Math.PI / 2, 0, params.current_stamina / 1),
-          true,
-        )
-        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + stamina_bar_looks.radius)
-        .arc(
-          250 / 4 - 3,
-          250 / 4 + 62 - 1,
-          stamina_bar_looks.radius,
-          Math.PI / 2,
-          lerp(Math.PI / 2, Math.PI, params.current_stamina / 1),
-          false,
-        )
-        .stroke({ color: 0xffffff, width: stamina_bar_looks.line_thickness })
-        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + health_bar_looks.radius)
+      bars.arc(
+              250 / 4 - 3,
+              250 / 4 + 62 - 1,
+              stamina_bar_looks.radius,
+              0,
+              Math.PI,
+              false,
+              )
+          .stroke({color: 0x555555, width: stamina_bar_looks.line_thickness})
+          .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + stamina_bar_looks.radius)
+          .arc(
+              250 / 4 - 3,
+              250 / 4 + 62 - 1,
+              stamina_bar_looks.radius,
+              Math.PI / 2,
+              lerp(Math.PI / 2, 0, params.current_stamina / 1),
+              true,
+              )
+          .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + stamina_bar_looks.radius)
+          .arc(
+              250 / 4 - 3,
+              250 / 4 + 62 - 1,
+              stamina_bar_looks.radius,
+              Math.PI / 2,
+              lerp(Math.PI / 2, Math.PI, params.current_stamina / 1),
+              false,
+              )
+          .stroke({color: 0xffffff, width: stamina_bar_looks.line_thickness})
+          .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + health_bar_looks.radius)
 
-        .closePath();
+          .closePath();
     }
 
-    bars
-      .arc(
-        250 / 4 - 3,
-        250 / 4 + 62 - 1,
-        health_bar_looks.radius,
-        Math.PI / 2,
-        lerp(Math.PI / 2, 0, this.shared.health / this.shared.maxHealth),
-        true,
-      )
-      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + health_bar_looks.radius)
-      .arc(
-        250 / 4 - 3,
-        250 / 4 + 62 - 1,
-        health_bar_looks.radius,
-        Math.PI / 2,
-        lerp(Math.PI / 2, Math.PI, this.shared.health / this.shared.maxHealth),
-        false,
-      )
-      .stroke({
-        color: health_bar_looks.color,
-        width: health_bar_looks.line_thickness,
-      });
+    bars.arc(
+            250 / 4 - 3,
+            250 / 4 + 62 - 1,
+            health_bar_looks.radius,
+            Math.PI / 2,
+            lerp(Math.PI / 2, 0, this.shared.health / this.shared.maxHealth),
+            true,
+            )
+        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + health_bar_looks.radius)
+        .arc(
+            250 / 4 - 3,
+            250 / 4 + 62 - 1,
+            health_bar_looks.radius,
+            Math.PI / 2,
+            lerp(
+                Math.PI / 2, Math.PI,
+                this.shared.health / this.shared.maxHealth),
+            false,
+            )
+        .stroke({
+          color: health_bar_looks.color,
+          width: health_bar_looks.line_thickness,
+        });
 
-    bars
-      .circle(250 / 4 - 3, 250 / 4 + 62 - 2, 14 * this.bar_params.charge)
-      .fill({ alpha: 1, color: 0xffffaa })
-      .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
-      .closePath();
+    bars.circle(250 / 4 - 3, 250 / 4 + 62 - 2, 14 * this.bar_params.charge)
+        .fill({alpha: 1, color: 0xffffaa})
+        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
+        .closePath();
   }
 
   private update_anims(elapsed: number) {
     this.sprites.body.update(elapsed);
     this.sprites.legs.update(elapsed);
 
-    if (this.shared.shield != "no_shield")
+    if (this.shared.shield != 'no_shield')
       this.sprites.shield.frame = this.sprites.body.frame;
-    if (this.shared.weapon != "no_weapon")
+    if (this.shared.weapon != 'no_weapon')
       this.sprites.weapon.frame = this.sprites.body.frame;
-    //this.sprites.shield.update(elapsed);
+    // this.sprites.shield.update(elapsed);
   }
 
   private render_stains(entities: EntitiesManager) {
-    if (this.isMoving && this.timer.every(0.5, "footstep")) {
+    if (this.isMoving && this.timer.every(0.5, 'footstep')) {
       entities.add(
-        new Footstep(
-          this.x + Math.random() * 8 - 4,
-          this.y + Math.random() * 8 - 4,
-        ),
+          new Footstep(
+              this.x + Math.random() * 8 - 4,
+              this.y + Math.random() * 8 - 4,
+              ),
       );
     }
   }
 
   public set_sprites(
-    animation: string,
-    duration: number,
-    loop: boolean,
-    assets: ObjectManifest["bundles"]["game"],
-    check_shield?: boolean,
+      animation: string,
+      duration: number,
+      loop: boolean,
+      assets: ObjectManifest['bundles']['game'],
+      check_shield?: boolean,
   ) {
-    this.sprites.body.animations = (
-      assets[
-        (this.shared.kind +
-          "_" +
-          animation +
-          (this.shared.shield == "no_shield"
-            ? "_no_shield"
-            : "")) as keyof typeof assets
-      ] as any
-    ).animations;
+    this.sprites.body.animations =
+        (assets
+             [(this.shared.kind + '_' + animation +
+               (this.shared.shield == 'no_shield' ? '_no_shield' : '')) as
+              keyof typeof assets] as any)
+            .animations;
     this.sprites.body.duration = duration;
     this.sprites.body.loop = loop;
     this.sprites.body.play();
 
-    this.sprites.weapon.animations = (
-      assets[
-        (this.shared.weapon +
-          "_" +
-          animation +
-          (this.shared.shield == "no_shield" &&
-          (check_shield == undefined || check_shield == true)
-            ? "_no_shield"
-            : "")) as keyof typeof assets
-      ] as any
-    ).animations;
+    this.sprites.weapon.animations =
+        (assets
+             [(this.shared.weapon + '_' + animation +
+               (this.shared.shield == 'no_shield' &&
+                        (check_shield == undefined || check_shield == true) ?
+                    '_no_shield' :
+                    '')) as keyof typeof assets] as any)
+            .animations;
 
-    if (this.shared.shield != "no_shield")
-      this.sprites.shield.animations = (
-        assets[
-          (this.shared.shield + "_" + animation) as keyof typeof assets
-        ] as any
-      ).animations;
+    if (this.shared.shield != 'no_shield')
+      this.sprites.shield.animations =
+          (assets
+               [(this.shared.shield + '_' + animation) as
+                keyof typeof assets] as any)
+              .animations;
   }
 }

@@ -1,17 +1,18 @@
-import { Entity } from "./entity";
-import { constructors_object } from "../../common/constructors";
-import { build_collision_response, Collisions } from "./collisions";
-import { GameObject } from "../objects/object";
-import { GameNetworking } from "../networking";
+import {constructors_object} from '../../../../common/constructors';
+import {GameNetworking} from '../networking';
+import {GameObject} from '../objects/object';
+
+import {build_collision_response, Collisions} from './collisions';
+import {Entity} from './entity';
 
 export class EntitiesManager {
-  private sid_map: { [sid: number]: Entity } = {};
+  private sid_map: {[sid: number]: Entity} = {};
   private entities: Entity[] = [];
   public objects: GameObject[] = [];
   private sid_pool: number[] = Array.from(Array(1000).keys());
   public collision_system = new Collisions(10000, 10000);
   private collision_counter = 0;
-  private collision_map: { [id: number]: Entity | GameObject } = {};
+  private collision_map: {[id: number]: Entity|GameObject} = {};
 
   private network: GameNetworking;
 
@@ -25,7 +26,7 @@ export class EntitiesManager {
     this.on_entity_created_callbacks.push(cb);
   }
 
-  public add(e: Entity<any> | GameObject) {
+  public add(e: Entity<any>|GameObject) {
     if (e instanceof Entity) {
       e.sid = this.sid_pool.shift()!;
       this.sid_map[e.sid] = e;
@@ -45,7 +46,7 @@ export class EntitiesManager {
 
   public update(dt: number) {
     const before_props: [entity: Entity, props: any[]][] = [];
-    const to_remove: (Entity | GameObject)[] = [];
+    const to_remove: (Entity|GameObject)[] = [];
 
     this.entities.forEach((entity) => {
       before_props.push([entity, entity.update(dt, this.collision_system)]);
@@ -59,9 +60,8 @@ export class EntitiesManager {
 
     this.collision_system.check().forEach((cols) => {
       const resp = build_collision_response(
-        this.collision_map[cols[0]].collision!,
-        this.collision_map[cols[1]].collision!
-      );
+          this.collision_map[cols[0]].collision!,
+          this.collision_map[cols[1]].collision!);
       if (resp != null) {
         const entity_a = this.collision_map[cols[0]];
         const entity_b = this.collision_map[cols[1]];
@@ -99,15 +99,15 @@ export class EntitiesManager {
         const constructor = constructors_object[entity.constructor_name];
         entity.constructor_properties.forEach((prop, i) => {
           const propName = prop as keyof typeof constructor;
-          const converterPair = constructor[propName] as readonly [
-            (val: any) => any,
-            (val: any) => any,
+          const converterPair = constructor[propName] as
+              readonly[(val: any) => any,
+                       (val: any) => any,
           ];
 
           const formatted = converterPair[0]((entity as any)[prop]);
 
           if (props[i] !== formatted) {
-            //changed!
+            // changed!
             changed_props.push(formatted);
             changed_bits |= 1 << i;
           }
@@ -131,11 +131,11 @@ export class EntitiesManager {
     return this.entities[i];
   }
 
-  public remove(e: number | Entity | GameObject) {
-    const entity: Entity | GameObject =
-      !(e instanceof Entity) && !(e instanceof GameObject)
-        ? this.sid_map[e as number]
-        : e;
+  public remove(e: number|Entity|GameObject) {
+    const entity: Entity|GameObject =
+        !(e instanceof Entity) && !(e instanceof GameObject) ?
+        this.sid_map[e as number] :
+        e;
 
     if (entity instanceof Entity) {
       this.entities.splice(this.entities.indexOf(entity), 1);

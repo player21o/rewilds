@@ -1,52 +1,51 @@
-import type { Citizen } from ".";
-import { EntitiesManager } from "..";
-import { ObjectManifest } from "../../../assets/manifest";
-import constants from "../../../common/constants";
-import Dust from "../../objects/dust";
-import { SimpleGameObject } from "../../objects/simple";
-import Slash from "../../objects/slash";
-import layers from "../../render/layers";
-import { circWrapTo, lookAt, circWrap } from "../../utils";
-import tween from "../../utils/tween";
-import { States } from "../state";
+import {EntitiesManager} from '..';
+import {constants} from '../../../../../common/constants';
+import {ObjectManifest} from '../../../assets/manifest';
+import Dust from '../../objects/dust';
+import {SimpleGameObject} from '../../objects/simple';
+import Slash from '../../objects/slash';
+import layers from '../../render/layers';
+import {circWrap, circWrapTo, lookAt} from '../../utils';
+import tween from '../../utils/tween';
+import {States} from '../state';
+
+import type {Citizen} from '.';
 
 function handle_growling(
-  entity: Citizen,
-  assets: ObjectManifest["bundles"]["game"],
-  entities: EntitiesManager,
-  animate_body = true,
-  force = false,
+    entity: Citizen,
+    assets: ObjectManifest['bundles']['game'],
+    entities: EntitiesManager,
+    animate_body = true,
+    force = false,
 ) {
-  if (force || entity.timer.on_key_change(entity.shared, "growling")[0]) {
+  if (force || entity.timer.on_key_change(entity.shared, 'growling')[0]) {
     if (entity.shared.growling) {
       if (animate_body) {
-        entity.sprites.body.animations =
-          entity.shared.kind == "male"
-            ? assets.male_growl.animations
-            : assets.female_growl.animations;
+        entity.sprites.body.animations = entity.shared.kind == 'male' ?
+            assets.male_growl.animations :
+            assets.female_growl.animations;
         entity.sprites.body.first_frame = 2;
         entity.sprites.body.last_frame = 9;
         entity.sprites.body.loop = true;
-        if (entity.shared.shield != "no_shield")
-          entity.sprites.shield.animations = (
-            assets[
-              (entity.shared.shield + "_growl") as keyof typeof assets
-            ] as any
-          ).animations;
-        if (entity.shared.weapon != "no_weapon")
-          entity.sprites.weapon.animations = (
-            assets[
-              (entity.shared.weapon + "_growl") as keyof typeof assets
-            ] as any
-          ).animations;
+        if (entity.shared.shield != 'no_shield')
+          entity.sprites.shield.animations =
+              (assets
+                   [(entity.shared.shield + '_growl') as keyof typeof assets] as
+               any)
+                  .animations;
+        if (entity.shared.weapon != 'no_weapon')
+          entity.sprites.weapon.animations =
+              (assets
+                   [(entity.shared.weapon + '_growl') as keyof typeof assets] as
+               any)
+                  .animations;
       }
 
       entity.sprites.legs.animations = assets.legs_run.animations;
 
-      const growl_sound =
-        entity.shared.kind == "male"
-          ? entity.sounds.male_growl
-          : entity.sounds.female_growl;
+      const growl_sound = entity.shared.kind == 'male' ?
+          entity.sounds.male_growl :
+          entity.sounds.female_growl;
 
       growl_sound.stop();
       growl_sound.play();
@@ -59,41 +58,36 @@ function handle_growling(
     }
   }
 
-  if (
-    entity.shared.growling &&
-    entity.isMoving &&
-    entity.timer.every(0.1, "puff")
-  )
+  if (entity.shared.growling && entity.isMoving &&
+      entity.timer.every(0.1, 'puff'))
     entities.add(
-      new Dust(
-        entity.x + (Math.random() * 6 - 3),
-        entity.y + (Math.random() * 6 - 3),
-      ),
+        new Dust(
+            entity.x + (Math.random() * 6 - 3),
+            entity.y + (Math.random() * 6 - 3),
+            ),
     );
 }
 
 function handle_direction(entity: Citizen, dt: number) {
   entity.direction = circWrapTo(
-    entity.direction,
-    entity.shared.direction,
-    0.2 * dt,
+      entity.direction,
+      entity.shared.direction,
+      0.2 * dt,
   );
   const fo = (-0.5 * Math.PI * 2) / entity.sprites.body.total_animations;
   const direction = lookAt(
-    0,
-    0,
-    Math.cos(entity.direction) * 16,
-    1.4 * Math.sin(entity.direction) * 16,
+      0,
+      0,
+      Math.cos(entity.direction) * 16,
+      1.4 * Math.sin(entity.direction) * 16,
   );
 
-  const dirrow =
-    ((circWrap(direction - fo) / (Math.PI * 2)) *
-      entity.sprites.body.total_animations) |
-    0;
-  const dirrow_legs =
-    ((circWrap(direction - fo) / (Math.PI * 2)) *
-      entity.sprites.legs.total_animations) |
-    0;
+  const dirrow = ((circWrap(direction - fo) / (Math.PI * 2)) *
+                  entity.sprites.body.total_animations) |
+      0;
+  const dirrow_legs = ((circWrap(direction - fo) / (Math.PI * 2)) *
+                       entity.sprites.legs.total_animations) |
+      0;
 
   entity.rows.body = dirrow;
   entity.rows.legs = dirrow_legs;
@@ -103,19 +97,19 @@ function handle_direction(entity: Citizen, dt: number) {
 
     entity.sprites.body.animation = `frame_row_${dirrow.toString()}` as any;
     entity.sprites.legs.animation =
-      `frame_row_${dirrow_legs.toString()}` as any;
-    if (entity.shared.shield != "no_shield")
+        `frame_row_${dirrow_legs.toString()}` as any;
+    if (entity.shared.shield != 'no_shield')
       entity.sprites.shield.animation = `frame_row_${dirrow.toString()}` as any;
     entity.sprites.weapon.animation = `frame_row_${dirrow.toString()}` as any;
   }
 }
 
 function idle_enter(
-  entity: Citizen,
-  assets: ObjectManifest["bundles"]["game"],
+    entity: Citizen,
+    assets: ObjectManifest['bundles']['game'],
 ) {
   entity.z = 0;
-  entity.set_sprites("run", 150 / entity.data.speed, true, assets);
+  entity.set_sprites('run', 150 / entity.data.speed, true, assets);
 
   entity.sprites.legs.animations = assets.legs_run.animations;
   entity.sprites.legs.duration = 150 / entity.data.speed;
@@ -124,11 +118,27 @@ function idle_enter(
 
 function handle_body_bobbing(entity: Citizen) {
   const legsZ = [
-    0, 0, 0.12697569202151154, 0.5555609039391696, 0.9148130001424937,
-    0.9759662767057457, 0.9759662767057457, 0.8774320490518326,
-    0.6621635047624876, 0.3537538161691129, 0.04154450834523172, 0, 0,
-    0.29563636715257974, 0.8015852396513293, 1, 1, 0.839389527701953,
-    0.4204586086644027, 0, 0,
+    0,
+    0,
+    0.12697569202151154,
+    0.5555609039391696,
+    0.9148130001424937,
+    0.9759662767057457,
+    0.9759662767057457,
+    0.8774320490518326,
+    0.6621635047624876,
+    0.3537538161691129,
+    0.04154450834523172,
+    0,
+    0,
+    0.29563636715257974,
+    0.8015852396513293,
+    1,
+    1,
+    0.839389527701953,
+    0.4204586086644027,
+    0,
+    0,
   ];
 
   const baseLegRelativeY = 0;
@@ -138,7 +148,7 @@ function handle_body_bobbing(entity: Citizen) {
 
   let oy = 0;
 
-  //if (this.isMoving) { // <--- IMPORTANT: Add a check like this!
+  // if (this.isMoving) { // <--- IMPORTANT: Add a check like this!
   if (entity.isMoving) {
     const bobbingFactor = legsZ[entity.sprites.legs.frame % legsZ.length] || 0;
     oy = Math.floor(bobbingFactor * bobbingAmplitude + 0.5);
@@ -148,7 +158,7 @@ function handle_body_bobbing(entity: Citizen) {
   entity.sprites.legs.y = finalLegRelativeY;
 
   const finalBodyRelativeY = Math.floor(
-    finalLegRelativeY + bodyOffsetYFromLegBase,
+      finalLegRelativeY + bodyOffsetYFromLegBase,
   );
   entity.sprites.body.y = finalBodyRelativeY;
   entity.sprites.shield.y = finalBodyRelativeY;
@@ -156,16 +166,14 @@ function handle_body_bobbing(entity: Citizen) {
 }
 
 function handle_run_moving_animation(
-  entity: Citizen,
-  duration?: number,
-  multiplier: number = 2.5,
+    entity: Citizen,
+    duration?: number,
+    multiplier: number = 2.5,
 ) {
   const speed = duration != undefined ? duration : 150 / entity.data.speed;
 
-  if (
-    entity.timer.on_key_change(entity.shared, "moving")[0] &&
-    entity.state.state == "idle"
-  ) {
+  if (entity.timer.on_key_change(entity.shared, 'moving')[0] &&
+      entity.state.state == 'idle') {
     entity.sprites.body.frame = 0;
   }
 
@@ -180,13 +188,13 @@ function handle_run_moving_animation(
 }
 
 function handle_basic(
-  entity: Citizen,
-  dt: number,
-  assets: ObjectManifest["bundles"]["game"],
-  entities: EntitiesManager,
-  duration?: number,
-  multiplier?: number,
-  animate_body?: boolean,
+    entity: Citizen,
+    dt: number,
+    assets: ObjectManifest['bundles']['game'],
+    entities: EntitiesManager,
+    duration?: number,
+    multiplier?: number,
+    animate_body?: boolean,
 ) {
   handle_growling(entity, assets, entities, animate_body);
 
@@ -197,61 +205,56 @@ function handle_basic(
 
 export default {
   idle: {
-    enter(entity, _manager, assets, { entities }) {
+    enter(entity, _manager, assets, {entities}) {
       idle_enter(entity, assets);
       handle_growling(entity, assets, entities, true, true);
     },
     leave(_entity, _manager) {},
-    step(dt, entity, { entities }, _manager, assets) {
+    step(dt, entity, {entities}, _manager, assets) {
       handle_basic(entity, dt, assets, entities);
     },
   },
   attack: {
-    enter(entity, _manager, assets, { entities }) {
+    enter(entity, _manager, assets, {entities}) {
       const weapon = constants.weapons[entity.shared.weapon];
 
       const animationIndex =
-        (Math.random() * weapon.attackAnimations.length) | 0;
+          (Math.random() * weapon.attackAnimations.length) | 0;
       const animation = weapon.attackAnimations[animationIndex];
       const duration = weapon.attackDuration * entity.data.attackDuration;
 
       entity.set_sprites(animation, 1, false, assets);
-      //entity.last_turn_row = -1;
+      // entity.last_turn_row = -1;
 
       entities.add(
-        new Slash(entity, weapon.meleeSlash[animationIndex], duration),
+          new Slash(entity, weapon.meleeSlash[animationIndex], duration),
       );
     },
     step(dt, entity, dp, manager, assets) {
       handle_basic(
-        entity,
-        dt,
-        assets,
-        dp.entities,
-        constants.weapons[entity.shared.weapon].attackDuration *
-          entity.data.attackDuration,
-        1,
+          entity,
+          dt,
+          assets,
+          dp.entities,
+          constants.weapons[entity.shared.weapon].attackDuration *
+              entity.data.attackDuration,
+          1,
       );
 
-      if (
-        manager.duration >=
-        constants.weapons[entity.shared.weapon].attackDuration
-      )
-        manager.set("idle", dp);
+      if (manager.duration >=
+          constants.weapons[entity.shared.weapon].attackDuration)
+        manager.set('idle', dp);
     },
   },
   dead: {
     enter(entity, manager, assets) {
       if (manager.prev_state == null)
-        entity.sprites.body.animations = (
-          assets[
-            (entity.shared.kind +
-              "_" +
-              ["fall_back", "fall_front"][
-                (Math.random() * 2) | 0
-              ]) as keyof typeof assets
-          ] as any
-        ).animations;
+        entity.sprites.body.animations =
+            (assets
+                 [(entity.shared.kind + '_' +
+                   ['fall_back', 'fall_front'][(Math.random() * 2) | 0]) as
+                  keyof typeof assets] as any)
+                .animations;
       entity.sprites.body.duration = 1.5;
       entity.sprites.body.loop = false;
       entity.sprites.body.first_frame = 8;
@@ -264,23 +267,20 @@ export default {
   dying: {
     enter(entity, _manager, assets, _dp) {
       const duration = 1;
-      tween
-        .tween(entity)
-        .to({ z: 30 }, duration * 0.6, "outQuad")
-        .to({ z: 0 }, duration * 0.4, "inQuad");
+      tween.tween(entity)
+          .to({z: 30}, duration * 0.6, 'outQuad')
+          .to({z: 0}, duration * 0.4, 'inQuad');
 
-      entity.sprites.body.animations = (
-        assets[
-          (entity.shared.kind +
-            "_" +
-            ["fall_back", "fall_front"][
-              (Math.random() * 2) | 0
-            ]) as keyof typeof assets
-        ] as any
-      ).animations;
+      entity.sprites.body.animations =
+          (assets
+               [(entity.shared.kind + '_' +
+                 ['fall_back', 'fall_front'][(Math.random() * 2) | 0]) as
+                keyof typeof assets] as any)
+              .animations;
       entity.sprites.body.duration = 1.5;
       entity.sprites.body.loop = false;
-      entity.sprites.body.last_frame = 9; //to not include the standing up anim
+      entity.sprites.body.last_frame = 9;  // to not include the standing up
+                                           // anim
       entity.sprites.legs.visible = false;
       entity.sprites.shield.visible = false;
       entity.sprites.weapon.visible = false;
@@ -292,45 +292,45 @@ export default {
   charge: {},
   block: {
     enter(entity, _m, assets) {
-      entity.set_sprites("block", 1, false, assets);
+      entity.set_sprites('block', 1, false, assets);
     },
-    step(dt, entity, { entities }, _manager, assets) {
+    step(dt, entity, {entities}, _manager, assets) {
       handle_basic(entity, dt, assets, entities, 1, 1, false);
     },
   },
   stunned: {
-    enter(entity, _m, assets, { entities }) {
+    enter(entity, _m, assets, {entities}) {
       entity.sprites.legs.stop();
       entity.sprites.legs.frame = 19;
-      entity.set_sprites("stunned", 1, false, assets, false);
+      entity.set_sprites('stunned', 1, false, assets, false);
       handle_direction(entity, 1);
 
       entities.add(
-        //dizzy effect
-        new SimpleGameObject({
-          animations: (assets.dizzy as any).animations,
-          autoUpdate: false,
-          duration: 1,
-          loop: true,
-          play: true,
-          layers: [layers.entities],
-          sprite: {
-            anchor: 0.5,
-            zIndex: 10,
-          },
-          lifetime: 2,
-          follow: {
-            obj: entity,
-            yOffset: -15,
-          },
-        }),
+          // dizzy effect
+          new SimpleGameObject({
+            animations: (assets.dizzy as any).animations,
+            autoUpdate: false,
+            duration: 1,
+            loop: true,
+            play: true,
+            layers: [layers.entities],
+            sprite: {
+              anchor: 0.5,
+              zIndex: 10,
+            },
+            lifetime: 2,
+            follow: {
+              obj: entity,
+              yOffset: -15,
+            },
+          }),
       );
     },
   },
   spin: {
-    enter(entity, _manager, assets, { entities }) {
-      //entity.sprites.body.duration = 0.1;
-      entity.set_sprites("spin", 0.5, false, assets, true);
+    enter(entity, _manager, assets, {entities}) {
+      // entity.sprites.body.duration = 0.1;
+      entity.set_sprites('spin', 0.5, false, assets, true);
       handle_direction(entity, 1);
 
       const angleStep = (Math.PI * 2) / 5;
@@ -338,21 +338,21 @@ export default {
       for (let i = 0; i < 5; i++) {
         const direction = entity.direction - angleStep * i;
         entities.add(
-          new Slash(entity, "slash_horizontal", 0.25, 0.1 * i, direction),
+            new Slash(entity, 'slash_horizontal', 0.25, 0.1 * i, direction),
         );
       }
 
       entity.z = 8;
     },
 
-    step(dt, entity, { entities }, manager, assets) {
+    step(dt, entity, {entities}, manager, assets) {
       entity.z -= 0.25 * dt;
       console.log(entity.z);
     },
   },
   roll: {
     enter(entity, manager, assets, dp) {
-      entity.set_sprites("roll", 0.8, true, assets, false);
+      entity.set_sprites('roll', 0.8, true, assets, false);
       entity.sprites.legs.visible = false;
       handle_direction(entity, 1);
       entity.z = -5;
@@ -360,19 +360,19 @@ export default {
   },
   kick: {
     enter(entity, manager, assets, dp) {
-      entity.set_sprites("kick", 0.7, false, assets, false);
+      entity.set_sprites('kick', 0.7, false, assets, false);
       entity.sprites.legs.visible = false;
       handle_direction(entity, 1);
       entity.sounds.female_growl.stop();
       entity.sounds.male_growl.stop();
       entity.z = -5;
 
-      tween.tween(entity).to({ z: 0 }, 0.7, "linear");
+      tween.tween(entity).to({z: 0}, 0.7, 'linear');
     },
 
     step(dt, entity, dp, manager, assets) {
-      //entity.z += 0.12 * dt;
-      //console.log(entity.z);
+      // entity.z += 0.12 * dt;
+      // console.log(entity.z);
     },
   },
-} as States<Citizen, Citizen["shared"]["state"]>;
+} as States<Citizen, Citizen['shared']['state']>;

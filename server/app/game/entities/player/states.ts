@@ -1,8 +1,8 @@
-import type { Player } from ".";
-import constants from "../../../common/constants";
-import { States } from "../state";
-import { default as citizen_states, handle_pointer } from "../citizen/states";
-import { handle_movement as handle_citizen_movement } from "../citizen/states";
+import {constants} from '../../../../../common/constants';
+import {default as citizen_states, handle_movement as handle_citizen_movement, handle_pointer} from '../citizen/states';
+import {States} from '../state';
+
+import type {Player} from '.';
 
 function handle_movement(entity: Player, dt: number, allow_growling = true) {
   handle_citizen_movement(entity, dt, allow_growling, () => {
@@ -35,4 +35,4 @@ export default {
       }
     },
   },
-} as States<Player, Player["state"]>;
+} as States<Player, Player['state']>;

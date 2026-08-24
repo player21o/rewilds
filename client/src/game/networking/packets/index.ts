@@ -1,18 +1,16 @@
-import {
-  constructors_inner_keys,
-  constructors_keys,
-  constructors_object,
-} from "../../../common/constructors";
-import entityClasses from "../../entities/entityClasses";
-import { Citizen } from "../../entities/citizen";
-import { Packets } from "./types";
-import { ColorMatrixFilter } from "pixi.js";
+import {ColorMatrixFilter} from 'pixi.js';
+
+import {constructors_inner_keys, constructors_keys, constructors_object,} from '../../../../../common/constructors';
+import {Citizen} from '../../entities/citizen';
+import entityClasses from '../../entities/entityClasses';
+
+import {Packets} from './types';
 
 export default {
   hello(send, _) {
-    send("hello");
+    send('hello');
   },
-  update(__, { entities, snapshotted }, updates) {
+  update(__, {entities, snapshotted}, updates) {
     if (!snapshotted) return;
 
     updates.forEach(([sid, bits, ...props]) => {
@@ -25,30 +23,26 @@ export default {
             //@ts-ignore
           ]({ sid }, constructors_keys[props[0]] as keyof typeof entityClasses);
 
-      const new_one =
-        props.length >
-        constructors_inner_keys[
-          entity.constructor_name as keyof typeof constructors_inner_keys
-        ].length;
+      const new_one = props.length >
+          constructors_inner_keys[entity.constructor_name as keyof typeof constructors_inner_keys]
+              .length;
       if (!entity_exists || new_one) props.shift();
 
       let prop_pointer = 0;
-      constructors_inner_keys[
-        entity.constructor_name as keyof typeof constructors_inner_keys
-      ].forEach((prop, i) => {
-        if ((bits >> i) % 2 != 0) {
-          const networked_prop = props[prop_pointer];
-          const formatted_prop =
-            //@ts-ignore
-            constructors_object[
-              entity.constructor_name as keyof typeof constructors_object
-            ][prop][1](networked_prop);
+      constructors_inner_keys[entity.constructor_name as keyof typeof constructors_inner_keys]
+          .forEach((prop, i) => {
+            if ((bits >> i) % 2 != 0) {
+              const networked_prop = props[prop_pointer];
+              const formatted_prop =
+                  //@ts-ignore
+                  constructors_object[entity.constructor_name as keyof typeof constructors_object][prop][1](
+                      networked_prop);
 
-          entity.shared[prop] = formatted_prop;
+              entity.shared[prop] = formatted_prop;
 
-          prop_pointer += 1;
-        }
-      });
+              prop_pointer += 1;
+            }
+          });
 
       if (!entity_exists) entities.add(entity);
     });
@@ -56,50 +50,49 @@ export default {
   snapshot(_, game, snapshot) {
     snapshot.forEach(([constructor, ...props]) => {
       const constructorName = constructors_keys[constructor];
-      const entity = new entityClasses[
-        constructorName as keyof typeof entityClasses
-      ](
-        //@ts-ignore
-        Object.fromEntries(
-          constructors_inner_keys[constructorName].map((prop, i) => [
-            prop,
-            //@ts-ignore
-            constructors_object[
-              constructorName as keyof typeof constructors_object
-            ][prop][1](props[i]),
-          ]),
-        ),
-        constructorName as keyof typeof entityClasses,
-      );
+      const entity =
+          new entityClasses[constructorName as keyof typeof entityClasses](
+              //@ts-ignore
+              Object.fromEntries(
+                  constructors_inner_keys[constructorName].map(
+                      (prop, i) =>
+                          [prop,
+                           //@ts-ignore
+                           constructors_object
+                               [constructorName as keyof typeof
+                                    constructors_object][prop][1](props[i]),
+      ]),
+                  ),
+              constructorName as keyof typeof entityClasses,
+          );
 
       game.entities.add(entity);
       if (game.me.potential_sid != undefined) {
-        //console.log("exists potential");
-        game.me.citizen = game.entities.sid_map[
-          game.me.potential_sid
-        ] as Citizen;
+        // console.log("exists potential");
+        game.me.citizen =
+            game.entities.sid_map[game.me.potential_sid] as Citizen;
         game.me.potential_sid = undefined;
       }
       game.snapshotted = true;
     });
   },
-  your_sid(_, { me, entities }, sid) {
+  your_sid(_, {me, entities}, sid) {
     if (sid in entities.sid_map) {
-      //console.log("exists yoursid");
+      // console.log("exists yoursid");
       me.citizen = entities.sid_map[sid] as Citizen;
       me.potential_sid = undefined;
     } else {
       me.potential_sid = sid;
     }
   },
-  private(_, { me }, bits, data) {
+  private(_, {me}, bits, data) {
     let prop_pointer = 0;
-    constructors_inner_keys["CitizenPrivateData"].forEach((prop, i) => {
+    constructors_inner_keys['CitizenPrivateData'].forEach((prop, i) => {
       if ((bits >> i) % 2 != 0) {
         const networked_prop = data[prop_pointer];
         const formatted_prop =
-          //@ts-ignore
-          constructors_object["CitizenPrivateData"][prop][1](networked_prop);
+            //@ts-ignore
+            constructors_object['CitizenPrivateData'][prop][1](networked_prop);
 
         (me.private_data[prop] as any) = formatted_prop;
         prop_pointer += 1;
@@ -108,41 +101,29 @@ export default {
 
     me.update_private_data();
   },
-  clash_shield(_, { entities }, sid) {
+  clash_shield(_, {entities}, sid) {
     const entity = entities.sid_map[sid] as Citizen;
     const shield = entity.sprites.shield;
 
     const filter = new ColorMatrixFilter();
     filter.matrix = [
-      0,
-      0,
-      0,
-      0,
-      0.68, // Red multiplier and offset (1 = max red)
-      0,
-      0,
-      0,
-      0,
-      0, // Green multiplier and offset
-      0,
-      0,
-      0,
-      0,
-      0, // Blue multiplier and offset
-      0,
-      0,
-      0,
-      1,
-      0, // Alpha multiplier and offset (keeps original transparency)
+      0,    0, 0, 0,
+      0.68,  // Red multiplier and offset (1 = max red)
+      0,    0, 0, 0,
+      0,  // Green multiplier and offset
+      0,    0, 0, 0,
+      0,  // Blue multiplier and offset
+      0,    0, 0, 1,
+      0,  // Alpha multiplier and offset (keeps original transparency)
     ];
 
-    shield.filters != undefined
-      ? (shield.filters = [...shield.filters, filter])
-      : (shield.filters = filter);
+    shield.filters != undefined ?
+        (shield.filters = [...shield.filters, filter]) :
+        (shield.filters = filter);
 
     setTimeout(
-      () => (shield.filters = shield.filters.filter((f) => f != filter)),
-      500,
+        () => (shield.filters = shield.filters.filter((f) => f != filter)),
+        500,
     );
   },
 } as Packets;

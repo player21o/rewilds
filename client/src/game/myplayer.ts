@@ -1,31 +1,32 @@
-import { ConstructorsObject } from "../common/constructors";
-import { EntitiesManager } from "./entities";
-import { Citizen } from "./entities/citizen";
-import { InputsManager } from "./input";
-import { SendFunction } from "./networking/types";
+import {ConstructorsObject} from '../../../common/constructors';
+
+import {EntitiesManager} from './entities';
+import {Citizen} from './entities/citizen';
+import {InputsManager} from './input';
+import {SendFunction} from './networking/types';
 
 export class MyPlayer {
-  private _citizen: Citizen | null = null;
+  private _citizen: Citizen|null = null;
   private send: SendFunction;
   private keys = 0;
   private last_mouse_packet = 0;
   private entities: EntitiesManager;
 
-  public potential_sid: number | undefined = undefined;
+  public potential_sid: number|undefined = undefined;
 
-  public private_data: ConstructorsObject["CitizenPrivateData"] = {
+  public private_data: ConstructorsObject['CitizenPrivateData'] = {
     stamina: 0,
     charging: false,
   };
 
   constructor(
-    send: SendFunction,
-    inputs: InputsManager,
-    entities: EntitiesManager,
+      send: SendFunction,
+      inputs: InputsManager,
+      entities: EntitiesManager,
   ) {
     this.send = send;
 
-    ["KeyW", "KeyA", "KeyS", "KeyD"].forEach((key) => {
+    ['KeyW', 'KeyA', 'KeyS', 'KeyD'].forEach((key) => {
       inputs.on_key_pressed(key, this.key_callback(inputs));
       inputs.on_key_released(key, this.key_callback(inputs));
     });
@@ -36,7 +37,7 @@ export class MyPlayer {
     inputs.on_left_button_pressed(this.left_mouse_down_callback());
     inputs.on_left_button_released(this.left_mouse_up_callback());
     inputs.onwheel = (d) =>
-      d > 0 ? this.send("action", "block") : this.send("action", "roll");
+        d > 0 ? this.send('action', 'block') : this.send('action', 'roll');
 
     entities.on_entity_created(this.on_entity_created_cb(this.test_if_enemy));
     this.entities = entities;
@@ -63,15 +64,14 @@ export class MyPlayer {
 
   private test_if_enemy(e: Citizen) {
     return (
-      this.citizen != null &&
-      ((e.shared.team == 2 && e.sid != this.citizen.sid) ||
-        e.shared.team != this.citizen.shared.team)
-    );
+        this.citizen != null &&
+        ((e.shared.team == 2 && e.sid != this.citizen.sid) ||
+         e.shared.team != this.citizen.shared.team));
   }
 
   private left_mouse_down_callback(): (arg0: InputsManager) => void {
     return () => {
-      this.send("action", "left_button_start");
+      this.send('action', 'left_button_start');
     };
   }
 
@@ -79,29 +79,27 @@ export class MyPlayer {
     return () => {
       this.private_data.charging = false;
       this.update_private_data();
-      this.send("action", "left_button_finish");
+      this.send('action', 'left_button_finish');
     };
   }
 
   private right_mouse_down_callback(): (arg0: InputsManager) => void {
     return () => {
-      this.send("action", "growl_start");
+      this.send('action', 'growl_start');
     };
   }
 
   private right_mouse_up_callback(): (arg0: InputsManager) => void {
     return () => {
-      this.send("action", "growl_stop");
+      this.send('action', 'growl_stop');
     };
   }
 
   private mouse_callback(): (arg0: InputsManager) => void {
-    return ({ mouseX, mouseY }: InputsManager) => {
-      if (
-        this.citizen != null &&
-        Date.now() - this.last_mouse_packet > 1000 / 30
-      ) {
-        this.send("pointer", mouseX - this.citizen.x, mouseY - this.citizen.y);
+    return ({mouseX, mouseY}: InputsManager) => {
+      if (this.citizen != null &&
+          Date.now() - this.last_mouse_packet > 1000 / 30) {
+        this.send('pointer', mouseX - this.citizen.x, mouseY - this.citizen.y);
         this.last_mouse_packet = Date.now();
       }
     };
@@ -109,7 +107,7 @@ export class MyPlayer {
 
   private key_callback(inputs: InputsManager) {
     return () => {
-      const keys = ["KeyW", "KeyA", "KeyS", "KeyD"];
+      const keys = ['KeyW', 'KeyA', 'KeyS', 'KeyD'];
       let bits = 0;
 
       keys.forEach((key, i) => {
@@ -120,7 +118,7 @@ export class MyPlayer {
 
       if (this.keys != bits) {
         this.keys = bits;
-        this.send("keys", bits);
+        this.send('keys', bits);
       }
     };
   }
@@ -129,10 +127,10 @@ export class MyPlayer {
     return this._citizen;
   }
 
-  set citizen(value: Citizen | null) {
+  set citizen(value: Citizen|null) {
     this._citizen = value;
     this.update_private_data();
-    //console.log(value);
+    // console.log(value);
 
     this._citizen!.bar_params.enemy = false;
 
