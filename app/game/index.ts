@@ -1,8 +1,8 @@
 // game.ts
-import { EntitiesManager } from "./entities";
-import { Player } from "./entities/player";
-import { AttackBot } from "./entities/test/testbot";
-import { GameNetworking } from "./networking";
+import {EntitiesManager} from './entities';
+import {Player} from './entities/player';
+import {AttackBot} from './entities/test/testbot';
+import {GameNetworking} from './networking';
 
 export class GameServer {
   private entities: EntitiesManager;
@@ -12,39 +12,37 @@ export class GameServer {
   private last_time: number = Date.now();
 
   constructor(port: number, tickrate: number, upd_tickrate: number) {
-    this.network = new GameNetworking(port, (peer) => {
-      const citizen = new Player(
-        "hero",
-        "male",
-        "hui",
-        Math.random() * 50 + 100,
-        Math.random() * 50 + 100,
-        this.entities
-      );
-      citizen.weapon = "axe";
-      citizen.shield = "shield_wooden";
-      citizen.team = (this.entities.entities_count % 2) as 0 | 1;
-      this.entities.add(citizen);
-      peer.citizen = citizen;
-    });
+    this.network = new GameNetworking(
+        port,
+        (peer) => {
+          const citizen = new Player(
+              'hero', 'male', 'hui', Math.random() * 50 + 100,
+              Math.random() * 50 + 100, this.entities);
+          citizen.weapon = 'axe';
+          citizen.shield = 'shield_wooden';
+          citizen.team = (this.entities.entities_count % 2) as 0 | 1;
+          this.entities.add(citizen);
+          peer.citizen = citizen;
+        },
+        (peer) => {
+          peer.citizen?.destroy();
+        });
 
     this.entities = new EntitiesManager(this.network);
 
     this.entities.add(
-      new AttackBot("hero", "male", "bot", 10, 10, this.entities)
-    );
+        new AttackBot('hero', 'male', 'bot', 10, 10, this.entities));
 
     this.launch_game_loop(tickrate, upd_tickrate);
   }
 
   private game_loop(ticks: number) {
     const now = Date.now();
-    const dt = (now - this.last_time) / 1000; // dt in seconds
+    const dt = (now - this.last_time) / 1000;  // dt in seconds
     this.last_time = now;
 
     this.entities_updates.push(
-      ...this.entities.update(dt).map((u: any) => [u[0], u[2], ...u[1]])
-    );
+        ...this.entities.update(dt).map((u: any) => [u[0], u[2], ...u[1]]));
 
     const tickLength = 1000 / ticks;
     setTimeout(() => this.game_loop(ticks), tickLength);
@@ -55,32 +53,27 @@ export class GameServer {
 
     setInterval(() => {
       if (this.entities_updates.length > 0)
-        this.network.broadcast("update", this.entities_updates);
+        this.network.broadcast('update', this.entities_updates);
       this.entities_updates = [];
     }, 1000 / update_ticks);
 
     setInterval(() => {
       this.network.peers.forEach((p) => {
-        if (
-          p.helloed &&
-          p.citizen != null &&
-          p.citizen.private_data_changes.bits != 0b0
-        ) {
+        if (p.helloed && p.citizen != null &&
+            p.citizen.private_data_changes.bits != 0b0) {
           p.send(
-            "private",
-            p.citizen.private_data_changes.bits,
-            p.citizen.private_data_changes.data
-          );
+              'private', p.citizen.private_data_changes.bits,
+              p.citizen.private_data_changes.data);
           p.citizen.private_data_changes.bits = 0b0;
           p.citizen.private_data_changes.data = [];
         }
 
         if (p.helloed && !p.welcomed) {
           p.welcomed = true;
-          p.send("snapshot", this.entities.snapshot);
+          p.send('snapshot', this.entities.snapshot);
 
           setTimeout(() => {
-            if (p.citizen != null) p.send("your_sid", p.citizen.sid);
+            if (p.citizen != null) p.send('your_sid', p.citizen.sid);
           }, 100);
         }
       });

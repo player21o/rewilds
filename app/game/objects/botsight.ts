@@ -1,7 +1,9 @@
-import { Citizen } from "../entities/citizen";
-import { Circle, CollisionResponse } from "../entities/collisions";
-import { GameNetworking } from "../networking";
-import { GameObject } from "./object";
+import {Citizen} from '../entities/citizen';
+import {Circle, CollisionResponse} from '../entities/collisions';
+import {GameNetworking} from '../networking';
+import {distance} from '../utils';
+
+import {GameObject} from './object';
 
 export class BotSight extends GameObject {
   private entity: Citizen;
@@ -21,16 +23,23 @@ export class BotSight extends GameObject {
   }
 
   public on_collision(
-    other: GameObject,
-    _response: CollisionResponse,
-    _network?: GameNetworking
-  ): void {
-    if (
-      other instanceof Citizen &&
-      other.sid != this.entity.sid &&
-      !this.entities.has(other)
-    ) {
+      other: GameObject, _response: CollisionResponse,
+      _network?: GameNetworking): void {
+    if (other instanceof Citizen && other.state != 'dead' &&
+        other.sid != this.entity.sid && !this.entities.has(other)) {
       this.entities.add(other);
     }
   }
+
+  public remove_entity(entity: Citizen) {
+    this.entities.delete(entity);
+  };
+
+  public get_closest_entity() {
+    const entity_array = [...this.entities].sort(
+        (a, b) => distance(this.x, this.y, a.x, a.y) -
+            distance(this.x, this.y, b.x, b.y));
+
+    return entity_array[0];
+  };
 }
