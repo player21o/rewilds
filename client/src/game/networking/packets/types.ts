@@ -1,4 +1,4 @@
-import {ConstructorsInnerTypes} from '../../../common/constructors';
+import {ConstructorsInnerTypes} from '../../../../../common/constructors';
 import {GameDependencies} from '../../game_deps';
 import {SendFunction} from '../types';
 

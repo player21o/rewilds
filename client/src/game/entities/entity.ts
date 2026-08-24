@@ -1,5 +1,5 @@
-import { ConstructorsObject } from "../../common/constructors";
-import { GameObject } from "../objects/object";
+import {ConstructorsObject} from '../../../../common/constructors';
+import {GameObject} from '../objects/object';
 
 /**
  * basically a networked gameobject
@@ -11,9 +11,7 @@ export class Entity<T extends object = any> extends GameObject {
   public constructor_name: keyof ConstructorsObject;
 
   public constructor(
-    shared: T & { sid: number },
-    constructor_name: keyof ConstructorsObject
-  ) {
+      shared: T&{sid: number}, constructor_name: keyof ConstructorsObject) {
     super();
     this.sid = shared.sid;
     this.shared = shared;

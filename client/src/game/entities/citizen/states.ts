@@ -345,13 +345,13 @@ export default {
       entity.z = 8;
     },
 
-    step(dt, entity, {entities}, manager, assets) {
+    step(dt, entity, _dp, _manager, _assets) {
       entity.z -= 0.25 * dt;
       console.log(entity.z);
     },
   },
   roll: {
-    enter(entity, manager, assets, dp) {
+    enter(entity, _manager, assets, _dp) {
       entity.set_sprites('roll', 0.8, true, assets, false);
       entity.sprites.legs.visible = false;
       handle_direction(entity, 1);
@@ -359,7 +359,7 @@ export default {
     },
   },
   kick: {
-    enter(entity, manager, assets, dp) {
+    enter(entity, _, assets, __) {
       entity.set_sprites('kick', 0.7, false, assets, false);
       entity.sprites.legs.visible = false;
       handle_direction(entity, 1);
@@ -370,7 +370,7 @@ export default {
       tween.tween(entity).to({z: 0}, 0.7, 'linear');
     },
 
-    step(dt, entity, dp, manager, assets) {
+    step(_dt, _entity, _dp, _manager, _assets) {
       // entity.z += 0.12 * dt;
       // console.log(entity.z);
     },
