@@ -71,7 +71,7 @@ export default {
   },
   dying: {
     enter(entity, _manager, assets, _dp) {
-      const duration = 1;
+      const duration = 0.5;
       tween.tween(entity)
           .to({z: 30}, duration * 0.6, 'outQuad')
           .to({z: 0}, duration * 0.4, 'inQuad');
@@ -147,12 +147,14 @@ export default {
         );
       }
 
-      entity.z = 8;
+      // entity.z = 8;
+
+      tween.tween(entity).to({z: 8}, 0.3, 'linear').to({z: 0}, 0.2, 'linear');
     },
 
     step(dt, entity, _dp, _manager, _assets) {
-      entity.z -= 0.25 * dt;
-      console.log(entity.z);
+      // entity.z -= 0.25 * dt;
+      // console.log(entity.z);
     },
   },
   roll: {

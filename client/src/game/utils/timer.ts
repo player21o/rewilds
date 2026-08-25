@@ -6,19 +6,19 @@ export class Timer {
     this.cleanup = cleanup;
   }
 
-  private every_timers: { [id: string]: { interval: number; last: number } } =
-    {};
-  private key_listeners: Map<
-    object,
-    { keys: any[]; last_values: { [a: string]: any } }
+  private every_timers: {[id: string]: {interval: number; last: number}} = {};
+  private key_listeners: Map < object, {
+    keys: any[];
+    last_values: {[a: string]: any}
+  }
   > = new Map();
 
   public update(elapsedMS: number) {
     this.time += elapsedMS / 1000;
 
-    if (this.cleanup && this.every(5, "cleanup")) {
+    if (this.cleanup && this.every(5, 'cleanup')) {
       Object.keys(this.every_timers).forEach((timer_id) => {
-        if (timer_id != "cleanup") {
+        if (timer_id != 'cleanup') {
           const timer = this.every_timers[timer_id];
 
           if (this.time - timer.last > timer.interval + 1) {
@@ -29,16 +29,15 @@ export class Timer {
     }
   }
 
-  public on_key_change<T extends object, S extends keyof T>(
-    object: T,
-    key: S
-  ): [false, undefined] | [boolean, T[S]] {
+  public on_key_change<T extends object, S extends keyof T>(object: T, key: S):
+      [false, undefined]|[boolean, T[S]] {
     if (this.key_listeners.has(object)) {
       const vals = this.key_listeners.get(object)!;
 
       if (vals.keys.includes(key)) {
         const changed =
-          vals.last_values[key as keyof typeof vals.last_values] != object[key];
+            vals.last_values[key as keyof typeof vals.last_values] !=
+            object[key];
 
         const prev_value = vals.last_values[key as any];
         vals.last_values[key as any] = object[key];
@@ -52,7 +51,7 @@ export class Timer {
     } else {
       this.key_listeners.set(object, {
         keys: [key],
-        last_values: { [key]: object[key] },
+        last_values: {[key]: object[key]},
       });
       return [false, undefined];
     }
@@ -64,12 +63,11 @@ export class Timer {
 
   public every(interval: number, id: string): boolean {
     if (!(id in this.every_timers)) {
-      this.every_timers[id] = { last: this.time, interval };
+      this.every_timers[id] = {last: this.time, interval};
     } else {
-      if (
-        this.time - this.every_timers[id].last >=
-        this.every_timers[id].interval
-      ) {
+      // console.log(this.every_timers[id]);
+      if (this.time - this.every_timers[id].last >=
+          this.every_timers[id].interval) {
         this.every_timers[id].last = this.time;
         return true;
       }

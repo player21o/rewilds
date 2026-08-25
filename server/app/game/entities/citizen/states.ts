@@ -80,8 +80,8 @@ export default {
       const duration = 1.5;
 
       const vec = [
-        100 * Math.cos(entity.direction),
-        100 * Math.sin(entity.direction),
+        200 * Math.cos(entity.direction),
+        200 * Math.sin(entity.direction),
       ];
       entity.x = entity.x - (duration - manager.duration) * vec[0] * dt;
       entity.y = entity.y - (duration - manager.duration) * vec[1] * dt;

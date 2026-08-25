@@ -227,7 +227,7 @@ export class Citizen extends Entity<CitizenType> {
 
     this.isMoving = this.shared.moving;
 
-    if (this.isMoving && this.timer.every(0.5, 'footstep')) {
+    if (this.isMoving && this.timer.every(0.5, 'footstep_sound')) {
       this.sounds.footstep.rate(1 + (-1 + Math.random() * 2) * 0.2);
       this.sounds.footstep.play();
     }

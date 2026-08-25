@@ -1,14 +1,14 @@
-import { GameObject } from "../objects/object";
+import {GameObject} from '../objects/object';
 
-type Easing = "linear" | "outQuad" | "inQuad";
+type Easing = 'linear'|'outQuad'|'inQuad';
 
 function ease(easing: Easing, x: number) {
   switch (easing) {
-    case "linear":
+    case 'linear':
       return x;
-    case "outQuad":
+    case 'outQuad':
       return 1 - (1 - x) * (1 - x);
-    case "inQuad":
+    case 'inQuad':
       return x * x;
   }
 }
@@ -33,14 +33,15 @@ class Tween<T extends GameObject = any> {
 
   public step(elapsedMS: number) {
     this.duration += elapsedMS / 1000;
+    console.log(this.duration);
 
     if (this.prev_frame == undefined) {
-      const keys: { [A in keyof T]?: any } = {};
+      const keys: {[A in keyof T]?: any} = {};
 
       this.mentioned_props.forEach((k) => (keys[k] = this.obj[k]));
 
-      this.prev_frame = [keys, 0, "linear"];
-      console.log(this.prev_frame);
+      this.prev_frame = [keys, 0, 'linear'];
+      // console.log(this.prev_frame);
     }
 
     if (this.frames.length == 0) {
@@ -50,7 +51,7 @@ class Tween<T extends GameObject = any> {
       if (this.duration >= this.frames[0][1]) {
         this.prev_frame = this.frames.shift()!;
         this.duration = 0;
-        console.log(this.frames);
+        // console.log(this.frames);
       }
 
       if (this.frames.length == 0) {
@@ -59,7 +60,7 @@ class Tween<T extends GameObject = any> {
       } else {
         const [frame_props, frame_duration, frame_easing] = this.frames[0];
         const progress = this.duration / frame_duration;
-        console.log(progress, this.duration);
+        // console.log(progress, this.duration);
         const coeff = ease(frame_easing, progress);
 
         Object.keys(frame_props).forEach((k) => {
@@ -67,13 +68,13 @@ class Tween<T extends GameObject = any> {
           const end_value = frame_props[k as keyof typeof frame_props] as any;
 
           this.obj[k as keyof T] =
-            start_value + (end_value - start_value) * coeff;
+              start_value + (end_value - start_value) * coeff;
         });
       }
     }
   }
 
-  public to(props: Partial<T>, duration: number, ease: Easing = "linear") {
+  public to(props: Partial<T>, duration: number, ease: Easing = 'linear') {
     Object.keys(props).forEach((k) => this.mentioned_props.add(k as keyof T));
     this.frames.push([props, duration, ease]);
     return this;
