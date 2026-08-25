@@ -1,5 +1,7 @@
 # rewilds
 
+[![wakatime](https://wakatime.com/badge/github/player21o/rewilds.svg)](https://wakatime.com/badge/github/player21o/rewilds)
+
 This is a free and open-source implementation of wilds.io game (RIP).
 
 All of it is written in typescript, using Node.js.
