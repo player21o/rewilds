@@ -9,6 +9,7 @@ lerna-debug.log*
 .pnpm-debug.log*
 .dependencygraph
 .vite
+output.txt
 
 helper_config.json
 
