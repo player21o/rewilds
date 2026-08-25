@@ -1,6 +1,6 @@
 import {WebSocket} from 'uWebSockets.js';
 
-import {ConstructorsInnerTypes, ConstructorsObject,} from '../../common/constructors';
+import {ConstructorsInnerTypes, ConstructorsObject,} from '../../../../common/constructors';
 import {Player} from '../entities/player';
 
 export type Ws = WebSocket<unknown>&{id?: number};
