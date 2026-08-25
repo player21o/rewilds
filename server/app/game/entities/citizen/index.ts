@@ -29,10 +29,7 @@ export class Citizen extends Entity<'Citizen'> implements CitizenType {
   public growling = false;
   public maxArmor: number;
 
-  public inputs: CitizenInputs = {
-    movement_vector: [0, 0],
-    look: [this.y, this.x + 1],
-  };
+  public inputs: CitizenInputs;
 
   public data;
   public state_manager;
@@ -65,6 +62,11 @@ export class Citizen extends Entity<'Citizen'> implements CitizenType {
     this.x = x;
     this.y = y;
     this.data = data;
+
+    this.inputs = {
+      movement_vector: [0, 0],
+      look: [this.y, this.x + 1],
+    };
 
     this.collision = new Circle(this.sid, this.x, this.y, 12, 0.6);
     this.kind = kind;
