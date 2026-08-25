@@ -43,20 +43,8 @@ export class Citizen extends Entity<'Citizen'> implements CitizenType {
       type: CitizenType['type'], kind: CitizenType['kind'], name: string,
       x: number, y: number, e: EntitiesManager, st?: States<any>) {
     super('Citizen');
-    this.state_manager = new StateManager<CitizenType['state']>(
-        st == undefined ? states : st, this, this.state, e);
-
-    this.type = type;
-
-    // console.log(constants.default)
 
     const data = {...constants.minions['default'], ...constants.minions[type]};
-
-    this.weapon = data.weapon;
-    this.shield = data.shield;
-    this.maxHealth = data.maxHealth;
-    this.maxArmor = data.maxArmor;
-    this.health = this.maxHealth;
 
     this.name = name;
     this.x = x;
@@ -67,6 +55,16 @@ export class Citizen extends Entity<'Citizen'> implements CitizenType {
       movement_vector: [0, 0],
       look: [this.y, this.x + 1],
     };
+    this.state_manager = new StateManager<CitizenType['state']>(
+        st == undefined ? states : st, this, this.state, e);
+
+    this.type = type;
+
+    this.weapon = data.weapon;
+    this.shield = data.shield;
+    this.maxHealth = data.maxHealth;
+    this.maxArmor = data.maxArmor;
+    this.health = this.maxHealth;
 
     this.collision = new Circle(this.sid, this.x, this.y, 12, 0.6);
     this.kind = kind;

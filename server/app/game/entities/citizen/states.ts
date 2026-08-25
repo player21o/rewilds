@@ -45,7 +45,10 @@ export default {
     },
     step(dt, entity, manager) {
       const duration = 0.8;
-      if (manager.duration >= duration) manager.set('idle');
+      if (manager.duration >= duration) {
+        manager.set('idle');
+        return;
+      };
       const direction = [
         Math.cos(entity.direction),
         Math.sin(entity.direction),
@@ -69,6 +72,7 @@ export default {
 
       if (manager.duration >= constants.weapons[entity.weapon].attackDuration)
         entity.state_manager.set('idle');
+      return;
     },
   },
   dying: {
@@ -79,14 +83,17 @@ export default {
     step(dt, entity, manager) {
       const duration = 1.5;
 
+      if (manager.duration >= duration) {
+        manager.set('dead');
+        return;
+      };
+
       const vec = [
         200 * Math.cos(entity.direction),
         200 * Math.sin(entity.direction),
       ];
       entity.x = entity.x - (duration - manager.duration) * vec[0] * dt;
       entity.y = entity.y - (duration - manager.duration) * vec[1] * dt;
-
-      if (manager.duration >= duration) manager.set('dead');
     },
   },
   block: {
@@ -117,7 +124,10 @@ export default {
     },
     step(dt, entity, manager) {
       const duration = 0.6;
-      if (manager.duration >= duration) manager.set('idle');
+      if (manager.duration >= duration) {
+        manager.set('idle');
+        return;
+      }
       const direction = [
         Math.cos(entity.direction),
         Math.sin(entity.direction),
@@ -131,7 +141,10 @@ export default {
     flow: ['idle'],
     step(dt, entity, manager) {
       const duration = 0.7;
-      if (manager.duration >= duration) manager.set('idle');
+      if (manager.duration >= duration) {
+        manager.set('idle');
+        return;
+      };
 
       const direction = [
         Math.cos(entity.direction),

@@ -1,5 +1,5 @@
-import { EntitiesManager } from ".";
-import { Entity } from "./entity";
+import {EntitiesManager} from '.';
+import {Entity} from './entity';
 
 export class StateManager<T = any> {
   public state!: T;
@@ -10,11 +10,8 @@ export class StateManager<T = any> {
   private entities: EntitiesManager;
 
   constructor(
-    states: States<any>,
-    entity: Entity<any>,
-    first_state: T,
-    ents: EntitiesManager
-  ) {
+      states: States<any>, entity: Entity<any>, first_state: T,
+      ents: EntitiesManager) {
     this.states = states;
     this.entity = entity;
     this.set(first_state);
@@ -22,18 +19,14 @@ export class StateManager<T = any> {
   }
 
   public set(state: T, force = false) {
-    if (
-      state == this.state ||
-      (!force &&
-        this.state != null &&
-        ((this.states[this.state as keyof typeof this.states].flow !=
-          undefined &&
-          !this.states[this.state as keyof typeof this.states].flow!.includes(
-            state as string
-          )) ||
+    if (state == this.state ||
+        (!force && this.state != null &&
+         ((this.states[this.state as keyof typeof this.states].flow !=
+               undefined &&
+           !this.states[this.state as keyof typeof this.states].flow!.includes(
+               state as string)) ||
           this.states[this.state as keyof typeof this.states].flow ==
-            undefined))
-    )
+              undefined)))
       return;
 
     let s = this.states[this.state as keyof typeof this.states];
@@ -57,7 +50,7 @@ export class StateManager<T = any> {
 }
 
 export type States<
-  T extends Entity<any> = Entity<"Entity">,
+  T extends Entity<any> = Entity<'Entity'>,
   S extends string | number | symbol = any,
 > = {
   [E in S]: {
