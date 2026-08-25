@@ -1,4 +1,4 @@
-import constants from '../../../../../common/constants';
+import {constants} from '../../../../../common/constants';
 import {Slash} from '../../objects/slash';
 import {lookAt} from '../../utils';
 import {States} from '../state';
