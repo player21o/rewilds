@@ -167,19 +167,17 @@ export default {
   },
   kick: {
     enter(entity, _, assets, __) {
-      entity.set_sprites('kick', 0.7, false, assets, false);
+      const duration = 0.7;
+
+      entity.set_sprites('kick', duration, false, assets, false);
       entity.sprites.legs.visible = false;
       handle_direction(entity, 1);
       entity.sounds.female_growl.stop();
       entity.sounds.male_growl.stop();
-      entity.z = -5;
 
-      tween.tween(entity).to({z: 0}, 0.7, 'linear');
-    },
-
-    step(_dt, _entity, _dp, _manager, _assets) {
-      // entity.z += 0.12 * dt;
-      // console.log(entity.z);
+      tween.tween(entity)
+          .to({z: 5}, duration * 0.3, 'linear')
+          .to({z: 0}, duration * 0.5, 'linear');
     },
   },
 } as States<Citizen, Citizen['shared']['state']>;

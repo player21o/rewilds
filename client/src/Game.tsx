@@ -23,7 +23,7 @@ const Game = (props: Props) => {
       .init({
         antialias: false,
         background: "white",
-        roundPixels: false,
+        roundPixels: true,
         //resolution: 0.5,
         canvas: canvas,
         //resizeTo: canvas.current as any,
