@@ -33,7 +33,7 @@ class Tween<T extends GameObject = any> {
 
   public step(elapsedMS: number) {
     this.duration += elapsedMS / 1000;
-    console.log(this.duration);
+    // console.log(this.duration);
 
     if (this.prev_frame == undefined) {
       const keys: {[A in keyof T]?: any} = {};
