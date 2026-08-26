@@ -1,13 +1,13 @@
 import {Stats} from 'pixi-stats';
 import {Viewport} from 'pixi-viewport';
-import {Application, Assets, AssetsManifest, Graphics, TextureStyle, Ticker, TilingSprite,} from 'pixi.js';
+import {Application, Assets, AssetsManifest, Graphics, GraphicsContextSystem, TextureStyle, Ticker, TilingSprite,} from 'pixi.js';
 
 import {manifest, ObjectManifest} from '../assets/manifest';
 
 import {GameDependencies} from './game_deps';
 import {WS} from './networking';
 import layers from './render/layers';
-import {lerp, palette} from './utils';
+import {lerp, moveTo, palette} from './utils';
 import timer from './utils/timer';
 import tween from './utils/tween';
 
@@ -29,8 +29,11 @@ export class GameManager {
     new Graphics({width: 10, height: 10}).rect(0, 0, 10, 10).fill('red'),
     new Graphics({width: 10, height: 10}).rect(0, 0, 10, 10).fill('red'),
   ];
+  private stats: Stats;
 
   public stop() {
+    this.stats.removeDomElement();
+    this.stats.removeDomRenderPanel();
     this.deps.stop();
     this.ws.stop();
     Ticker.shared.remove(this.cb);
@@ -40,9 +43,9 @@ export class GameManager {
 
   constructor(app: Application, url: string) {
     // @ts-ignore
-    const stats = new Stats(app.renderer);
+    this.stats = new Stats(app.renderer);
     this.app = app;
-    (globalThis as any).__PIXI_APP__ = this.app;
+    //(globalThis as any).__PIXI_APP__ = this.app;
 
     const viewport = new Viewport({
       worldWidth: 1000,
@@ -87,6 +90,7 @@ export class GameManager {
             width: viewport.worldWidth,
             height: viewport.worldHeight,
             cullable: false,
+            zIndex: -1000,
           });
 
           viewport.addChild(ground);
@@ -151,20 +155,33 @@ export class GameManager {
       tween.step(ticker.elapsedMS);
 
       if (this.deps.me.citizen != null) {
-        const t = 1 - Math.pow(1.0 - 0.15, deltaTime);
+        const camera_speed = 0.075
+
+        const t = 1 - Math.exp(-camera_speed * deltaTime);
         this.lastX = lerp(
             this.lastX,
-            this.deps.me.citizen.x + this.app.renderer.width / 2,
+            this.deps.me.citizen.x + this.app.renderer.screen.width / 2,
             t,
         );
 
         this.lastY = lerp(
             this.lastY,
-            this.deps.me.citizen.y + this.app.renderer.height / 2,
+            this.deps.me.citizen.y + this.app.renderer.screen.height / 2,
             t,
         );
 
-        this.deps.viewport.moveCenter(this.lastX, this.lastY);
+        // this.lastX = Math.round(moveTo(
+        //     this.lastX,
+        //     this.deps.me.citizen.x + this.app.renderer.screen.width / 2,
+        //     10 * deltaTime));
+
+        // this.lastY = Math.round(moveTo(
+        //     this.lastY,
+        //     this.deps.me.citizen.y + this.app.renderer.screen.width / 2,
+        //     10 * deltaTime));
+
+        this.deps.viewport.moveCenter(
+            Math.round(this.lastX), Math.round(this.lastY));
       } else {
         this.deps.viewport.moveCenter(300, 300);
       }

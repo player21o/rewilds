@@ -1,7 +1,7 @@
 export default {
   lobby: {
     port: 8888,
-    game_url: "ws://localhost:8889",
+    game_url: 'ws://localhost:8889',
   },
   game: {
     port: 8889,

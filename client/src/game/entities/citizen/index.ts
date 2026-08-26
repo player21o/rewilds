@@ -1,4 +1,4 @@
-import {BitmapText, ColorMatrixFilter, Container, Graphics, Ticker,} from 'pixi.js';
+import {BitmapText, ColorMatrixFilter, Container, Ticker,} from 'pixi.js';
 
 import {EntitiesManager} from '..';
 import {constants} from '../../../../../common/constants';
@@ -9,16 +9,18 @@ import {DamageBubble} from '../../objects/damageBubble';
 import Footstep from '../../objects/footstep';
 import {GameSprite} from '../../render/anim';
 import layers from '../../render/layers';
-import {lerp, moveTo, palette} from '../../utils';
+import {palette} from '../../utils';
 import {Entity} from '../entity';
 import {StateManager} from '../state';
 
+import {update_bars} from './bars';
+import {BarMesh, createBarMesh} from './bars/shader';
 import states from './states';
 
 export class Citizen extends Entity<CitizenType> {
   public sprites!: {
     legs: GameSprite; body: GameSprite; shield: GameSprite; weapon: GameSprite;
-    bars: Graphics;
+    bars: BarMesh;
   };
   public container!: Container;
   public palette_container!: Container;
@@ -55,6 +57,8 @@ export class Citizen extends Entity<CitizenType> {
     male_growl: audio_manifest.male_growl(),
     female_growl: audio_manifest.female_growl(),
   };
+
+  public update_bars = update_bars.bind(this);
 
   public on_first_appearance(): void {
     Object.keys(this.sounds).forEach((sound) => {
@@ -98,12 +102,15 @@ export class Citizen extends Entity<CitizenType> {
     container.x = this.x;
     container.y = this.y;
 
-    const bars = new Graphics({
-      blendMode: 'normal-npm',
-      scale: {x: 1, y: 0.6},
-      zIndex: 0,
-      roundPixels: true,
-    });
+    // const bars = new Graphics({
+    //   blendMode: 'normal-npm',
+    //   scale: {x: 1, y: 1},
+    //   zIndex: 0,
+    //   roundPixels: true,
+    // });
+    const bars = createBarMesh();
+    bars.scale = {x: 1, y: 0.6};
+    bars.zIndex = 0;
 
     const legs = new GameSprite<
         ObjectManifest['bundles']['game']['legs_run']['animations']>({
@@ -135,7 +142,7 @@ export class Citizen extends Entity<CitizenType> {
       loop: true,
     });
     weapon.scale = 1;
-    weapon.x = -2;
+    weapon.x = 0;
     weapon.play();
 
     const shield = new GameSprite({
@@ -297,17 +304,18 @@ export class Citizen extends Entity<CitizenType> {
 
     this.update_anims(elapsedMS);
 
-    const crst = this.timer.on_key_change(
-        this.bar_params,
-        'current_stamina',
-        )[0];
-    const c = this.timer.on_key_change(this.bar_params, 'charge')[0];
-    const h = this.timer.on_key_change(this.shared, 'health')[0];
+    // const crst = this.timer.on_key_change(
+    //     this.bar_params,
+    //     'current_stamina',
+    //     )[0];
+    // const c = this.timer.on_key_change(this.bar_params, 'charge')[0];
+    // const h = this.timer.on_key_change(this.shared, 'health')[0];
 
-    const bar_needs_to_be_updated =
-        (!this.bar_params.hide_stamina && crst) || h || c;
+    // const bar_needs_to_be_updated =
+    //     (!this.bar_params.hide_stamina && crst) || h || c;
 
-    if (bar_needs_to_be_updated) this.update_bars(deltaTime);
+    // if (bar_needs_to_be_updated)
+    this.update_bars(deltaTime);
 
     this.palette_container.zIndex = this.y;
 
@@ -316,95 +324,6 @@ export class Citizen extends Entity<CitizenType> {
 
   public update_bar_params(params: Partial<typeof this.bar_params>) {
     this.bar_params = {...this.bar_params, ...params};
-  }
-
-  public update_bars(dt: number) {
-    const params = this.bar_params;
-    const bars = this.sprites.bars;
-
-    this.bar_params.current_stamina = moveTo(
-        this.bar_params.current_stamina,
-        this.bar_params.stamina,
-        Math.abs(this.bar_params.current_stamina - this.bar_params.stamina) *
-            (dt / 50) * 2.0,
-    );
-
-    const stamina_bar_looks = {line_thickness: 3, radius: 10.5};
-    const health_bar_looks = {
-      line_thickness: 3,
-      radius: 15,
-      color: !params.enemy ? 0x37946e : 0xaa0000,
-    };
-
-    bars.clear();
-
-    bars.circle(250 / 4 - 3, 250 / 4 + 62 - 2, 12)
-        .fill({alpha: 0.25, color: 0x000000})
-        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
-        .closePath();
-
-    if (!params.hide_stamina) {
-      bars.arc(
-              250 / 4 - 3,
-              250 / 4 + 62 - 1,
-              stamina_bar_looks.radius,
-              0,
-              Math.PI,
-              false,
-              )
-          .stroke({color: 0x555555, width: stamina_bar_looks.line_thickness})
-          .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + stamina_bar_looks.radius)
-          .arc(
-              250 / 4 - 3,
-              250 / 4 + 62 - 1,
-              stamina_bar_looks.radius,
-              Math.PI / 2,
-              lerp(Math.PI / 2, 0, params.current_stamina / 1),
-              true,
-              )
-          .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + stamina_bar_looks.radius)
-          .arc(
-              250 / 4 - 3,
-              250 / 4 + 62 - 1,
-              stamina_bar_looks.radius,
-              Math.PI / 2,
-              lerp(Math.PI / 2, Math.PI, params.current_stamina / 1),
-              false,
-              )
-          .stroke({color: 0xffffff, width: stamina_bar_looks.line_thickness})
-          .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + health_bar_looks.radius)
-
-          .closePath();
-    }
-
-    bars.arc(
-            250 / 4 - 3,
-            250 / 4 + 62 - 1,
-            health_bar_looks.radius,
-            Math.PI / 2,
-            lerp(Math.PI / 2, 0, this.shared.health / this.shared.maxHealth),
-            true,
-            )
-        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 1 + health_bar_looks.radius)
-        .arc(
-            250 / 4 - 3,
-            250 / 4 + 62 - 1,
-            health_bar_looks.radius,
-            Math.PI / 2,
-            lerp(
-                Math.PI / 2, Math.PI,
-                this.shared.health / this.shared.maxHealth),
-            false,
-            )
-        .stroke({
-          color: health_bar_looks.color,
-          width: health_bar_looks.line_thickness,
-        });
-
-    bars.circle(250 / 4 - 3, 250 / 4 + 62 - 2, 14 * this.bar_params.charge)
-        .fill({alpha: 1, color: 0xffffaa})
-        .moveTo(250 / 4 - 3, 250 / 4 + 62 - 2 + stamina_bar_looks.radius)
-        .closePath();
   }
 
   private update_anims(elapsed: number) {

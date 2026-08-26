@@ -24,12 +24,14 @@ const Game = (props: Props) => {
         antialias: false,
         background: "white",
         roundPixels: true,
-        //resolution: 0.5,
+        resolution: 1,
         canvas: canvas,
         //resizeTo: canvas.current as any,
-        width: window.innerWidth / 2,
-        height: window.innerHeight / 2,
+        width: window.innerWidth / 2 | 0,
+        height: window.innerHeight / 2 | 0,
         preference: "webgl",
+        autoDensity: false,
+        bezierSmoothness: 1,
       })
       .then(() => {
         if (!app.renderer) return;
