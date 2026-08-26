@@ -109,7 +109,7 @@ export class Citizen extends Entity<CitizenType> {
     //   roundPixels: true,
     // });
     const bars = createBarMesh();
-    bars.scale = {x: 1, y: 0.6};
+    // bars.scale = {x: 1, y: 0.6};
     bars.zIndex = 0;
 
     const legs = new GameSprite<
